@@ -36,7 +36,9 @@ public class Circuit {
 	}
 
 	public double getVoltage(int node) {
-		return node == 0 ? 0 : nodeVoltages[node];
+		// Defensive bound: a node freshly added by rebuild() but not yet reached by a successful
+		// step() (e.g. this tick's solve failed) must read as 0V rather than throw.
+		return node == 0 || node >= nodeVoltages.length ? 0 : nodeVoltages[node];
 	}
 
 	public double time() {
@@ -63,6 +65,12 @@ public class Circuit {
 		int n = nodeCount - 1;
 		int m = sources.size();
 		int size = n + m;
+
+		// Sized before solve() runs, so a component reading getVoltage() after a failed solve (an
+		// exception thrown further down this method) still sees an in-bounds, if stale, array.
+		if (nodeVoltages.length != nodeCount) {
+			nodeVoltages = new double[nodeCount];
+		}
 
 		double[][] mat = new double[size][size];
 		double[] z = new double[size];
@@ -91,7 +99,6 @@ public class Circuit {
 
 		double[] x = solve(mat, z);
 
-		nodeVoltages = new double[nodeCount];
 		for (int i = 0; i < n; i++) {
 			nodeVoltages[i + 1] = x[i];
 		}

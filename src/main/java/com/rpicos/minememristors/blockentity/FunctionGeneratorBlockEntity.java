@@ -21,6 +21,7 @@ public class FunctionGeneratorBlockEntity extends ComponentBlockEntity {
 
 	private int presetIndex = 0;
 	private VoltageSource live;
+	private boolean redstonePowered = false;
 
 	public FunctionGeneratorBlockEntity(BlockPos pos, BlockState state) {
 		super(ModBlockEntities.FUNCTION_GENERATOR, pos, state);
@@ -31,11 +32,25 @@ public class FunctionGeneratorBlockEntity extends ComponentBlockEntity {
 		presetIndex = (presetIndex + 1) % PRESETS.length;
 	}
 
+	/** Called by {@link com.rpicos.minememristors.block.FunctionGeneratorBlock#neighborChanged}
+	 *  whenever a redstone neighbor changes; see {@link PowerSupplyBlockEntity#setRedstonePowered}
+	 *  for why an inactive source is left un-stamped rather than driven at 0V. */
+	public void setRedstonePowered(boolean powered) {
+		if (redstonePowered != powered) {
+			redstonePowered = powered;
+			markNetworkDirty();
+		}
+	}
+
 	@Override
 	public void addToCircuit(Circuit circuit, int nodeA, int nodeB) {
+		bindNodes(circuit, nodeA, nodeB);
+		if (!redstonePowered) {
+			live = null;
+			return;
+		}
 		live = new VoltageSource(nodeA, nodeB, PRESETS[presetIndex].waveform());
 		circuit.add(live);
-		bindNodes(circuit, nodeA, nodeB);
 	}
 
 	@Override
@@ -45,6 +60,7 @@ public class FunctionGeneratorBlockEntity extends ComponentBlockEntity {
 
 	@Override
 	public String probeSummary() {
-		return "Function Generator: " + PRESETS[presetIndex].name();
+		String base = "Function Generator: " + PRESETS[presetIndex].name();
+		return redstonePowered ? base : base + " (off - needs redstone)";
 	}
 }

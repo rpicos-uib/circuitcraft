@@ -59,8 +59,8 @@ Useful dev tasks: `./gradlew runClient` (launches a dev client with the mod load
 | **Capacitor** | Ideal capacitor, trapezoidal-integration model. Cycles 1 / 10 / 100 / 1,000 µF. |
 | **Inductor** | Ideal inductor, trapezoidal-integration model. Cycles 0.01 / 0.1 / 1 / 5 H (scaled for Minecraft's tick rate, not real-world component ratings). |
 | **Memristor** | Charge-controlled linear-drift (HP) memristor model. Resistance drifts between 100 Ω and 10,000 Ω based on accumulated charge through it — the "memory" persists even when the circuit is rebuilt. Cycles a "switching speed" preset. |
-| **Power Supply** | Ideal DC voltage source. Cycles 1.5 / 5 / 9 / 12 / 24 V. |
-| **Function Generator** | Time-varying voltage source. Cycles sine/square/triangle presets at various frequencies. |
+| **Power Supply** | Ideal DC voltage source. Cycles 1.5 / 5 / 9 / 12 / 24 V. Inactive (open-circuit) until it receives a redstone signal - wire up the circuit first, then power it on. |
+| **Function Generator** | Time-varying voltage source. Cycles sine/square/triangle presets at various frequencies. Same redstone-activation behavior as the Power Supply. |
 | **Wire** | Zero-resistance conductor block. Connects on all six faces. |
 | **Probe** | Right-click a component to read its live V/I/state on the action bar. Hold it in either hand to bring up an oscilloscope HUD in the corner of the screen, showing a scrolling voltage trace of whatever component you're currently looking at. |
 
