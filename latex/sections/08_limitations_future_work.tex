@@ -2,44 +2,54 @@
 \label{sec:limitations}
 
 \textbf{Reactive state resets on topology change.} The circuit for an entire network is
-rebuilt from scratch whenever its wiring changes anywhere in that network, which resets a
-capacitor's stored charge or an inductor's current to zero at that instant. The memristor is
-deliberately exempted, since persistent state is its entire pedagogical point, but a student
-who, e.g., extends a circuit while a capacitor is mid-charge will see that capacitor's
-voltage reset rather than continue from where it was. Carrying reactive state across a
-topology rebuild the same way the memristor's state is carried is planned future work and is
-mostly a bookkeeping problem: the new topology's node indices must be matched back to the
-element's previous node indices before its stored voltage or current can be meaningfully
-re-applied.
+rebuilt from scratch whenever its wiring changes anywhere within that network, which resets
+a capacitor's stored charge or an inductor's current to zero at that instant. The memristor
+is deliberately exempted, since persistent state is its central pedagogical purpose, but a
+student who extends a circuit while a capacitor is mid-charge, for example, will observe
+that capacitor's voltage reset rather than continue from its prior value. Carrying reactive
+state across a topology rebuild in the same manner the memristor's state is carried is
+planned future work and is primarily a bookkeeping problem: the new topology's node indices
+must be matched to the element's previous node indices before its stored voltage or current
+can be meaningfully re-applied.
 
 \textbf{Fixed presets rather than continuous values.} Every adjustable quantity -- a
 resistor's resistance, a source's amplitude or frequency -- is one of a small number of
-discrete presets cycled by right-clicking, rather than a numeric entry. This keeps the
-interaction model consistent with the rest of the base game (no custom text-entry GUI is
-required) at the cost of the fine-grained control a real bench instrument offers; a
-numeric-entry interface for these values is a natural extension.
+discrete presets cycled by right-clicking, rather than a numeric entry. This design keeps
+the interaction model consistent with the remainder of the base game (no custom text-entry
+interface is required), at the cost of the fine-grained control an actual bench instrument
+provides; a numeric-entry interface for these values is a natural extension.
 
 \textbf{Solver scalability.} The MNA system for each independent network is solved by dense
 Gaussian elimination every tick, which is adequate for the circuit sizes a single player
-typically builds by hand, but scales as $O(n^3)$ in the number of independent nodes and does
-not exploit the sparsity that a large circuit's conductance matrix would actually have. A
-sparse solver, or amortizing re-solves across ticks when nothing electrically relevant has
-changed, would be necessary before the tool could comfortably support very large
-student-built circuits or a busy multiplayer server hosting many networks at once.
+typically constructs by hand, but scales as $O(n^3)$ in the number of independent nodes and
+does not exploit the sparsity that a large circuit's conductance matrix would in practice
+possess. A sparse solver, or amortization of re-solves across ticks when no electrically
+relevant change has occurred, would be necessary before the tool could comfortably support
+very large student-built circuits, or a heavily populated multiplayer server hosting
+numerous independent networks simultaneously.
 
-\textbf{Verification is currently informal.} As noted in Section~\ref{sec:validation}, the
+\textbf{Verification remains informal.} As noted in Section~\ref{sec:validation}, the
 closed-form comparisons used during development have not yet been captured as a persisted,
-automatically re-run regression suite, and the tool's pedagogical effectiveness has so far
-been assessed only informally by its author, not through a controlled classroom study. A
-natural next step is a pre/post evaluation using an established circuits concept inventory,
-comparing a cohort using Mine Memristors as a supplementary lab activity against a cohort
-using a conventional schematic-based simulator, to test whether the game-based,
-first-person construction experience described in Section~\ref{sec:pedagogy} produces a
-measurable difference in conceptual understanding rather than only in engagement.
+automatically re-run regression suite, and the tool's pedagogical effectiveness has to date
+been assessed only informally by its author, rather than through a controlled classroom
+study. A natural next step is a pre/post evaluation using an established circuits concept
+inventory, comparing a cohort using Mine Memristors as a supplementary laboratory activity
+against a cohort using a conventional schematic-based simulator, in order to test whether
+the game-based, first-person construction experience described in Section~\ref{sec:pedagogy}
+produces a measurable difference in conceptual understanding, rather than in engagement
+alone.
+
+\textbf{Memristor model fidelity.} As discussed in Section~\ref{sec:related-work}, the mod
+implements only the original HP linear-drift formulation, which is known to exhibit boundary
+pinning under sustained excitation, a limitation subsequent compact models such as Biolek et
+al.'s windowed variant~\cite{biolek2009spice} were specifically designed to address. Exposing
+one or more alternative compact models as an additional preset would allow the tool to also
+illustrate why the modeling literature moved beyond the original formulation, rather than
+presenting it as the final word on memristor behavior.
 
 \textbf{Platform dependency.} The mod is necessarily tied to a specific version of
-Minecraft and the Fabric mod loader, both of which are externally maintained and continue
+Minecraft and of the Fabric mod loader, both of which are externally maintained and continue
 to evolve; Section~\ref{sec:validation} discusses the verification discipline this
-requires, but ongoing maintenance to track future game updates is an unavoidable cost of
-building instructional software on top of an actively-developed commercial platform rather
+requires, but ongoing maintenance to track future game updates remains an unavoidable cost
+of building instructional software atop an actively developed commercial platform, rather
 than a purpose-built, stable simulator.

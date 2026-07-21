@@ -1,34 +1,37 @@
 \section{Verification Methodology}
 \label{sec:validation}
 
-Because the entire point of the mod is that its behavior is not a scripted approximation,
-each element's stamping and state-update routines were checked during development against
-closed-form analytic solutions -- the exponential RC and RL step responses, and the
-memristor's charge-controlled ODE integrated in closed form for a constant applied voltage
--- and agreed with those references to within approximately 1\%, consistent with the
-timestep used (one Minecraft tick, $h = 1/20$~s) and the trapezoidal-integration companion
-models' known truncation error. Because the solver package has no dependency on any
-Minecraft class, this kind of check can be run as a plain Java program with no game
-instance, decompiled game code, or build tooling involved, which made it practical to
-re-check every element in isolation before wiring it into the rest of the mod.
+Because the central premise of the mod is that its behavior is not a scripted
+approximation, each element's stamping and state-update routines were checked during
+development against closed-form analytic solutions -- the exponential RC and RL step
+responses, and the memristor's charge-controlled ordinary differential equation integrated
+in closed form for a constant applied voltage -- and agreed with those references to within
+approximately 1\%, consistent with the timestep employed (one Minecraft tick,
+$h = 1/20$~s) and the known truncation error of the trapezoidal-integration companion
+models. Because the solver package has no dependency on any Minecraft class, this class of
+check can be executed as a plain Java program requiring no game instance, decompiled game
+code, or build tooling, which made it practical to re-verify every element in isolation
+before integrating it with the remainder of the mod.
 
-Because the mod targets a version of Minecraft (26.2) that predates the knowledge cutoff of
-any large language model used to assist in its development, and that version introduced
-several breaking changes to modding-relevant APIs (an unobfuscated mapping scheme, a
-two-phase heads-up-display rendering interface, a redstone-neighbor-update signature change,
-and a new per-item model-definition file format that a naively-written item registration
-silently fails against), each such API surface was checked directly against the
-decompiled game source and the mapped game jar for this specific version before being relied
-upon, rather than against generic recollection of how equivalent APIs worked in earlier,
-better-documented versions of the game. This is offered less as a claim specific to this mod
-and more as a general observation for anyone building instructional software against a
-platform that updates faster than the reference material describing it: verifying an
-assumption against the authoritative source for the exact version in use is worth the extra
-step whenever the platform is a moving target.
+Because the mod targets a version of Minecraft (26.2) released after the training data
+cutoff of the large language model used to assist in its development, and because that
+version introduced several breaking changes to modding-relevant application programming
+interfaces (an unobfuscated mapping scheme, a two-phase heads-up-display rendering
+interface, a redstone-neighbor-update signature change, and a new per-item
+model-definition file format against which a naively written item registration silently
+fails), each such interface was checked directly against the decompiled game source and the
+mapped game archive for this specific version prior to being relied upon, rather than
+against generic recollection of how equivalent interfaces behaved in earlier, better
+documented versions of the game. This practice is offered not as a claim specific to this
+mod, but as a general methodological observation for instructional software built against a
+platform whose interfaces evolve more rapidly than the reference material describing them:
+verifying an assumption against the authoritative source for the exact version in use is
+warranted whenever the underlying platform continues to change independently of the
+software being verified.
 
-We note for transparency that, at the time of writing, this verification was performed
-ad hoc during development rather than captured as a persisted, automatically re-run test
-suite in the repository; formalizing the closed-form comparisons described above into a
-checked-in regression suite is planned before a longer-term evaluation of the tool (see
-Section~\ref{sec:limitations}), and would strengthen any reviewer's ability to independently
-confirm the accuracy claims made here.
+For transparency, it should be noted that, at the time of writing, this verification was
+performed ad hoc during development rather than captured as a persisted, automatically
+re-run test suite within the repository. Formalizing the closed-form comparisons described
+above into a checked-in regression suite is planned prior to a longer-term evaluation of the
+tool (Section~\ref{sec:limitations}) and would strengthen a reviewer's ability to
+independently confirm the accuracy claims made here.

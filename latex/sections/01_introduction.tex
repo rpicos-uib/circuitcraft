@@ -1,54 +1,58 @@
 \section{Introduction}
 \label{sec:introduction}
 
-Teaching the transient and steady-state behavior of analog circuits is difficult precisely
-because the phenomena involved -- charge accumulating on a capacitor plate, flux linking an
-inductor's turns, a memristor's internal state drifting with the integral of the current
-through it -- are invisible. Students are asked to reason about quantities they cannot see,
-using differential equations whose solutions they are often meeting for the first time in
-the same course. The traditional response is to pair the mathematics with a laboratory
-bench and, increasingly, with software simulators such as SPICE~\cite{nagel1973spice},
+Teaching the transient and steady-state behavior of analog circuits is difficult in part
+because the underlying phenomena -- charge accumulating on a capacitor plate, flux linking
+an inductor's turns, a memristor's internal state drifting with the integral of the current
+through it -- are not directly observable. Students must reason about quantities they cannot
+see, using differential equations whose solutions they are frequently encountering for the
+first time in the same course. The conventional response is to pair the mathematics with a
+laboratory bench and, increasingly, with software simulators such as SPICE~\cite{nagel1973spice},
 LTspice, or browser-based tools such as the Falstad circuit simulator and PhET's Circuit
-Construction Kit. These tools are effective, but they present the circuit as a schematic on
-a two-dimensional canvas -- an abstraction one level removed from the physical act of
-connecting components that a real breadboard or benchtop still preserves.
+Construction Kit. These tools are effective, but each presents the circuit as a schematic on
+a two-dimensional canvas, an abstraction removed by one level from the physical act of
+connecting components that a breadboard or benchtop still preserves.
 
-Sandbox games occupy an unusual middle ground. Minecraft in particular has an established
-track record as an informal STEM learning environment, precisely because building something
-inside it -- a redstone logic circuit, a working calculator, a piston-driven
-elevator -- requires the same kind of systems thinking as an engineering task, while
-remaining playful and low-stakes~\cite{nebel2016mining}. Minecraft's own redstone system is
-already a widely used entry point into digital logic. There is, however, no equivalent for
-\emph{analog} circuit theory inside the base game: redstone signals are effectively boolean,
-propagated instantaneously (subject to a fixed per-block delay), with no notion of voltage,
-current, capacitance, or continuous time.
+Sandbox games occupy a distinctive position relative to both approaches. Minecraft in
+particular has an established record as an informal STEM learning environment
+(Section~\ref{sec:related-work}), in part because constructing something inside it -- a
+redstone logic circuit, a working calculator, a piston-driven elevator -- requires systems
+thinking comparable to an engineering task while remaining playful and low
+stakes~\cite{nebel2016mining}. Minecraft's own redstone subsystem is already a widely used
+entry point into digital logic, examined further in Section~\ref{sec:minecraft-mechanics}.
+No equivalent exists, however, for \emph{analog} circuit theory within the base game:
+redstone signals are effectively boolean, propagated through a discrete per-block delay
+rather than continuously, with no built-in notion of voltage, current, capacitance, or
+continuous time.
 
 This paper describes Mine Memristors~\cite{picos2026minememristors}, a modification
-(``mod'') for the Fabric mod loader, free and open-source under the MIT license, that adds
-a full set of analog circuit components to Minecraft: resistors, capacitors,
-inductors, memristors, DC and time-varying voltage sources, an ammeter, wire, an explicit
-ground reference block, and a handheld multi-channel oscilloscope probe. Placing and wiring
-these blocks together builds a real circuit topology in the game world; a modified nodal
-analysis solver, structurally the same technique used by SPICE-family
-simulators~\cite{ho1975mna}, is re-solved every game tick (20~Hz) to drive every block's
-displayed voltage, current, and internal state. Nothing in the mod is a scripted
-approximation: an RC charging curve looks like an RC charging curve because the underlying
-linear system is actually being solved, and a memristor's resistance drifts according to the
-same charge-controlled ordinary differential equation used in the original HP linear-drift
-model~\cite{strukov2008missing}, not a lookup table tuned to look plausible.
+(``mod'') for the Fabric mod loader, released as free and open-source software under the MIT
+license, that adds a complete set of analog circuit components to Minecraft: resistors,
+capacitors, inductors, memristors, DC and time-varying voltage sources, an ammeter, wire, an
+explicit ground-reference block, and a handheld multi-channel oscilloscope probe. Placing
+and wiring these blocks together constructs an actual circuit topology within the game
+world; a modified nodal analysis solver, structurally identical to the technique used by
+SPICE-family simulators~\cite{ho1975mna}, is re-solved once per game tick (20~Hz) to drive
+every block's displayed voltage, current, and internal state. No behavior in the mod is a
+scripted approximation of the underlying physics: an RC charging curve resembles an RC
+charging curve because the underlying linear system is actually solved, and a memristor's
+resistance drifts according to the same charge-controlled ordinary differential equation
+used in the original HP linear-drift model~\cite{strukov2008missing}, rather than a lookup
+table tuned to appear plausible.
 
 The remainder of this paper is organized as follows. Section~\ref{sec:related-work}
-situates Mine Memristors relative to existing circuit simulators and the literature on
-game-based engineering education. Section~\ref{sec:minecraft-mechanics} describes, in more
-depth, which of Minecraft's own construction mechanics -- block placement and orientation,
-the native redstone subsystem, and the modding platform's block-entity and tick-loop
-primitives -- the mod builds on top of, and why redstone's existing role as an entry point
-into digital logic cannot, by itself, extend to analog circuit theory.
-Section~\ref{sec:architecture} describes the mod's own software architecture, in particular
-the topology-construction algorithm used to translate a player's in-world wiring into a
-circuit graph. Section~\ref{sec:circuit-solver} describes the solver itself, including the
-explicit, player-placeable ground reference that lets the notion of ``ground'' be taught
-rather than assumed. Section~\ref{sec:pedagogy} discusses the pedagogical rationale for each
-design choice. Section~\ref{sec:validation} describes how the solver and the surrounding
-game logic were verified during development. Section~\ref{sec:limitations} discusses current
-limitations and planned classroom evaluation, and Section~\ref{sec:conclusion} concludes.
+situates Mine Memristors relative to existing circuit simulators, the literature on
+Minecraft in education, and the memristor-modeling literature. Section~\ref{sec:minecraft-mechanics}
+examines, in greater depth, which of Minecraft's own construction mechanics -- block
+placement and orientation, the native redstone subsystem, and the modding platform's
+block-entity and tick-loop primitives -- the mod builds upon, and why redstone's existing
+role as an entry point into digital logic does not, by itself, extend to analog circuit
+theory. Section~\ref{sec:architecture} describes the mod's own software architecture, in
+particular the topology-construction algorithm used to translate a player's in-world wiring
+into a circuit graph. Section~\ref{sec:circuit-solver} describes the solver itself,
+including the explicit, player-placeable ground reference that allows the notion of
+``ground'' to be taught rather than assumed. Section~\ref{sec:pedagogy} discusses the
+pedagogical rationale underlying each design choice. Section~\ref{sec:validation} describes
+how the solver and the surrounding game logic were verified during development.
+Section~\ref{sec:limitations} discusses current limitations and planned classroom
+evaluation, and Section~\ref{sec:conclusion} concludes.

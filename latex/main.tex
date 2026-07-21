@@ -28,21 +28,22 @@
 \maketitle
 
 \begin{abstract}
-We present Mine Memristors, an open-source modification (``mod'') for the sandbox game
-Minecraft that turns the game world into an analog electronics laboratory. Players place
-resistor, capacitor, inductor, and memristor blocks, wire them together with conductive
-blocks, drive them with DC and time-varying sources, and probe the resulting voltages and
-currents with a handheld oscilloscope, all rendered as ordinary game objects placed and
-manipulated with the same mechanics used to build anything else in the game. Unlike
-scripted or table-driven approximations of circuit behavior, every electrical quantity in
-Mine Memristors is produced by a real modified nodal analysis (MNA) solver of the kind used
-in SPICE-family simulators, including a charge-controlled linear-drift memristor model.
-This paper describes which of Minecraft's own construction mechanics the mod builds on top
-of, the system's software architecture, the circuit-theoretic design decisions behind it (in
-particular, an explicit, player-placeable ground reference), the pedagogical rationale for
-embedding a correct solver inside a game environment rather than a dedicated simulator, and
-the verification methodology used during development. We conclude with current limitations
-and a roadmap for classroom evaluation.
+This paper presents Mine Memristors, an open-source modification (``mod'') for the sandbox
+game Minecraft that transforms the game world into an analog electronics laboratory. Players
+place resistor, capacitor, inductor, and memristor blocks, wire them together using
+conductive blocks, drive them with DC and time-varying sources, and probe the resulting
+voltages and currents with a handheld oscilloscope, all rendered as ordinary game objects
+placed and manipulated with the same mechanics used to construct anything else within the
+game. In contrast to scripted or table-driven approximations of circuit behavior, every
+electrical quantity in Mine Memristors is produced by a genuine modified nodal analysis
+(MNA) solver of the kind employed in SPICE-family simulators, including a charge-controlled
+linear-drift memristor model. This paper describes which of Minecraft's own construction
+mechanics the mod builds upon, the system's software architecture, the circuit-theoretic
+design decisions underlying it (in particular, an explicit, player-placeable ground
+reference), the pedagogical rationale for embedding a correct solver within a game
+environment rather than a dedicated simulator, and the verification methodology employed
+during development. The paper concludes with a discussion of current limitations and a
+roadmap for classroom evaluation.
 \end{abstract}
 
 \input{sections/01_introduction}

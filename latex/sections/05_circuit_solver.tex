@@ -4,10 +4,10 @@
 \subsection{Modified nodal analysis formulation}
 
 The solver follows the standard MNA formulation~\cite{ho1975mna}. With $n$ non-ground nodes
-and $m$ independent voltage sources, the unknown vector is the stacked node-voltage vector
-$v \in \mathbb{R}^n$ and branch-current vector $j \in \mathbb{R}^m$ (one auxiliary unknown
-per independent voltage source, the standard MNA treatment for an ideal source, which
-cannot be described by a node-to-node conductance alone):
+and $m$ independent voltage sources, the unknown vector comprises the stacked node-voltage
+vector $v \in \mathbb{R}^n$ and branch-current vector $j \in \mathbb{R}^m$ (one auxiliary
+unknown per independent voltage source, the standard MNA treatment for an ideal source,
+which cannot be described by a node-to-node conductance alone):
 \begin{equation}
 \begin{bmatrix} G & B \\ B^{\top} & 0 \end{bmatrix}
 \begin{bmatrix} v \\ j \end{bmatrix}
@@ -15,31 +15,32 @@ cannot be described by a node-to-node conductance alone):
 \begin{bmatrix} i \\ e \end{bmatrix},
 \end{equation}
 where $G$ is the conductance matrix assembled by stamping every resistive (or
-companion-resistive, see below) element, $B$ encodes which two nodes each voltage source is
-connected across, $i$ collects any independent current injections, and $e$ is the vector of
-source values at the current simulation time. Node~0 is reserved, by MNA convention, as the
-ground reference and is excluded from the unknown vector entirely; every other node's
-voltage is solved for relative to it. The resulting dense linear system is solved once per
-game tick (every $1/20$~s of game time) by Gaussian elimination with partial pivoting.
+companion-resistive, discussed below) element, $B$ encodes the pair of nodes across which
+each voltage source is connected, $i$ collects any independent current injections, and $e$
+is the vector of source values at the current simulation time. Node~0 is reserved, by MNA
+convention, as the ground reference and is excluded from the unknown vector entirely; every
+other node's voltage is solved relative to it. The resulting dense linear system is solved
+once per game tick (every $1/20$~s of game time) by Gaussian elimination with partial
+pivoting.
 
 To guard against a genuinely floating node -- a component with an unconnected lead, which a
-player building a circuit incrementally will produce constantly and which must not crash
-the simulation -- a small conductance ($10^{-9}$~S) is added to every non-ground node's
-diagonal unconditionally. This is large enough to keep the matrix non-singular for an
-isolated node, and small enough (roughly nine orders of magnitude below the smallest
-resistor preset) to be numerically invisible in any circuit that is actually
-connected.
+player constructing a circuit incrementally produces routinely, and which must not
+destabilize the simulation -- a small conductance ($10^{-9}$~S) is added unconditionally to
+every non-ground node's diagonal entry. This value is sufficiently large to keep the matrix
+non-singular for an isolated node, and sufficiently small (approximately nine orders of
+magnitude below the smallest resistor preset) to remain numerically negligible in any
+circuit that is actually connected.
 
 \subsection{Reactive elements}
 
 Capacitors and inductors are stamped using trapezoidal-integration companion models, the
-same technique used in general-purpose circuit simulators, rather than backward Euler,
+technique employed in general-purpose circuit simulators, rather than backward Euler,
 specifically because backward Euler introduces artificial numerical damping that would
-visibly flatten an underdamped LC transient a student is trying to observe. For a capacitor
-with capacitance $C$ and timestep $h$, the companion model is a conductance
-$G_{eq} = 2C/h$ in parallel with a Norton current source
+visibly flatten an underdamped LC transient a student is attempting to observe. For a
+capacitor with capacitance $C$ and timestep $h$, the companion model consists of a
+conductance $G_{eq} = 2C/h$ in parallel with a Norton current source
 $I_{eq} = -G_{eq} v_C(t - h) - i_C(t-h)$, and correspondingly for an inductor,
-$G_{eq} = h/(2L)$; both are re-derived from the trapezoidal rule
+$G_{eq} = h/(2L)$; both are derived from the trapezoidal rule
 $x(t) \approx x(t-h) + \frac{h}{2}\left[\dot{x}(t) + \dot{x}(t-h)\right]$ applied to the
 element's defining relation ($i = C\,\mathrm{d}v/\mathrm{d}t$ or
 $v = L\,\mathrm{d}i/\mathrm{d}t$, respectively).
@@ -47,62 +48,64 @@ $v = L\,\mathrm{d}i/\mathrm{d}t$, respectively).
 \subsection{The memristor}
 
 The memristor implements Strukov et al.'s charge-controlled linear-drift
-model~\cite{strukov2008missing}: its resistance is
+model~\cite{strukov2008missing} (Section~\ref{sec:related-work} surveys subsequent
+refinements to this formulation): its resistance is
 \begin{equation}
 R(q) = R_{on}\left(1 - \frac{q}{q_{max}}\right) + R_{off}\,\frac{q}{q_{max}}, \qquad
 \dot{q}(t) = i(t),
 \end{equation}
 with $q/q_{max}$ clamped to $[0,1]$, defaults of $R_{on}=100\,\Omega$ and
 $R_{off}=10\,000\,\Omega$, and a player-adjustable ``switching speed'' preset that scales
-$q_{max}$. Because $q$ is the time-integral of the current actually flowing through the
+$q_{max}$. Because $q$ is the time integral of the current actually flowing through the
 device, its resistance depends on the device's entire history rather than its instantaneous
-state -- the defining property that distinguishes a memristor from a resistor -- and,
-notably, this state is deliberately preserved across a network topology rebuild
-(Section~\ref{sec:limitations} discusses why the other reactive elements are not yet
+state, the defining property that distinguishes a memristor from a resistor. This state is,
+notably, deliberately preserved across a network topology rebuild
+(Section~\ref{sec:limitations} discusses why the remaining reactive elements are not yet
 afforded the same treatment).
 
 \subsection{An explicit, player-placed ground reference}
 
 MNA's ground node is, by construction, always present as a mathematical reference: node~0
-is never actually solved for and is defined to be exactly $0$~V. Prior to the addition of a
-dedicated ground block, however, nothing in the game world ever corresponded to node~0 --
-every network's blocks were assigned freshly allocated node indices starting at~1, and
-node~0 remained a purely internal bookkeeping device invisible to the player. This meant a
-component's \emph{voltage drop} across its own two leads was always well defined (differences
-between node voltages are invariant to which node is chosen as the reference), but there was
-no way to ask a more basic question: ``what is the voltage \emph{at} this point in the
-circuit?'', since that requires an agreed reference point, exactly as it does on a real
-bench before a probe's ground clip is attached somewhere.
+is never itself solved for and is defined to be exactly $0$~V. Prior to the introduction of
+a dedicated ground block, however, nothing in the game world corresponded to node~0: every
+network's blocks were assigned freshly allocated node indices beginning at~1, and node~0
+remained a purely internal bookkeeping device invisible to the player. Consequently, a
+component's \emph{voltage drop} across its own two leads was always well defined
+(differences between node voltages are invariant to which node is chosen as the reference),
+but no means existed to pose a more basic question: what is the voltage \emph{at} a given
+point in the circuit? Answering that question requires an agreed reference point, exactly as
+it does on a physical bench prior to a probe's ground clip being attached.
 
-The ground block is conductive on all six faces, like wire, and is otherwise electrically
-inert; the only special handling it receives is in the topology-construction step described
-in Section~\ref{sec:architecture}, where any network partition containing a ground block is
-assigned node index~0 directly instead of a freshly allocated index. No change to the
-solver itself was required: the stamping routines already handled node~0 correctly
-(a term referencing node~0 is simply omitted from the assembled matrix, per the standard
-MNA convention), because it was always a valid destination for a component's terminal, just
-never one a player could deliberately choose. Wire and ground blocks were, in the same
-change, made directly probeable, so that a player can read the absolute voltage at any wired
-point once a ground reference has been established elsewhere in the same network -- turning
-the abstract idea of a reference node into something a player sets up explicitly, the same
-way a real measurement requires choosing where to clip the ground lead before any other
-reading is meaningful.
+The ground block is conductive on all six faces, as wire is, and is otherwise electrically
+inert; the only special handling it receives occurs during the topology-construction step
+described in Section~\ref{sec:architecture}, where any network partition containing a
+ground block is assigned node index~0 directly rather than a freshly allocated index. No
+modification to the solver itself was required: the stamping routines already handled
+node~0 correctly (a term referencing node~0 is simply omitted from the assembled matrix,
+per the standard MNA convention), since it was always a valid destination for a component's
+terminal, merely one a player had no means of deliberately selecting. Wire and ground blocks
+were, in the same change, made directly probeable, allowing a player to read the absolute
+voltage at any wired point once a ground reference has been established elsewhere in the
+same network, turning the abstract notion of a reference node into an object a player must
+establish explicitly, in the same way an actual measurement requires choosing where to
+attach the ground lead before any other reading becomes meaningful.
 
 \subsection{Adjustable sources and value propagation}
 
 The function generator's waveform shape (sine, square, or triangle) is a preset cycled
-directly on the block, but its amplitude and frequency are set externally by two small
-utility blocks -- a voltage module and a frequency module -- that a player places touching
-the generator, or touching a chain of other modules of either kind that eventually reaches
-one or more generators. Each module tracks two independently propagated quantities, a
-voltage value and a frequency value, each tagged with the game tick at which it was last
-\emph{authored} (set directly by a player right-clicking that specific module). A module
-only authors the channel matching its own kind; for the other channel, it purely relays
-whatever value and tag it last observed. Once per tick, every module compares both of its
-channels against every immediately adjacent module of either kind and adopts whichever has
-the more recent authoring tick, then pushes its resolved voltage and frequency to any
-adjacent generator. This lets a single control reach an arbitrarily long, possibly mixed
-chain of modules and every generator at its far end, converging one hop per tick (at
-20 ticks/second, imperceptibly fast for any build a player is likely to construct), while
-remaining simple enough to implement without a separate, explicit ``wiring'' concept distinct
-from ordinary block adjacency.
+directly on the block, whereas its amplitude and frequency are set externally by two small
+utility blocks, a voltage module and a frequency module, that a player places in contact
+with the generator, or in contact with a chain of other modules of either kind that
+eventually reaches one or more generators. Each module tracks two independently propagated
+quantities, a voltage value and a frequency value, each tagged with the game tick at which
+it was last \emph{authored} (set directly by a player right-clicking that specific module).
+A module authors only the channel matching its own kind; for the remaining channel, it
+purely relays whatever value and tag it most recently observed. Once per tick, every module
+compares both of its channels against every immediately adjacent module of either kind and
+adopts whichever possesses the more recent authoring tick, subsequently propagating its
+resolved voltage and frequency to any adjacent generator. This mechanism allows a single
+control to reach an arbitrarily long, possibly mixed chain of modules and every generator at
+its far end, converging one hop per tick (at 20 ticks per second, imperceptibly fast for any
+construction a player is likely to build), while remaining simple enough to implement
+without introducing a separate, explicit ``wiring'' concept distinct from ordinary block
+adjacency.

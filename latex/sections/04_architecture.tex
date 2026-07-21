@@ -46,9 +46,9 @@ Section~\ref{sec:circuit-solver}) behaves identically to wire for topology purpo
 Once per game tick, for each independent group of adjacent, mutually-conductive blocks
 (a ``network''), the mod rebuilds a union--find partition over every block face that
 presents a conductive surface toward a conductive neighbor, assigns one MNA node index to
-each resulting partition, and asks every component in that network to stamp itself into the
-circuit between its resolved node indices. Figure~\ref{fig:gallery} shows the full set of
-component and utility blocks available to a player.
+each resulting partition, and instructs every component in that network to stamp itself
+into the circuit between its resolved node indices. Figure~\ref{fig:gallery} shows the
+complete set of component and utility blocks available to a player.
 
 \begin{figure}[htbp]
 \centering
@@ -59,14 +59,15 @@ component and utility blocks available to a player.
 
 \subsection{Multi-channel oscilloscope protocol}
 
-A handheld probe item lets a player pin up to three components, wires, or ground blocks at
-once (right-click to pin or promote to most-recently-used, shift-right-click to unpin); the
-server streams each pinned position's instantaneous voltage, current, a 200-sample rolling
-history, and a short human-readable summary to that player once per tick, and the client
-renders each of the up to three channels as an independently color-coded, auto-scaled
-oscilloscope trace stacked in a corner of the screen, as shown in Figure~\ref{fig:scope}. A
-component's trace shows the voltage drop across its two leads (or, for the ammeter, the
-branch current, reusing the same history/rendering machinery so that current and voltage
-can be watched side by side with no separate ``current channel'' concept); a wire or ground
-block's trace shows its single node's absolute voltage relative to whatever ground reference
-the network has, discussed next.
+A handheld probe item allows a player to pin up to three components, wires, or ground
+blocks simultaneously (a right-click pins an object or promotes it to most-recently-used
+status; shift-right-click unpins it). The server streams each pinned position's
+instantaneous voltage, current, a 200-sample rolling history, and a short human-readable
+summary to that player once per tick, and the client renders each of the up to three
+channels as an independently color-coded, auto-scaled oscilloscope trace stacked in a
+corner of the screen, as shown in Figure~\ref{fig:scope}. A component's trace displays the
+voltage drop across its two leads (or, for the ammeter, the branch current, reusing the
+same history and rendering machinery so that current and voltage may be observed side by
+side without a separate ``current channel'' concept); a wire or ground block's trace
+displays its single node's absolute voltage relative to whatever ground reference the
+network possesses, discussed in the following section.

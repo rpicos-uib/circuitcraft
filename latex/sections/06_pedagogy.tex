@@ -1,50 +1,52 @@
 \section{Pedagogical Design}
 \label{sec:pedagogy}
 
-The design choices described in Sections~\ref{sec:architecture}
-and~\ref{sec:circuit-solver} were each made with a specific misconception or missing
-intuition in mind, in the spirit of Papert's constructionism~\cite{papert1980mindstorms}:
-a learner builds a working artifact and inspects its behavior directly, rather than being
-shown the artifact's behavior secondhand.
+Each design choice described in Sections~\ref{sec:architecture}
+and~\ref{sec:circuit-solver} was made with a specific misconception or missing intuition in
+mind, in the spirit of Papert's constructionism~\cite{papert1980mindstorms}: a learner
+constructs a working artifact and inspects its behavior directly, rather than observing that
+behavior secondhand.
 
 \textbf{Wiring as physical placement, not schematic capture.} A component's two leads are
 specific block faces, and two blocks are electrically connected only if each presents a
-conductive face to the other. This is closer to breadboarding than to drawing a schematic:
-a player who wires a resistor and a capacitor in what they intend to be a series loop, but
-leaves a gap, gets a demonstrably incomplete circuit (Section~\ref{sec:circuit-solver}'s
-floating-node handling means this fails safely rather than crashing), the same way a real
-breadboard with a missing jumper simply does not work, rather than a schematic tool
+conductive face to the other. This arrangement is closer to breadboarding than to drawing a
+schematic: a player who wires a resistor and a capacitor in what is intended to be a series
+loop, but leaves a gap, obtains a demonstrably incomplete circuit (Section~\ref{sec:circuit-solver}'s
+floating-node handling ensures this fails safely rather than crashing), in the same way that
+a breadboard with a missing jumper simply does not function, rather than a schematic tool
 flagging an unconnected pin as an abstract error.
 
-\textbf{An explicit ground reference.} ``Voltage is always relative to a chosen reference''
-is a standard remark in an introductory course, but it is easy for a student to receive it
-as trivia rather than as something with consequences, because a schematic tool typically
-draws a ground symbol for you, already connected, wherever the exercise needs it. Requiring
-a player to place a ground block and wire it in themselves before a wire's absolute voltage
-reading becomes meaningful (Section~\ref{sec:circuit-solver}) makes the reference an object
-the player is responsible for, not a background assumption.
+\textbf{An explicit ground reference.} The observation that voltage is always relative to a
+chosen reference is a standard remark in an introductory course, but a student may easily
+receive it as incidental rather than consequential, because a schematic tool typically draws
+a ground symbol automatically, already connected, wherever an exercise requires one.
+Requiring a player to place a ground block and wire it in independently, before a wire's
+absolute voltage reading becomes meaningful (Section~\ref{sec:circuit-solver}), renders the
+reference an object for which the player is responsible, rather than a background
+assumption.
 
 \textbf{Sources that must be switched on.} Both voltage sources are wired to a redstone
 input and remain electrically inert -- an open circuit, contributing nothing to the solved
-system -- until that input is active. This mirrors an actual laboratory workflow (wire the
-circuit completely, verify it, \emph{then} switch the bench supply on) rather than a
-schematic tool's power sources, which are implicitly ``live'' the instant they are drawn.
-It also gives a player room to make, and recover from, the same wiring mistake a real bench
-technician must learn to avoid: an ideal voltage source whose two leads both land on the
-same node is shorted across itself regardless of whether it happens inside a game or a real
-circuit, and the solver's defensive handling of that case
-(Section~\ref{sec:circuit-solver}) means the mistake surfaces as an in-game warning to fix,
-not a crash.
+system -- until that input is active. This arrangement mirrors an actual laboratory
+workflow (wire the circuit completely, verify it, and only then switch the bench supply on)
+rather than a schematic tool's power sources, which are implicitly ``live'' the instant they
+are drawn. It further allows a player to make, and recover from, the same wiring error a
+bench technician must learn to avoid: an ideal voltage source whose two leads both terminate
+at the same node is shorted across itself, regardless of whether the circuit exists inside a
+game or in physical hardware, and the solver's defensive handling of this case
+(Section~\ref{sec:circuit-solver}) ensures the error surfaces as an in-game warning to be
+corrected, rather than as a crash.
 
-\textbf{An oscilloscope that can watch more than one thing at once.} A single-channel
-readout answers ``what is this component doing'', but the more interesting classroom
-question is usually comparative -- how does the capacitor's voltage lag the source
-driving it, or how does a resistor's voltage track a memristor's drifting resistance --
-which requires watching multiple points simultaneously and comparing their phase and shape
-against each other, not just their instantaneous values in isolation. Figure~\ref{fig:scope}
-shows the in-game oscilloscope pinned to three points in the same circuit at once (a
-function generator, a capacitor, and a resistor), reproducing the same relative-phase
-comparison a real bench oscilloscope's multiple channels are used for.
+\textbf{An oscilloscope capable of observing more than one signal at once.} A single-channel
+readout answers the question of what a given component is doing in isolation, but the more
+instructive classroom question is typically comparative: how does a capacitor's voltage lag
+the source driving it, or how does a resistor's voltage track a memristor's drifting
+resistance? Answering such questions requires observing multiple points simultaneously and
+comparing their relative phase and shape, rather than only their instantaneous values in
+isolation. Figure~\ref{fig:scope} shows the in-game oscilloscope pinned to three points
+within the same circuit at once (a function generator, a capacitor, and a resistor),
+reproducing the relative-phase comparison for which a bench oscilloscope's multiple channels
+are ordinarily used.
 
 \begin{figure}[htbp]
 \centering
@@ -52,9 +54,9 @@ comparison a real bench oscilloscope's multiple channels are used for.
 \hfill
 \includegraphics[width=0.48\textwidth]{figures/triangle_waveform.png}
 \caption{The in-game multi-channel oscilloscope, pinned simultaneously to a function
-generator (top trace), a capacitor (middle trace), and a resistor (bottom trace) in the same
-circuit, driven by a square wave (left) and a triangle wave (right). Each trace is
+generator (top trace), a capacitor (middle trace), and a resistor (bottom trace) within the
+same circuit, driven by a square wave (left) and a triangle wave (right). Each trace is
 independently auto-scaled and color-coded, with a live voltage/current readout and a summary
-of that component's current state below its plot.}
+of that component's current state displayed below its plot.}
 \label{fig:scope}
 \end{figure}

@@ -4,76 +4,101 @@
 \subsection{Circuit simulators}
 
 SPICE and its descendants~\cite{nagel1973spice} remain the reference implementation of
-circuit simulation, built around modified nodal analysis~\cite{ho1975mna}: node voltages and
-a small number of auxiliary branch currents (one per independent voltage source or inductor,
-in the classical formulation) are solved for simultaneously at each timestep, with reactive
-elements replaced by companion resistive/source models derived from a numerical integration
-rule. Educational tools such as the Falstad circuit simulator and PhET's Circuit
+circuit simulation and are built around modified nodal analysis~\cite{ho1975mna}: node
+voltages and a small number of auxiliary branch currents (one per independent voltage source
+or inductor, in the classical formulation) are solved simultaneously at each timestep, with
+reactive elements replaced by companion resistive/source models derived from a numerical
+integration rule. Educational tools such as the Falstad circuit simulator and PhET's Circuit
 Construction Kit lower the barrier to entry by replacing SPICE's netlist syntax with direct
-schematic manipulation, and are widely used in introductory courses. All three, however,
-present the circuit as a two-dimensional schematic. Mine Memristors uses the same underlying
-numerical technique -- Sections~\ref{sec:architecture} and~\ref{sec:circuit-solver} describe
-an MNA solver with trapezoidal-integration companion models for reactive elements, the same
-family of technique SPICE uses -- but embeds it in a three-dimensional, first-person, block-based
-world instead of a schematic canvas.
+schematic manipulation and are widely used in introductory courses. All three tools,
+however, present the circuit as a two-dimensional schematic. Mine Memristors uses the same
+underlying numerical technique (Sections~\ref{sec:architecture}
+and~\ref{sec:circuit-solver} describe an MNA solver employing trapezoidal-integration
+companion models for reactive elements, the family of technique SPICE itself uses) but
+embeds it in a three-dimensional, first-person, block-based world rather than a schematic
+canvas.
 
 \subsection{Minecraft in education}
 \label{sec:minecraft-in-education}
 
-The instructional value of games and simulations is well studied in general: a meta-analysis
-by Sitzmann~\cite{sitzmann2011meta} found simulation games to be more effective for training
-self-efficacy and knowledge retention than comparison instructional methods across a range
-of technical domains. Minecraft occupies an unusually large share of that broader
-literature specifically, to the point that Microsoft maintains and sells a dedicated,
-classroom-oriented variant, \emph{Minecraft: Education Edition}, aimed squarely at schools --
-itself a useful indicator of how far the game's informal adoption by teachers had already
-progressed before a vendor built a product around it. Nebel et al.'s
-review~\cite{nebel2016mining} surveys this literature broadly and identifies Minecraft's
-core appeal for education as the same thing that makes it appealing as a game: an open,
-constructive world in which a learner's own artifact, not a worked example, is the object of
-study, closely matching Papert's constructionist framing~\cite{papert1980mindstorms}
-discussed further in Section~\ref{sec:pedagogy}.
+The instructional value of games and simulations has been studied extensively in general: a
+meta-analysis by Sitzmann~\cite{sitzmann2011meta} found simulation games to be more
+effective for training self-efficacy and knowledge retention than comparison instructional
+methods across a range of technical domains. Minecraft occupies a disproportionately large
+share of that broader literature. Microsoft maintains and markets a dedicated,
+classroom-oriented variant of the game, \emph{Minecraft: Education Edition}, an indication of
+how extensively the game had already been adopted informally by educators prior to this
+commercial productization. Nebel et al.'s review~\cite{nebel2016mining} surveys this
+literature broadly and identifies Minecraft's principal appeal for education as the same
+property that makes it appealing as a game: an open, constructive world in which a learner's
+own artifact, rather than a worked example, is the object of study, closely matching
+Papert's constructionist framing~\cite{papert1980mindstorms}, discussed further in
+Section~\ref{sec:pedagogy}.
 
-Published case studies span a wide range of subjects well outside engineering. Bos et
+Published case studies span a range of subjects well outside engineering. Bos et
 al.~\cite{bos2014mathematics} describe using Minecraft to teach elementary-school
-mathematics concepts such as area, perimeter, and ratio through building tasks; Short's
-account~\cite{short2012teaching} covers using the game to teach general science concepts in
-a secondary-school setting; and Cipollone et al.~\cite{cipollone2014creative} present a case
-study of Minecraft used as an open-ended creative tool, with an emphasis on collaboration
-and planning skills rather than any specific curricular content. Callaghan's broader
+mathematics concepts, including area, perimeter, and ratio, through building tasks; Short's
+account~\cite{short2012teaching} covers the use of the game to teach general science concepts
+in a secondary-school setting; and Cipollone et al.~\cite{cipollone2014creative} present a
+case study of Minecraft used as an open-ended creative tool, emphasizing collaboration and
+planning skills rather than any specific curricular content. Callaghan's
 survey~\cite{callaghan2016investigating} of Minecraft's role across primary and secondary
-classrooms echoes a theme common to all of the above: teachers report high engagement and
-motivation fairly consistently, but rigorously measured gains in specific learning outcomes
-are reported less often and less consistently, a caveat also present in the general
-simulation-games literature~\cite{sitzmann2011meta} and one this paper does not claim to
-have resolved for Mine Memristors specifically (Section~\ref{sec:limitations}).
+classrooms identifies a theme common to each of the studies above: teachers report high
+engagement and motivation fairly consistently, whereas rigorously measured gains in specific
+learning outcomes are reported less often and less consistently, a caveat also present in
+the general simulation-games literature~\cite{sitzmann2011meta} and one this paper does not
+claim to have resolved for Mine Memristors specifically (Section~\ref{sec:limitations}).
 
-Within that broader literature, the subset closest to this paper's subject is Minecraft's
-native redstone subsystem, which is already a common entry point for teaching digital logic
-and computer architecture concepts: players build AND/OR/NOT gates, adders, and working
-memory cells entirely out of in-game blocks, and Dezuanni et
-al.~\cite{dezuanni2015redstone} specifically document children describing and reasoning
-about redstone circuits using explicitly electrical language, even though the underlying
-mechanic is a discrete, boolean signal rather than a continuous one (discussed further, with
-the actual mechanics of redstone, in Section~\ref{sec:minecraft-mechanics}). This is the
-literature Mine Memristors sits closest to and departs from most directly: the case studies
-above use Minecraft's \emph{existing} mechanics, redstone included, as the vehicle for a
-lesson, whereas Mine Memristors adds an entirely new, continuous-time simulation layer
-because redstone's discrete signal has no way to represent voltage, current, or reactive
-state at all. To the author's knowledge, it is the first Minecraft modification to embed a
-real continuous-time circuit solver for this purpose, rather than approximating one with the
-game's existing discrete redstone mechanics.
+Within that broader literature, the subset closest to the present paper's subject concerns
+Minecraft's native redstone subsystem, already a common entry point for teaching digital
+logic and computer architecture concepts: players build logic gates, adders, and working
+memory cells entirely from in-game blocks. Dezuanni et al.~\cite{dezuanni2015redstone}
+document children describing and reasoning about redstone circuits in explicitly electrical
+language, notwithstanding that the underlying mechanic is a discrete, boolean signal rather
+than a continuous one (the mechanics of redstone itself are described in
+Section~\ref{sec:minecraft-mechanics}). This is the literature to which Mine Memristors is
+closest, and from which it departs most directly: the case studies cited above use
+Minecraft's existing mechanics, redstone included, as the vehicle for a lesson, whereas Mine
+Memristors introduces an entirely new, continuous-time simulation layer, because redstone's
+discrete signal cannot represent voltage, current, or reactive state at all. To the author's
+knowledge, it is the first Minecraft modification to embed a real continuous-time circuit
+solver for this purpose, rather than approximating one with the game's existing discrete
+redstone mechanics.
 
-\subsection{Memristors as a teaching subject}
+\subsection{Memristor theory and compact models}
 
 The memristor was postulated on symmetry grounds by Chua~\cite{chua1971memristor} as a
 fourth fundamental two-terminal circuit element, relating charge and flux, alongside the
-resistor, capacitor, and inductor; a physical device matching the predicted
-charge-controlled behavior was reported by Strukov et al.\ at
-HP~Labs~\cite{strukov2008missing}. Because the memristor is both the newest of the four
-canonical elements and the one whose behavior (state that persists and depends on the
-history of current through the device) is least like anything in a first circuits course,
-it is a natural stress-test for whether a teaching tool actually solves the underlying
-mathematics rather than approximating it -- an in-game device whose resistance visibly
-drifts with accumulated charge, and whose state survives being disconnected and reconnected,
-is a much more concrete introduction to the concept than the differential equation alone.
+resistor, capacitor, and inductor; a physical device exhibiting the predicted
+charge-controlled behavior was subsequently reported by Strukov et al.\ at
+HP~Labs~\cite{strukov2008missing}, whose linear-drift formulation is the model implemented
+in this mod (Section~\ref{sec:circuit-solver}).
+
+A substantial body of subsequent work refines or replaces this original formulation,
+targeting shortcomings that only become apparent once the model is used for large-scale
+circuit design or compared against fabricated devices. Biolek et
+al.~\cite{biolek2009spice} introduce a window function that prevents the state variable
+from becoming permanently pinned at either boundary during SPICE simulation, a numerical
+issue that the original linear-drift formulation is otherwise prone to; Kvatinsky et
+al.'s TEAM model~\cite{kvatinsky2013team} instead adopts a threshold-based switching
+condition, trading some physical detail for a form that is considerably cheaper to simulate
+at the scale of a large memristor-based circuit. Guan, Yu, and Wong~\cite{guan2012compact}
+take a converse approach, developing a physics-based compact model of filament formation and
+rupture, validated directly against measured resistive-switching device data, at the cost of
+substantially greater model complexity. Picos et al.~\cite{picos2015chargeflux} formulate an
+alternative approach that works directly in the charge--flux domain rather than through an
+explicit resistance-state variable, and Al Chawa, Picos, and
+Tetzlaff~\cite{alchawa2020simple} present a simplified compact model aimed specifically at
+neuromorphic ReRAM applications, where computational efficiency across large device arrays
+is often prioritized over matching any single device's measured characteristics exactly.
+
+Mine Memristors implements Strukov et al.'s original linear-drift formulation specifically,
+rather than any of the refinements above, because the priorities of a teaching tool differ
+from those of a circuit designer or device physicist: the model must be simple enough to
+verify in closed form (Section~\ref{sec:validation}) and traceable, step by step, to the
+historically foundational definition a student is most likely to encounter first, rather
+than optimized for matching a specific fabricated device's current--voltage characteristic
+or for simulation efficiency across a large memristor array. Exposing one or more of the
+alternative models above as a selectable preset -- in particular a windowed variant such as
+Biolek et al.'s, which addresses a real limitation of the current implementation discussed
+in Section~\ref{sec:limitations} -- is a natural extension of the present work.

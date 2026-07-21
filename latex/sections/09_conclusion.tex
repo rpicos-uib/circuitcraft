@@ -1,16 +1,16 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-Mine Memristors embeds a real modified nodal analysis solver, complete with trapezoidal
-reactive-element models and a charge-controlled memristor, inside an unmodified copy of
-Minecraft's ordinary block-placing and wiring mechanics. Every voltage, current, and
-internal component state a player observes is produced by actually solving the circuit the
-player built, not by a scripted stand-in for one, down to details -- an explicit,
-player-placed ground reference; sources that must be switched on before they contribute
-current; a multi-channel oscilloscope that lets several points in the same circuit be
-compared at once -- chosen specifically to make ideas that are usually assumed (a reference
-node, a source being ``off'') into things a player must construct and reason about
-themselves. The mod, its source, and this paper's typeset source are released under
-permissive licenses; the authors welcome contributions, in particular toward the persisted
-regression suite and the classroom evaluation described in
-Section~\ref{sec:limitations}.
+Mine Memristors embeds a real modified nodal analysis solver, complete with
+trapezoidal-integration reactive-element models and a charge-controlled memristor, within an
+unmodified copy of Minecraft's ordinary block-placing and wiring mechanics. Every voltage,
+current, and internal component state observed by a player is produced by actually solving
+the circuit that player constructed, rather than by a scripted stand-in for one, down to
+details -- an explicit, player-placed ground reference; sources that must be switched on
+before they contribute current; a multi-channel oscilloscope permitting several points
+within the same circuit to be compared at once -- chosen specifically to render ideas that
+are usually assumed (a reference node, a source being ``off'') as objects a player must
+construct and reason about independently. The mod and its source code, together with this
+paper's typeset source, are released under permissive licenses; the author welcomes
+contributions, in particular toward the persisted regression suite and the classroom
+evaluation described in Section~\ref{sec:limitations}.
