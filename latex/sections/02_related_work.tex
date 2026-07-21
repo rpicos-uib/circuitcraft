@@ -17,21 +17,52 @@ an MNA solver with trapezoidal-integration companion models for reactive element
 family of technique SPICE uses -- but embeds it in a three-dimensional, first-person, block-based
 world instead of a schematic canvas.
 
-\subsection{Games and sandbox environments in engineering education}
+\subsection{Minecraft in education}
+\label{sec:minecraft-in-education}
 
-The instructional value of games and simulations is well studied in general -- a
-meta-analysis by Sitzmann~\cite{sitzmann2011meta} found simulation games to be more
-effective for training self-efficacy and knowledge retention than comparison instructional
-methods across a range of technical domains -- and Minecraft specifically has an
-established informal-learning literature: Nebel et al.'s review~\cite{nebel2016mining}
-surveys its use across STEM subjects, and its redstone subsystem is a common entry point
-for teaching digital logic and computer architecture concepts, since it already lets
-players build gates, adders, and memory cells out of in-game blocks. Redstone, however, is
-fundamentally a boolean, discrete-time signal system with no built-in notion of continuous
-voltage, current, or reactive state, so it cannot represent analog behavior. Mine Memristors
-is, to the author's knowledge, the first Minecraft modification to embed a real continuous-time
-circuit solver rather than approximating one with the game's existing discrete redstone
-mechanics.
+The instructional value of games and simulations is well studied in general: a meta-analysis
+by Sitzmann~\cite{sitzmann2011meta} found simulation games to be more effective for training
+self-efficacy and knowledge retention than comparison instructional methods across a range
+of technical domains. Minecraft occupies an unusually large share of that broader
+literature specifically, to the point that Microsoft maintains and sells a dedicated,
+classroom-oriented variant, \emph{Minecraft: Education Edition}, aimed squarely at schools --
+itself a useful indicator of how far the game's informal adoption by teachers had already
+progressed before a vendor built a product around it. Nebel et al.'s
+review~\cite{nebel2016mining} surveys this literature broadly and identifies Minecraft's
+core appeal for education as the same thing that makes it appealing as a game: an open,
+constructive world in which a learner's own artifact, not a worked example, is the object of
+study, closely matching Papert's constructionist framing~\cite{papert1980mindstorms}
+discussed further in Section~\ref{sec:pedagogy}.
+
+Published case studies span a wide range of subjects well outside engineering. Bos et
+al.~\cite{bos2014mathematics} describe using Minecraft to teach elementary-school
+mathematics concepts such as area, perimeter, and ratio through building tasks; Short's
+account~\cite{short2012teaching} covers using the game to teach general science concepts in
+a secondary-school setting; and Cipollone et al.~\cite{cipollone2014creative} present a case
+study of Minecraft used as an open-ended creative tool, with an emphasis on collaboration
+and planning skills rather than any specific curricular content. Callaghan's broader
+survey~\cite{callaghan2016investigating} of Minecraft's role across primary and secondary
+classrooms echoes a theme common to all of the above: teachers report high engagement and
+motivation fairly consistently, but rigorously measured gains in specific learning outcomes
+are reported less often and less consistently, a caveat also present in the general
+simulation-games literature~\cite{sitzmann2011meta} and one this paper does not claim to
+have resolved for Mine Memristors specifically (Section~\ref{sec:limitations}).
+
+Within that broader literature, the subset closest to this paper's subject is Minecraft's
+native redstone subsystem, which is already a common entry point for teaching digital logic
+and computer architecture concepts: players build AND/OR/NOT gates, adders, and working
+memory cells entirely out of in-game blocks, and Dezuanni et
+al.~\cite{dezuanni2015redstone} specifically document children describing and reasoning
+about redstone circuits using explicitly electrical language, even though the underlying
+mechanic is a discrete, boolean signal rather than a continuous one (discussed further, with
+the actual mechanics of redstone, in Section~\ref{sec:minecraft-mechanics}). This is the
+literature Mine Memristors sits closest to and departs from most directly: the case studies
+above use Minecraft's \emph{existing} mechanics, redstone included, as the vehicle for a
+lesson, whereas Mine Memristors adds an entirely new, continuous-time simulation layer
+because redstone's discrete signal has no way to represent voltage, current, or reactive
+state at all. To the author's knowledge, it is the first Minecraft modification to embed a
+real continuous-time circuit solver for this purpose, rather than approximating one with the
+game's existing discrete redstone mechanics.
 
 \subsection{Memristors as a teaching subject}
 
