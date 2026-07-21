@@ -4,7 +4,7 @@ title: "Mine Memristors: a Fabric mod for teaching analog electronics in Minecra
 authors:
   - family-names: "Picos"
     given-names: "Rodrigo"
-version: 0.1.0
+version: 0.2.0
 date-released: 2026-07-21
 url: "https://github.com/rpicos-uib/mine-memristors"
 repository-code: "https://github.com/rpicos-uib/mine-memristors"
