@@ -36,6 +36,10 @@ public class CircuitNetworkManager {
 	// skipped until the topology changes again, so one bad wiring doesn't spam the log every tick
 	// or take down the server thread.
 	private boolean faulted;
+	// Per-component (nodeA, nodeB) from the most recent rebuild(), kept only so a solver fault can
+	// be logged with enough detail (which block, which facing, which nodes) to diagnose from the
+	// server log alone - no need to reconstruct the wiring from a screenshot.
+	private final Map<BlockPos, int[]> lastComponentNodes = new HashMap<>();
 
 	public void register(BlockPos pos, NetworkBlockEntity entity) {
 		participants.put(pos.immutable(), entity);
@@ -68,6 +72,7 @@ public class CircuitNetworkManager {
 				MineMemristors.LOGGER.warn(
 						"Circuit network paused after solver error (will resume once its wiring changes): {}",
 						e.getMessage());
+				logComponentNodesForDiagnosis();
 				return;
 			}
 			for (NetworkBlockEntity entity : participants.values()) {
@@ -78,9 +83,24 @@ public class CircuitNetworkManager {
 		}
 	}
 
+	private void logComponentNodesForDiagnosis() {
+		for (Map.Entry<BlockPos, int[]> entry : lastComponentNodes.entrySet()) {
+			BlockPos pos = entry.getKey();
+			int[] nodes = entry.getValue();
+			NetworkBlockEntity entity = participants.get(pos);
+			String facing = entity instanceof ComponentBlockEntity component
+					? component.getFacing().toString()
+					: "?";
+			MineMemristors.LOGGER.warn("  {} at {} facing={}: node A={}, node B={}{}",
+					entity == null ? "?" : entity.getClass().getSimpleName(), pos, facing,
+					nodes[0], nodes[1], nodes[0] == nodes[1] ? "  <-- both terminals on the same node (shorted)" : "");
+		}
+	}
+
 	private void rebuild() {
 		dirty = false;
 		circuit = new Circuit();
+		lastComponentNodes.clear();
 
 		Map<BlockPos, BlockPos> parent = new HashMap<>();
 		for (BlockPos p : participants.keySet()) {
@@ -113,6 +133,7 @@ public class CircuitNetworkManager {
 				int nodeA = nodeFor(component.terminalA(), nodeIdByPos, circuit);
 				int nodeB = nodeFor(component.terminalB(), nodeIdByPos, circuit);
 				component.addToCircuit(circuit, nodeA, nodeB);
+				lastComponentNodes.put(component.getBlockPos(), new int[] {nodeA, nodeB});
 			}
 		}
 	}
