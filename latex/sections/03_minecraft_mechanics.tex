@@ -1,0 +1,76 @@
+\section{Minecraft as a Construction Substrate}
+\label{sec:minecraft-mechanics}
+
+Because the mod's central claim is that building a circuit inside Minecraft is a
+meaningfully different experience from drawing one in a schematic tool, it is worth
+describing precisely what ``building'' means in Minecraft itself, and which of the game's
+own mechanics the mod reuses, extends, or deliberately avoids.
+
+\subsection{The voxel world and block placement}
+
+Minecraft's world is a three-dimensional grid of one-metre cubes, or \emph{blocks}; almost
+every action available to a player -- building a house, digging a mine, redirecting a
+river -- reduces to placing and removing blocks from this grid. A block occupies exactly one
+grid cell and, depending on its type, can carry a small amount of state directly in that
+cell (its \emph{block state}): a small enumeration such as which of the six axis-aligned
+directions it is \emph{facing}, whether a door is open, or how much liquid a cauldron holds.
+When a player places a block that has a facing property, the game records the direction the
+player was looking at the moment of placement as that block's initial facing; the block can
+later be rotated by other in-game tools, but its facing is otherwise fixed until changed.
+This mechanic -- an object whose orientation is set once, at placement time, and persists
+until deliberately altered -- is exactly what every two-terminal component in this mod
+reuses to determine which two of its six faces are its electrical leads
+(Section~\ref{sec:architecture}): a resistor placed while facing north has its leads on its
+north and south faces, precisely because that is already how the base game's own oriented
+blocks (a piston, a dispenser, a chest with a facing hinge) behave, so no new placement
+mechanic had to be introduced for players already familiar with the base game.
+
+\subsection{Redstone: Minecraft's native circuit system}
+
+The base game already ships an entire circuit-like subsystem, redstone, built around
+\emph{redstone dust} (a wire-like block that carries a signal), \emph{redstone torches} and
+other sources (which emit a signal), and a large family of blocks that read an incoming
+signal to trigger some effect (opening a door, activating a piston, and so on). A redstone
+signal is an integer strength from 0 to 15 that decreases by one for every block of dust it
+travels through, and updates propagate through a discrete neighbor-notification event fired
+once per game tick, rather than continuously; there is no built-in notion of voltage,
+current, capacitance, resistance, or continuous time anywhere in the system. Despite this,
+redstone is widely used, both informally and as a subject of academic
+interest~\cite{nebel2016mining}, as an entry point into digital logic and even rudimentary
+computer architecture -- players build AND/OR/NOT gates, adders, and working memory cells
+entirely out of redstone components -- and it is common for players to describe and reason
+about redstone circuits in explicitly electrical language even though the underlying
+mechanic is discrete and boolean, not continuous~\cite{dezuanni2015redstone}. This is a
+useful data point for this mod's design: it suggests that Minecraft's building metaphor
+already primes players to think electrically, but that redstone itself cannot be the
+vehicle for teaching \emph{analog} circuit behavior, since it has no continuous quantity to
+teach with. Community-built ``analog redstone'' techniques exist that approximate a
+continuous value by quantizing it into a comparator's 0--15 signal strength, but this only
+ever yields a coarse, sixteen-level discretization, not a continuously varying, numerically
+accurate quantity.
+
+\subsection{Block entities and the tick loop}
+
+A plain block's state is limited to the small, fixed set of properties declared for its
+block type -- enough for a facing direction or an open/closed flag, but not for an arbitrary
+amount of mutable data such as a capacitor's stored charge or 200 samples of recent voltage
+history. Minecraft's modding interfaces expose a second, richer construct for exactly this
+situation, a \emph{block entity}: an object associated with a specific block position that
+can hold arbitrary data and, if the block type requests it, is given an opportunity to run
+code once per game tick (20 times per second, the same rate the rest of the game simulates
+at). Every component, wire node, ground reference, and configuration module in this mod is
+implemented as a block entity for precisely this reason: it is the mechanism the platform
+already provides for ``a block that needs to remember something and do something regularly,''
+and reusing it means the mod's simulation cadence is naturally locked to the game's own tick
+rate rather than requiring a separate timer mechanism.
+
+\subsection{What the mod adds on top}
+
+Given the above, the mod's own contribution is deliberately narrow: it introduces a second,
+parallel notion of adjacency (``is this face electrically conductive toward that
+neighbor'', Section~\ref{sec:architecture}) alongside the game's existing physical
+adjacency, and it hands the resulting graph to a real solver every tick instead of hard-coding
+any behavior into the blocks themselves. Redstone is reused, deliberately, only for the one
+concept it is genuinely well suited to represent in this mod -- a boolean on/off switch
+gating whether a voltage source is connected at all (Section~\ref{sec:pedagogy}) -- rather
+than being pressed into service as an analog signal it was never designed to carry.

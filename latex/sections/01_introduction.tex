@@ -39,13 +39,16 @@ model~\cite{strukov2008missing}, not a lookup table tuned to look plausible.
 
 The remainder of this paper is organized as follows. Section~\ref{sec:related-work}
 situates Mine Memristors relative to existing circuit simulators and the literature on
-game-based engineering education. Section~\ref{sec:architecture} describes the mod's
-software architecture, in particular the topology-construction algorithm used to translate
-a player's in-world wiring into a circuit graph, and a subtle correctness bug in an earlier
-version of that algorithm that is instructive in its own right.
-Section~\ref{sec:circuit-solver} describes the solver itself, including the explicit,
-player-placeable ground reference that lets the notion of ``ground'' be taught rather than
-assumed. Section~\ref{sec:pedagogy} discusses the pedagogical rationale for each design
-choice. Section~\ref{sec:validation} describes how the solver and the surrounding game logic
-were verified during development. Section~\ref{sec:limitations} discusses current
+game-based engineering education. Section~\ref{sec:minecraft-mechanics} describes, in more
+depth, which of Minecraft's own construction mechanics -- block placement and orientation,
+the native redstone subsystem, and the modding platform's block-entity and tick-loop
+primitives -- the mod builds on top of, and why redstone's existing role as an entry point
+into digital logic cannot, by itself, extend to analog circuit theory.
+Section~\ref{sec:architecture} describes the mod's own software architecture, in particular
+the topology-construction algorithm used to translate a player's in-world wiring into a
+circuit graph. Section~\ref{sec:circuit-solver} describes the solver itself, including the
+explicit, player-placeable ground reference that lets the notion of ``ground'' be taught
+rather than assumed. Section~\ref{sec:pedagogy} discusses the pedagogical rationale for each
+design choice. Section~\ref{sec:validation} describes how the solver and the surrounding
+game logic were verified during development. Section~\ref{sec:limitations} discusses current
 limitations and planned classroom evaluation, and Section~\ref{sec:conclusion} concludes.

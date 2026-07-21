@@ -12,18 +12,6 @@ Minecraft class, this kind of check can be run as a plain Java program with no g
 instance, decompiled game code, or build tooling involved, which made it practical to
 re-check every element in isolation before wiring it into the rest of the mod.
 
-The topology-construction bug described in Section~\ref{sec:topology-bug} was diagnosed and
-confirmed using a different technique: rather than reasoning about the union--find algorithm
-purely on paper, the actual block positions and orientations of a real, in-world circuit
-were extracted directly from a saved world's region files and replayed offline, in a small
-standalone script, through both the original and the corrected version of the algorithm.
-The original algorithm collapsed the entire circuit to a single electrical node regardless
-of the wiring's actual shape; the corrected version recovered the intended two-node series
-loop. This is a useful diagnostic pattern in general when a bug is suspected in \emph{how a
-game world is interpreted} rather than in a self-contained numerical routine: extracting the
-authoritative world state and replaying the suspect logic against it offline is often more
-conclusive than tracing the bug through the running game.
-
 Because the mod targets a version of Minecraft (26.2) that predates the knowledge cutoff of
 any large language model used to assist in its development, and that version introduced
 several breaking changes to modding-relevant APIs (an unobfuscated mapping scheme, a

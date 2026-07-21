@@ -57,33 +57,6 @@ component and utility blocks available to a player.
 \label{fig:gallery}
 \end{figure}
 
-\subsection{A topology bug worth describing}
-\label{sec:topology-bug}
-
-An earlier version of the topology-construction algorithm keyed every participant in the
-union--find structure by its block position alone, and unioned a component's own position
-with each conductive neighbor in turn. For a plain wire block, conductive on all six faces
-uniformly, this is correct: the block genuinely is a single electrical point, and merging it
-with every conductive neighbor is exactly the desired behavior. For a two-terminal
-component, however, this is wrong: unioning the component's position with its front
-neighbor, and separately with its back neighbor, makes those two neighbors transitively
-equivalent to one another \emph{through the component's own body}, because union--find
-partitions are transitive. In other words, any component that had conducting material on
-both of its leads simultaneously -- which is to say, any component actually wired into a
-non-trivial circuit -- was silently short-circuited by the very algorithm meant to wire it
-in, regardless of orientation or which component type it was. The fix, verified by
-replaying a real in-world circuit's saved block data through both versions of the
-algorithm offline, is to give a two-terminal component two independent partition
-identities, one per lead, keyed by (position, side) rather than by the bare block position,
-so that its two terminals can only be unified with one another by an actual external
-connection, never by the component's own presence in the graph. Wire and ground blocks,
-which are genuinely single electrical points, keep the simpler bare-position identity. This
-episode is included here because it is a useful illustration for students in its own right:
-a circuit topology bug that produces a mathematically singular system (a voltage source or
-resistor with both terminals forced to the same node) is a natural, concrete example of why
-a solver needs defensive numerical handling (Section~\ref{sec:circuit-solver}) even when the
-graph-construction logic that feeds it is believed correct.
-
 \subsection{Multi-channel oscilloscope protocol}
 
 A handheld probe item lets a player pin up to three components, wires, or ground blocks at
@@ -91,9 +64,9 @@ once (right-click to pin or promote to most-recently-used, shift-right-click to 
 server streams each pinned position's instantaneous voltage, current, a 200-sample rolling
 history, and a short human-readable summary to that player once per tick, and the client
 renders each of the up to three channels as an independently color-coded, auto-scaled
-oscilloscope trace stacked in a corner of the screen. A component's trace shows the voltage
-drop across its two leads (or, for the ammeter, the branch current, reusing the same
-history/rendering machinery so that current and voltage can be watched side by side with no
-separate ``current channel'' concept); a wire or ground block's trace shows its single
-node's absolute voltage relative to whatever ground reference the network has, discussed
-next.
+oscilloscope trace stacked in a corner of the screen, as shown in Figure~\ref{fig:scope}. A
+component's trace shows the voltage drop across its two leads (or, for the ammeter, the
+branch current, reusing the same history/rendering machinery so that current and voltage
+can be watched side by side with no separate ``current channel'' concept); a wire or ground
+block's trace shows its single node's absolute voltage relative to whatever ground reference
+the network has, discussed next.

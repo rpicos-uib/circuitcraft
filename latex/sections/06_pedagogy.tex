@@ -27,12 +27,14 @@ the player is responsible for, not a background assumption.
 \textbf{Sources that must be switched on.} Both voltage sources are wired to a redstone
 input and remain electrically inert -- an open circuit, contributing nothing to the solved
 system -- until that input is active. This mirrors an actual laboratory workflow (wire the
-circuit completely, verify it, \emph{then} switch the bench supply on) and, as a side
-effect, is what makes the topology bug described in Section~\ref{sec:topology-bug} safe to
-discuss with students directly: a source that is allowed to inject current into a circuit
-whose leads are still both landing on the same node is not a hypothetical hazard invented
-for this mod, it is the textbook definition of shorting a source across itself, and the fix
-is the same for a player's bad wiring as it was for the mod's own construction algorithm.
+circuit completely, verify it, \emph{then} switch the bench supply on) rather than a
+schematic tool's power sources, which are implicitly ``live'' the instant they are drawn.
+It also gives a player room to make, and recover from, the same wiring mistake a real bench
+technician must learn to avoid: an ideal voltage source whose two leads both land on the
+same node is shorted across itself regardless of whether it happens inside a game or a real
+circuit, and the solver's defensive handling of that case
+(Section~\ref{sec:circuit-solver}) means the mistake surfaces as an in-game warning to fix,
+not a crash.
 
 \textbf{An oscilloscope that can watch more than one thing at once.} A single-channel
 readout answers ``what is this component doing'', but the more interesting classroom
