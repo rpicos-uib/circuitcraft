@@ -13,6 +13,11 @@ public class VoltageModuleBlockEntity extends ModuleBlockEntity {
 	}
 
 	@Override
+	protected Channel channel() {
+		return Channel.VOLTAGE;
+	}
+
+	@Override
 	protected double[] presets() {
 		return PRESETS_VOLTS;
 	}
@@ -20,10 +25,5 @@ public class VoltageModuleBlockEntity extends ModuleBlockEntity {
 	@Override
 	protected String unitSuffix() {
 		return "V";
-	}
-
-	@Override
-	protected void applyToGenerator(FunctionGeneratorBlockEntity generator, double value) {
-		generator.setAmplitude(value);
 	}
 }

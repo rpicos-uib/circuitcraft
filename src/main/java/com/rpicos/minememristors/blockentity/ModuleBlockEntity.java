@@ -9,28 +9,43 @@ import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * A configuration block (Voltage/Frequency module) that cycles a preset value on right-click and
- * pushes it into any adjacent {@link FunctionGeneratorBlockEntity}. Same-kind modules touching each
- * other relay a single shared value along the whole connected chain, so one control can drive
- * several generators - whichever module in the chain was right-clicked most recently wins and
- * propagates outward one hop per tick (imperceptibly fast at 20 ticks/second for any normal build).
+ * pushes it into any adjacent {@link FunctionGeneratorBlockEntity}.
+ *
+ * <p>Two independent values - voltage and frequency - are relayed through a connected chain of
+ * modules, regardless of concrete kind: a Voltage module "authors" the voltage channel (its own
+ * dial is the value, timestamped by when it was last clicked) but only relays whatever it hears
+ * for the frequency channel, and vice versa for a Frequency module. This lets a Frequency module
+ * sit in the middle of a chain without blocking a Voltage module's value from reaching a generator
+ * further along - both channels pass through every module, only interpreted/authored by the one
+ * that owns it. Whichever module actually authored a channel most recently wins across the whole
+ * reachable chain, propagating outward one hop per tick (imperceptibly fast at 20 ticks/second for
+ * any normal build).
  */
 public abstract class ModuleBlockEntity extends BlockEntity {
 
+	public enum Channel {VOLTAGE, FREQUENCY}
+
+	private record ChannelValue(double value, long sourceTick) {
+	}
+
 	private int presetIndex;
 	private long ownSetTick;
-	private double resolvedValue;
-	private long resolvedSourceTick;
+
+	// "Nobody has authored this yet" placeholders: Long.MIN_VALUE always loses to any module that
+	// actually owns the channel (whose tick starts at 0 from construction), but still gives every
+	// module a sensible value to relay before any real source is reachable.
+	private ChannelValue voltage = new ChannelValue(FunctionGeneratorBlockEntity.DEFAULT_AMPLITUDE_VOLTS, Long.MIN_VALUE);
+	private ChannelValue frequency = new ChannelValue(FunctionGeneratorBlockEntity.DEFAULT_FREQUENCY_HZ, Long.MIN_VALUE);
 
 	protected ModuleBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
-		this.resolvedValue = presets()[presetIndex];
 	}
+
+	protected abstract Channel channel();
 
 	protected abstract double[] presets();
 
 	protected abstract String unitSuffix();
-
-	protected abstract void applyToGenerator(FunctionGeneratorBlockEntity generator, double value);
 
 	public void cyclePreset(long currentTick) {
 		presetIndex = (presetIndex + 1) % presets().length;
@@ -39,26 +54,36 @@ public abstract class ModuleBlockEntity extends BlockEntity {
 	}
 
 	public String summary() {
-		return String.format("%.2f%s", resolvedValue, unitSuffix());
+		ChannelValue mine = channel() == Channel.VOLTAGE ? voltage : frequency;
+		return String.format("%.2f%s", mine.value(), unitSuffix());
 	}
 
 	/** Called once per tick (see the owning Block's {@code getTicker}). */
 	public void tickModule(Level level, BlockPos pos, long currentTick) {
-		double bestValue = presets()[presetIndex];
-		long bestTick = ownSetTick;
+		ChannelValue bestVoltage = channel() == Channel.VOLTAGE
+				? new ChannelValue(presets()[presetIndex], ownSetTick)
+				: voltage;
+		ChannelValue bestFrequency = channel() == Channel.FREQUENCY
+				? new ChannelValue(presets()[presetIndex], ownSetTick)
+				: frequency;
+
 		for (Direction direction : Direction.values()) {
-			if (level.getBlockEntity(pos.relative(direction)) instanceof ModuleBlockEntity other
-					&& other.getClass() == getClass() && other.resolvedSourceTick > bestTick) {
-				bestTick = other.resolvedSourceTick;
-				bestValue = other.resolvedValue;
+			if (level.getBlockEntity(pos.relative(direction)) instanceof ModuleBlockEntity other) {
+				if (other.voltage.sourceTick() > bestVoltage.sourceTick()) {
+					bestVoltage = other.voltage;
+				}
+				if (other.frequency.sourceTick() > bestFrequency.sourceTick()) {
+					bestFrequency = other.frequency;
+				}
 			}
 		}
-		resolvedValue = bestValue;
-		resolvedSourceTick = bestTick;
+		voltage = bestVoltage;
+		frequency = bestFrequency;
 
 		for (Direction direction : Direction.values()) {
 			if (level.getBlockEntity(pos.relative(direction)) instanceof FunctionGeneratorBlockEntity generator) {
-				applyToGenerator(generator, resolvedValue);
+				generator.setAmplitude(voltage.value());
+				generator.setFrequency(frequency.value());
 			}
 		}
 	}

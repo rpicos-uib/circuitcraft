@@ -13,6 +13,11 @@ public class FrequencyModuleBlockEntity extends ModuleBlockEntity {
 	}
 
 	@Override
+	protected Channel channel() {
+		return Channel.FREQUENCY;
+	}
+
+	@Override
 	protected double[] presets() {
 		return PRESETS_HZ;
 	}
@@ -20,10 +25,5 @@ public class FrequencyModuleBlockEntity extends ModuleBlockEntity {
 	@Override
 	protected String unitSuffix() {
 		return "Hz";
-	}
-
-	@Override
-	protected void applyToGenerator(FunctionGeneratorBlockEntity generator, double value) {
-		generator.setFrequency(value);
 	}
 }

@@ -12,8 +12,10 @@ public class FunctionGeneratorBlockEntity extends ComponentBlockEntity {
 	private enum Kind {SINE, SQUARE, TRIANGLE}
 
 	private static final Kind[] KINDS = Kind.values();
-	private static final double DEFAULT_AMPLITUDE_VOLTS = 5;
-	private static final double DEFAULT_FREQUENCY_HZ = 1;
+	// Package-visible: ModuleBlockEntity uses these as the "nobody has set this yet" baseline for
+	// whichever channel a given module doesn't own.
+	static final double DEFAULT_AMPLITUDE_VOLTS = 5;
+	static final double DEFAULT_FREQUENCY_HZ = 1;
 
 	private int kindIndex = 0;
 	// Overridden by an adjacent Voltage/Frequency module (see ModuleBlockEntity); these are plain
