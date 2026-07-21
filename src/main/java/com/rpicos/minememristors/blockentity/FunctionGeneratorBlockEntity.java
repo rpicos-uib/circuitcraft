@@ -9,17 +9,17 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class FunctionGeneratorBlockEntity extends ComponentBlockEntity {
 
-	private record Preset(String name, Waveform waveform) {
-	}
+	private enum Kind {SINE, SQUARE, TRIANGLE}
 
-	private static final Preset[] PRESETS = {
-			new Preset("sine 5V 1Hz", Waveform.sine(5, 1, 0, 0)),
-			new Preset("square 5V 1Hz", Waveform.square(5, 1, 0)),
-			new Preset("triangle 5V 1Hz", Waveform.triangle(5, 1, 0)),
-			new Preset("sine 5V 5Hz", Waveform.sine(5, 5, 0, 0)),
-	};
+	private static final Kind[] KINDS = Kind.values();
+	private static final double DEFAULT_AMPLITUDE_VOLTS = 5;
+	private static final double DEFAULT_FREQUENCY_HZ = 1;
 
-	private int presetIndex = 0;
+	private int kindIndex = 0;
+	// Overridden by an adjacent Voltage/Frequency module (see ModuleBlockEntity); these are plain
+	// defaults so the generator still produces a signal with no modules attached at all.
+	private double amplitudeVolts = DEFAULT_AMPLITUDE_VOLTS;
+	private double frequencyHz = DEFAULT_FREQUENCY_HZ;
 	private VoltageSource live;
 	private boolean redstonePowered = false;
 
@@ -29,7 +29,24 @@ public class FunctionGeneratorBlockEntity extends ComponentBlockEntity {
 
 	@Override
 	public void cyclePreset() {
-		presetIndex = (presetIndex + 1) % PRESETS.length;
+		kindIndex = (kindIndex + 1) % KINDS.length;
+		markNetworkDirty();
+	}
+
+	/** Called by an adjacent {@link VoltageModuleBlockEntity} to set the output amplitude. */
+	public void setAmplitude(double volts) {
+		if (amplitudeVolts != volts) {
+			amplitudeVolts = volts;
+			markNetworkDirty();
+		}
+	}
+
+	/** Called by an adjacent {@link FrequencyModuleBlockEntity} to set the output frequency. */
+	public void setFrequency(double hz) {
+		if (frequencyHz != hz) {
+			frequencyHz = hz;
+			markNetworkDirty();
+		}
 	}
 
 	/** Called by {@link com.rpicos.minememristors.block.FunctionGeneratorBlock#neighborChanged}
@@ -49,7 +66,12 @@ public class FunctionGeneratorBlockEntity extends ComponentBlockEntity {
 			live = null;
 			return;
 		}
-		live = new VoltageSource(nodeA, nodeB, PRESETS[presetIndex].waveform());
+		Waveform waveform = switch (KINDS[kindIndex]) {
+			case SINE -> Waveform.sine(amplitudeVolts, frequencyHz, 0, 0);
+			case SQUARE -> Waveform.square(amplitudeVolts, frequencyHz, 0);
+			case TRIANGLE -> Waveform.triangle(amplitudeVolts, frequencyHz, 0);
+		};
+		live = new VoltageSource(nodeA, nodeB, waveform);
 		circuit.add(live);
 	}
 
@@ -60,7 +82,8 @@ public class FunctionGeneratorBlockEntity extends ComponentBlockEntity {
 
 	@Override
 	public String probeSummary() {
-		String base = "Function Generator: " + PRESETS[presetIndex].name();
+		String base = String.format("Function Generator: %s %.1fV %.2fHz",
+				KINDS[kindIndex].toString().toLowerCase(), amplitudeVolts, frequencyHz);
 		return redstonePowered ? base : base + " (off - needs redstone)";
 	}
 }

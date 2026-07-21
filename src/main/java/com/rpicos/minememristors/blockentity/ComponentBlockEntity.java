@@ -57,9 +57,15 @@ public abstract class ComponentBlockEntity extends NetworkBlockEntity {
 	/** Right-click-without-item interaction: cycle to the next preset value. */
 	public abstract void cyclePreset();
 
+	/** What the oscilloscope trace plots for this component - voltage for every normal component,
+	 *  but an ammeter overrides this to plot current instead, reusing the same trace/graph machinery. */
+	protected double sampleValue() {
+		return probeVoltage();
+	}
+
 	/** Called once per tick (from the network manager, after the circuit solve) to append a scope sample. */
 	public void recordSample() {
-		history[historyWriteIndex] = (float) probeVoltage();
+		history[historyWriteIndex] = (float) sampleValue();
 		historyWriteIndex = (historyWriteIndex + 1) % HISTORY_SIZE;
 		historyCount = Math.min(historyCount + 1, HISTORY_SIZE);
 	}

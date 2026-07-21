@@ -1,11 +1,14 @@
 package com.rpicos.minememristors;
 
+import com.rpicos.minememristors.blockentity.AmmeterBlockEntity;
 import com.rpicos.minememristors.blockentity.CapacitorBlockEntity;
+import com.rpicos.minememristors.blockentity.FrequencyModuleBlockEntity;
 import com.rpicos.minememristors.blockentity.FunctionGeneratorBlockEntity;
 import com.rpicos.minememristors.blockentity.InductorBlockEntity;
 import com.rpicos.minememristors.blockentity.MemristorBlockEntity;
 import com.rpicos.minememristors.blockentity.PowerSupplyBlockEntity;
 import com.rpicos.minememristors.blockentity.ResistorBlockEntity;
+import com.rpicos.minememristors.blockentity.VoltageModuleBlockEntity;
 import com.rpicos.minememristors.blockentity.WireBlockEntity;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -32,6 +35,12 @@ public final class ModBlockEntities {
 			register("function_generator", FunctionGeneratorBlockEntity::new, ModBlocks.FUNCTION_GENERATOR);
 	public static final BlockEntityType<WireBlockEntity> WIRE =
 			register("wire", WireBlockEntity::new, ModBlocks.WIRE);
+	public static final BlockEntityType<AmmeterBlockEntity> AMMETER =
+			register("ammeter", AmmeterBlockEntity::new, ModBlocks.AMMETER);
+	public static final BlockEntityType<VoltageModuleBlockEntity> VOLTAGE_MODULE =
+			register("voltage_module", VoltageModuleBlockEntity::new, ModBlocks.VOLTAGE_MODULE);
+	public static final BlockEntityType<FrequencyModuleBlockEntity> FREQUENCY_MODULE =
+			register("frequency_module", FrequencyModuleBlockEntity::new, ModBlocks.FREQUENCY_MODULE);
 
 	private static <T extends BlockEntity> BlockEntityType<T> register(
 			String path, BlockEntityType.BlockEntitySupplier<T> factory, Block block) {

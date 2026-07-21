@@ -19,6 +19,9 @@ public final class ModItems {
 	public static final Item POWER_SUPPLY = registerBlockItem("power_supply", ModBlocks.POWER_SUPPLY);
 	public static final Item FUNCTION_GENERATOR = registerBlockItem("function_generator", ModBlocks.FUNCTION_GENERATOR);
 	public static final Item WIRE = registerBlockItem("wire", ModBlocks.WIRE);
+	public static final Item AMMETER = registerBlockItem("ammeter", ModBlocks.AMMETER);
+	public static final Item VOLTAGE_MODULE = registerBlockItem("voltage_module", ModBlocks.VOLTAGE_MODULE);
+	public static final Item FREQUENCY_MODULE = registerBlockItem("frequency_module", ModBlocks.FREQUENCY_MODULE);
 
 	public static final Item PROBE = registerItem("probe", ProbeItem::new);
 

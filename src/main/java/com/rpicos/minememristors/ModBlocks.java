@@ -1,11 +1,14 @@
 package com.rpicos.minememristors;
 
+import com.rpicos.minememristors.block.AmmeterBlock;
 import com.rpicos.minememristors.block.CapacitorBlock;
+import com.rpicos.minememristors.block.FrequencyModuleBlock;
 import com.rpicos.minememristors.block.FunctionGeneratorBlock;
 import com.rpicos.minememristors.block.InductorBlock;
 import com.rpicos.minememristors.block.MemristorBlock;
 import com.rpicos.minememristors.block.PowerSupplyBlock;
 import com.rpicos.minememristors.block.ResistorBlock;
+import com.rpicos.minememristors.block.VoltageModuleBlock;
 import com.rpicos.minememristors.block.WireBlock;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -25,6 +28,9 @@ public final class ModBlocks {
 	public static final Block POWER_SUPPLY = register("power_supply", PowerSupplyBlock::new, componentProperties());
 	public static final Block FUNCTION_GENERATOR = register("function_generator", FunctionGeneratorBlock::new, componentProperties());
 	public static final Block WIRE = register("wire", WireBlock::new, componentProperties());
+	public static final Block AMMETER = register("ammeter", AmmeterBlock::new, componentProperties());
+	public static final Block VOLTAGE_MODULE = register("voltage_module", VoltageModuleBlock::new, componentProperties());
+	public static final Block FREQUENCY_MODULE = register("frequency_module", FrequencyModuleBlock::new, componentProperties());
 
 	private static BlockBehaviour.Properties componentProperties() {
 		return BlockBehaviour.Properties.of().strength(1.0F).sound(SoundType.METAL);

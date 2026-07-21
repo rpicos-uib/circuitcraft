@@ -27,6 +27,9 @@ public final class ModCreativeTab {
 						output.accept(ModItems.POWER_SUPPLY);
 						output.accept(ModItems.FUNCTION_GENERATOR);
 						output.accept(ModItems.WIRE);
+						output.accept(ModItems.AMMETER);
+						output.accept(ModItems.VOLTAGE_MODULE);
+						output.accept(ModItems.FREQUENCY_MODULE);
 						output.accept(ModItems.PROBE);
 					})
 					.build()

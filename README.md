@@ -60,9 +60,11 @@ Useful dev tasks: `./gradlew runClient` (launches a dev client with the mod load
 | **Inductor** | Ideal inductor, trapezoidal-integration model. Cycles 0.01 / 0.1 / 1 / 5 H (scaled for Minecraft's tick rate, not real-world component ratings). |
 | **Memristor** | Charge-controlled linear-drift (HP) memristor model. Resistance drifts between 100 Ω and 10,000 Ω based on accumulated charge through it — the "memory" persists even when the circuit is rebuilt. Cycles a "switching speed" preset. |
 | **Power Supply** | Ideal DC voltage source. Cycles 1.5 / 5 / 9 / 12 / 24 V. Inactive (open-circuit) until it receives a redstone signal - wire up the circuit first, then power it on. |
-| **Function Generator** | Time-varying voltage source. Cycles sine/square/triangle presets at various frequencies. Same redstone-activation behavior as the Power Supply. |
+| **Function Generator** | Time-varying voltage source. Cycles sine/square/triangle presets (waveform shape only - see Voltage/Frequency Module below for amplitude and frequency). Same redstone-activation behavior as the Power Supply. Defaults to 5V/1Hz with no modules attached. |
 | **Wire** | Zero-resistance conductor block. Connects on all six faces. |
-| **Probe** | Right-click a component to read its live V/I/state on the action bar. Hold it in either hand to bring up an oscilloscope HUD in the corner of the screen, showing a scrolling voltage trace of whatever component you're currently looking at. |
+| **Ammeter** | A 0V voltage source in series - electrically an ideal wire, so it doesn't disturb the circuit, but gives an exact current reading. Pin it with the Probe to see a live current trace on the oscilloscope, the same way you'd watch a voltage. |
+| **Voltage Module** / **Frequency Module** | Undirected utility cubes (no facing, no leads) that touch a Function Generator on any face and set its amplitude/frequency. Right-click cycles the module's own preset (1.5/5/9/12/24 V, or 0.5/1/2/5/10 Hz). Same-kind modules touching each other relay one shared value along the whole chain - whichever module was right-clicked most recently wins and propagates to every generator the chain reaches, so one control can drive several generators at once. |
+| **Probe** | Right-click a component to pin it as one of up to 3 channels shown simultaneously on the oscilloscope HUD (pinning a 4th evicts the oldest); shift+right-click unpins it. Hold the probe in either hand to see the HUD - each pinned channel gets its own scrolling trace, color-coded, stacked in the corner. |
 
 ### Wiring rules
 
@@ -89,6 +91,9 @@ All vanilla ingredients, no dependency on any other mod:
 | Power Supply ×1 | 3×3 iron/copper shell around a redstone block core |
 | Function Generator ×1 | 3×3 iron/copper shell, quartz + redstone torch core |
 | Wire ×6 | 1 copper ingot (shapeless, cheap/bulk) |
+| Ammeter ×2 | Iron nugget + copper ingot + redstone (shapeless) |
+| Voltage Module ×1 | Gold nugget + redstone + iron nugget (shapeless) |
+| Frequency Module ×1 | Amethyst shard + redstone + iron nugget (shapeless) |
 | Probe ×1 | Redstone / iron nugget / stick, vertically (shaped) |
 
 None of these have recipe-book unlock advancements yet, so they won't show a "new recipe" toast —

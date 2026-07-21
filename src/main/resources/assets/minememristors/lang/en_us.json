@@ -6,6 +6,9 @@
   "block.minememristors.power_supply": "Power Supply",
   "block.minememristors.function_generator": "Function Generator",
   "block.minememristors.wire": "Circuit Wire",
+  "block.minememristors.ammeter": "Ammeter",
+  "block.minememristors.voltage_module": "Voltage Module",
+  "block.minememristors.frequency_module": "Frequency Module",
   "item.minememristors.probe": "Oscilloscope Probe",
   "itemGroup.minememristors.components": "Mine Memristors"
 }

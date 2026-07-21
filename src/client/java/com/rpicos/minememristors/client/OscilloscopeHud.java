@@ -14,14 +14,20 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 
 /**
- * Renders like looking at a held map: a scope box appears in the corner while the probe is in
- * either hand, showing a scrolling trace of the currently-targeted component's voltage.
+ * Renders like looking at a held map: while the probe is in either hand, up to
+ * {@link com.rpicos.minememristors.network.ProbeWatchManager#MAX_CHANNELS} pinned channels are
+ * stacked in the corner, each showing its own scrolling voltage (or, for an ammeter, current)
+ * trace - so two or three signals can be watched side by side instead of one at a time.
  */
 public class OscilloscopeHud implements HudElement {
 
 	private static final int WIDTH = 118;
 	private static final int HEIGHT = 74;
 	private static final int MARGIN = 6;
+	private static final int GAP = 4;
+
+	// One accent color per stacked channel, bottom-to-top; loops if somehow more channels ever show.
+	private static final int[] CHANNEL_COLORS = {0xFF60E080, 0xFF60C0E0, 0xFFE0A060};
 
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor extractor, DeltaTracker deltaTracker) {
@@ -31,22 +37,32 @@ public class OscilloscopeHud implements HudElement {
 			return;
 		}
 
-		ProbeDataPayload data = ProbeClientState.current();
-
-		int x0 = MARGIN;
-		int y0 = extractor.guiHeight() - HEIGHT - MARGIN;
-		int x1 = x0 + WIDTH;
-		int y1 = y0 + HEIGHT;
-
-		extractor.fill(x0, y0, x1, y1, 0xC0101014);
-		extractor.outline(x0, y0, WIDTH, HEIGHT, 0xFF3A3A40);
-
 		Font font = client.font;
-		if (data == null) {
-			extractor.text(font, "no signal", x0 + 6, y0 + HEIGHT / 2 - 4, 0xFF808080);
+		List<ProbeDataPayload> channels = ProbeClientState.currentChannels();
+
+		if (channels.isEmpty()) {
+			int y0 = extractor.guiHeight() - HEIGHT - MARGIN;
+			drawFrame(extractor, MARGIN, y0);
+			extractor.text(font, "no signal", MARGIN + 6, y0 + HEIGHT / 2 - 4, 0xFF808080);
 			return;
 		}
 
+		for (int i = 0; i < channels.size(); i++) {
+			int y0 = extractor.guiHeight() - MARGIN - (i + 1) * HEIGHT - i * GAP;
+			drawChannel(extractor, font, MARGIN, y0, channels.get(i), CHANNEL_COLORS[i % CHANNEL_COLORS.length]);
+		}
+	}
+
+	private static void drawFrame(GuiGraphicsExtractor extractor, int x0, int y0) {
+		extractor.fill(x0, y0, x0 + WIDTH, y0 + HEIGHT, 0xC0101014);
+		extractor.outline(x0, y0, WIDTH, HEIGHT, 0xFF3A3A40);
+	}
+
+	private static void drawChannel(GuiGraphicsExtractor extractor, Font font, int x0, int y0,
+			ProbeDataPayload data, int traceColor) {
+		drawFrame(extractor, x0, y0);
+
+		int x1 = x0 + WIDTH;
 		List<Float> history = data.history();
 		int graphX0 = x0 + 4;
 		int graphY0 = y0 + 4;
@@ -70,14 +86,14 @@ public class OscilloscopeHud implements HudElement {
 			for (int i = 1; i < n; i++) {
 				int x = graphX0 + span * i / (n - 1);
 				int y = midY - Math.round(history.get(i) / maxAbs * (graphHeight / 2f));
-				extractor.fill(prevX, Math.min(prevY, y), x + 1, Math.max(prevY, y) + 1, 0xFF60E080);
+				extractor.fill(prevX, Math.min(prevY, y), x + 1, Math.max(prevY, y) + 1, traceColor);
 				prevX = x;
 				prevY = y;
 			}
 		}
 
 		String reading = String.format("%.2fV  %.3fA", data.voltage(), data.current());
-		extractor.text(font, reading, x0 + 4, graphY1 + 2, 0xFF60E080, false);
+		extractor.text(font, reading, x0 + 4, graphY1 + 2, traceColor, false);
 		extractor.text(font, data.summary(), x0 + 4, graphY1 + 12, 0xFFDDDDDD, false);
 	}
 

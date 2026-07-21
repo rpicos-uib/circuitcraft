@@ -3,11 +3,10 @@ package com.rpicos.minememristors;
 import com.rpicos.minememristors.network.CircuitNetworkManager;
 import com.rpicos.minememristors.network.ProbeDataPayload;
 import com.rpicos.minememristors.network.ProbeWatchManager;
-import com.rpicos.minememristors.network.ProbeWatchPayload;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 
 import net.minecraft.resources.Identifier;
 
@@ -29,14 +28,13 @@ public class MineMemristors implements ModInitializer {
 		ModCreativeTab.init();
 
 		PayloadTypeRegistry.clientboundPlay().register(ProbeDataPayload.TYPE, ProbeDataPayload.STREAM_CODEC);
-		PayloadTypeRegistry.serverboundPlay().register(ProbeWatchPayload.TYPE, ProbeWatchPayload.STREAM_CODEC);
 
-		ServerPlayNetworking.registerGlobalReceiver(ProbeWatchPayload.TYPE, (payload, context) ->
-				ProbeWatchManager.heartbeat(context.player(), payload.pos(), context.player().level().getGameTime()));
+		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) ->
+				ProbeWatchManager.clear(handler.getPlayer().getUUID()));
 
 		ServerTickEvents.END_LEVEL_TICK.register(level -> {
 			CircuitNetworkManager.forLevel(level).tick(level);
-			ProbeWatchManager.tick(level, level.getGameTime());
+			ProbeWatchManager.tick(level);
 		});
 	}
 

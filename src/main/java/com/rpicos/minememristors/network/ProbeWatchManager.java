@@ -6,46 +6,60 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-/** Tracks which players are actively pointing the probe at a component, and streams that
- *  component's live readout to them each tick. A watch expires on its own if the client stops
- *  sending heartbeats (item put away, looked elsewhere, disconnected) - no explicit "stop" message
- *  needed. */
+/** Tracks up to {@value #MAX_CHANNELS} components each player has pinned with the probe
+ *  (right-click a component to pin it/bump it to newest, shift+right-click to unpin), and streams
+ *  every pinned component's live readout to that player each tick - independent of where they're
+ *  currently looking. Pinning the same position again just moves it to newest without duplicating;
+ *  pinning past the limit drops the oldest channel. */
 public final class ProbeWatchManager {
-	private static final long TIMEOUT_TICKS = 40; // 2 seconds of silence drops the watch
+	public static final int MAX_CHANNELS = 3;
 
-	private record Watch(BlockPos pos, long lastSeenTick) {
-	}
-
-	private static final Map<UUID, Watch> WATCHES = new ConcurrentHashMap<>();
+	private static final Map<UUID, List<BlockPos>> PINS = new ConcurrentHashMap<>();
 
 	private ProbeWatchManager() {
 	}
 
-	public static void heartbeat(ServerPlayer player, BlockPos pos, long currentTick) {
-		WATCHES.put(player.getUUID(), new Watch(pos, currentTick));
+	public static void pin(ServerPlayer player, BlockPos pos) {
+		List<BlockPos> pins = PINS.computeIfAbsent(player.getUUID(), id -> new ArrayList<>());
+		BlockPos key = pos.immutable();
+		pins.remove(key);
+		pins.add(key);
+		while (pins.size() > MAX_CHANNELS) {
+			pins.remove(0);
+		}
 	}
 
-	public static void tick(ServerLevel level, long currentTick) {
+	public static void unpin(ServerPlayer player, BlockPos pos) {
+		List<BlockPos> pins = PINS.get(player.getUUID());
+		if (pins != null) {
+			pins.remove(pos);
+		}
+	}
+
+	public static void clear(UUID playerId) {
+		PINS.remove(playerId);
+	}
+
+	public static void tick(ServerLevel level) {
 		for (ServerPlayer player : level.players()) {
-			Watch watch = WATCHES.get(player.getUUID());
-			if (watch == null) {
+			List<BlockPos> pins = PINS.get(player.getUUID());
+			if (pins == null || pins.isEmpty()) {
 				continue;
 			}
-			if (currentTick - watch.lastSeenTick() > TIMEOUT_TICKS) {
-				WATCHES.remove(player.getUUID());
-				continue;
-			}
-			if (level.getBlockEntity(watch.pos()) instanceof ComponentBlockEntity component) {
-				List<Float> history = component.historySnapshot();
-				ProbeDataPayload payload = new ProbeDataPayload(
-						watch.pos(), component.probeSummary(), (float) component.probeVoltage(),
-						(float) component.probeCurrent(), history);
-				ServerPlayNetworking.send(player, payload);
+			for (BlockPos pos : List.copyOf(pins)) {
+				if (level.getBlockEntity(pos) instanceof ComponentBlockEntity component) {
+					List<Float> history = component.historySnapshot();
+					ProbeDataPayload payload = new ProbeDataPayload(
+							pos, component.probeSummary(), (float) component.probeVoltage(),
+							(float) component.probeCurrent(), history);
+					ServerPlayNetworking.send(player, payload);
+				}
 			}
 		}
 	}

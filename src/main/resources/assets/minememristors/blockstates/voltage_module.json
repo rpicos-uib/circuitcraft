@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "minememristors:block/voltage_module" }
+  }
+}
