@@ -2,11 +2,13 @@ package com.rpicos.minememristors;
 
 import com.rpicos.minememristors.blockentity.AmmeterBlockEntity;
 import com.rpicos.minememristors.blockentity.CapacitorBlockEntity;
+import com.rpicos.minememristors.blockentity.DiodeBlockEntity;
 import com.rpicos.minememristors.blockentity.FrequencyModuleBlockEntity;
 import com.rpicos.minememristors.blockentity.FunctionGeneratorBlockEntity;
 import com.rpicos.minememristors.blockentity.GroundBlockEntity;
 import com.rpicos.minememristors.blockentity.InductorBlockEntity;
 import com.rpicos.minememristors.blockentity.MemristorBlockEntity;
+import com.rpicos.minememristors.blockentity.OpAmpBlockEntity;
 import com.rpicos.minememristors.blockentity.PowerSupplyBlockEntity;
 import com.rpicos.minememristors.blockentity.ResistorBlockEntity;
 import com.rpicos.minememristors.blockentity.VoltageModuleBlockEntity;
@@ -44,6 +46,10 @@ public final class ModBlockEntities {
 			register("frequency_module", FrequencyModuleBlockEntity::new, ModBlocks.FREQUENCY_MODULE);
 	public static final BlockEntityType<GroundBlockEntity> GROUND =
 			register("ground", GroundBlockEntity::new, ModBlocks.GROUND);
+	public static final BlockEntityType<DiodeBlockEntity> DIODE =
+			register("diode", DiodeBlockEntity::new, ModBlocks.DIODE);
+	public static final BlockEntityType<OpAmpBlockEntity> OP_AMP =
+			register("op_amp", OpAmpBlockEntity::new, ModBlocks.OP_AMP);
 
 	private static <T extends BlockEntity> BlockEntityType<T> register(
 			String path, BlockEntityType.BlockEntitySupplier<T> factory, Block block) {

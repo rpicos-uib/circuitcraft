@@ -17,7 +17,9 @@ import java.util.List;
  * Renders like looking at a held map: while the probe is in either hand, up to
  * {@link com.rpicos.minememristors.network.ProbeWatchManager#MAX_CHANNELS} pinned channels are
  * stacked in the corner, each showing its own scrolling voltage (or, for an ammeter, current)
- * trace - so two or three signals can be watched side by side instead of one at a time.
+ * trace - so two or three signals can be watched side by side instead of one at a time. Once all
+ * three slots are full, the oldest is outlined in yellow to show which channel a new pin would
+ * evict.
  */
 public class OscilloscopeHud implements HudElement {
 
@@ -25,6 +27,7 @@ public class OscilloscopeHud implements HudElement {
 	private static final int HEIGHT = 74;
 	private static final int MARGIN = 6;
 	private static final int GAP = 4;
+	private static final int HIGHLIGHT_COLOR = 0xFFFFD060;
 
 	// One accent color per stacked channel, bottom-to-top; loops if somehow more channels ever show.
 	private static final int[] CHANNEL_COLORS = {0xFF60E080, 0xFF60C0E0, 0xFFE0A060};
@@ -61,6 +64,11 @@ public class OscilloscopeHud implements HudElement {
 	private static void drawChannel(GuiGraphicsExtractor extractor, Font font, int x0, int y0,
 			ProbeDataPayload data, int traceColor) {
 		drawFrame(extractor, x0, y0);
+		if (data.willBeReplacedNext()) {
+			// A second, larger outline just outside the normal frame - marks the channel a 4th
+			// pin would evict, without needing to disturb the frame's own border color/thickness.
+			extractor.outline(x0 - 2, y0 - 2, WIDTH + 4, HEIGHT + 4, HIGHLIGHT_COLOR);
+		}
 
 		int x1 = x0 + WIDTH;
 		List<Float> history = data.history();
@@ -94,7 +102,8 @@ public class OscilloscopeHud implements HudElement {
 
 		String reading = String.format("%.2fV  %.3fA", data.voltage(), data.current());
 		extractor.text(font, reading, x0 + 4, graphY1 + 2, traceColor, false);
-		extractor.text(font, data.summary(), x0 + 4, graphY1 + 12, 0xFFDDDDDD, false);
+		String summary = data.willBeReplacedNext() ? data.summary() + " (next)" : data.summary();
+		extractor.text(font, summary, x0 + 4, graphY1 + 12, 0xFFDDDDDD, false);
 	}
 
 	private static boolean isHoldingProbe(Player player) {

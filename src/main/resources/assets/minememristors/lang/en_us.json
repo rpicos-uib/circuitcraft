@@ -10,6 +10,9 @@
   "block.minememristors.voltage_module": "Voltage Module",
   "block.minememristors.frequency_module": "Frequency Module",
   "block.minememristors.ground": "Ground",
+  "block.minememristors.diode": "Diode",
+  "block.minememristors.op_amp": "Ideal Op-Amp",
   "item.minememristors.probe": "Oscilloscope Probe",
+  "item.minememristors.xy_probe": "X-Y Oscilloscope Probe",
   "itemGroup.minememristors.components": "Mine Memristors"
 }

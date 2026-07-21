@@ -52,12 +52,16 @@ public final class ProbeWatchManager {
 			if (pins == null || pins.isEmpty()) {
 				continue;
 			}
+			// Only meaningful once the list is full: with room to spare, pinning one more just
+			// adds a channel rather than evicting anything.
+			boolean atCapacity = pins.size() >= MAX_CHANNELS;
+			BlockPos oldest = atCapacity ? pins.get(0) : null;
 			for (BlockPos pos : List.copyOf(pins)) {
 				if (level.getBlockEntity(pos) instanceof Probeable component) {
 					List<Float> history = component.historySnapshot();
 					ProbeDataPayload payload = new ProbeDataPayload(
 							pos, component.probeSummary(), (float) component.probeVoltage(),
-							(float) component.probeCurrent(), history);
+							(float) component.probeCurrent(), history, pos.equals(oldest));
 					ServerPlayNetworking.send(player, payload);
 				}
 			}

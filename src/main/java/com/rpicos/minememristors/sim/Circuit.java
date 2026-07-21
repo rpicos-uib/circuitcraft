@@ -18,6 +18,7 @@ public class Circuit {
 	private int nodeCount = 1; // node 0 = ground
 	private final List<Element> elements = new ArrayList<>();
 	private final List<VoltageSource> sources = new ArrayList<>();
+	private final List<IdealOpAmp> opAmps = new ArrayList<>();
 
 	private double[] nodeVoltages = new double[1];
 	private double time = 0;
@@ -33,6 +34,11 @@ public class Circuit {
 	public void add(VoltageSource source) {
 		source.branchIndex = sources.size();
 		sources.add(source);
+	}
+
+	public void add(IdealOpAmp opAmp) {
+		opAmp.branchIndex = sources.size() + opAmps.size();
+		opAmps.add(opAmp);
 	}
 
 	public double getVoltage(int node) {
@@ -63,7 +69,7 @@ public class Circuit {
 
 	public void step(double dt) {
 		int n = nodeCount - 1;
-		int m = sources.size();
+		int m = sources.size() + opAmps.size();
 		int size = n + m;
 
 		// Sized before solve() runs, so a component reading getVoltage() after a failed solve (an
@@ -97,6 +103,19 @@ public class Circuit {
 			z[row] = s.waveform.valueAt(newTime);
 		}
 
+		// An ideal op-amp's branch-current unknown is injected only at its output node, but its
+		// constraint equation (the "virtual short", v_plus == v_minus) references the two INPUT
+		// nodes instead - unlike a VoltageSource, whose constraint and injection both reference
+		// the same pair. That asymmetry is why this needs its own loop rather than reusing the
+		// one above.
+		for (IdealOpAmp op : opAmps) {
+			int row = n + op.branchIndex;
+			if (op.plus != 0) mat[row][op.plus - 1] += 1;
+			if (op.minus != 0) mat[row][op.minus - 1] -= 1;
+			z[row] = 0;
+			if (op.out != 0) mat[op.out - 1][row] += 1;
+		}
+
 		double[] x = solve(mat, z);
 
 		for (int i = 0; i < n; i++) {
@@ -104,6 +123,9 @@ public class Circuit {
 		}
 		for (VoltageSource s : sources) {
 			s.setSolvedCurrent(x[n + s.branchIndex]);
+		}
+		for (IdealOpAmp op : opAmps) {
+			op.setSolvedCurrent(x[n + op.branchIndex]);
 		}
 
 		for (Element e : elements) {

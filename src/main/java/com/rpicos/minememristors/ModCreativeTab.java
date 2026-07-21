@@ -31,7 +31,10 @@ public final class ModCreativeTab {
 						output.accept(ModItems.VOLTAGE_MODULE);
 						output.accept(ModItems.FREQUENCY_MODULE);
 						output.accept(ModItems.GROUND);
+						output.accept(ModItems.DIODE);
+						output.accept(ModItems.OP_AMP);
 						output.accept(ModItems.PROBE);
+						output.accept(ModItems.XY_PROBE);
 					})
 					.build()
 	);

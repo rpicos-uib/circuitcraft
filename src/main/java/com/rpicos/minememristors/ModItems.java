@@ -1,6 +1,7 @@
 package com.rpicos.minememristors;
 
 import com.rpicos.minememristors.item.ProbeItem;
+import com.rpicos.minememristors.item.XyProbeItem;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -23,8 +24,11 @@ public final class ModItems {
 	public static final Item VOLTAGE_MODULE = registerBlockItem("voltage_module", ModBlocks.VOLTAGE_MODULE);
 	public static final Item FREQUENCY_MODULE = registerBlockItem("frequency_module", ModBlocks.FREQUENCY_MODULE);
 	public static final Item GROUND = registerBlockItem("ground", ModBlocks.GROUND);
+	public static final Item DIODE = registerBlockItem("diode", ModBlocks.DIODE);
+	public static final Item OP_AMP = registerBlockItem("op_amp", ModBlocks.OP_AMP);
 
 	public static final Item PROBE = registerItem("probe", ProbeItem::new);
+	public static final Item XY_PROBE = registerItem("xy_probe", XyProbeItem::new);
 
 	private static Item registerBlockItem(String path, Block block) {
 		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, MineMemristors.id(path));

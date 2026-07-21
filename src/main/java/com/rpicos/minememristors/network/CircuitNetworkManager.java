@@ -4,6 +4,7 @@ import com.rpicos.minememristors.MineMemristors;
 import com.rpicos.minememristors.blockentity.ComponentBlockEntity;
 import com.rpicos.minememristors.blockentity.GroundBlockEntity;
 import com.rpicos.minememristors.blockentity.NetworkBlockEntity;
+import com.rpicos.minememristors.blockentity.OpAmpBlockEntity;
 import com.rpicos.minememristors.blockentity.Probeable;
 import com.rpicos.minememristors.blockentity.SingleNodeBlockEntity;
 import com.rpicos.minememristors.sim.Circuit;
@@ -20,12 +21,16 @@ import java.util.WeakHashMap;
  * tick, rebuilds the circuit topology (only when something changed) and steps the simulation.
  *
  * <p>Topology is a union-find over "conductive" adjacency: two neighbouring positions merge into
- * the same electrical node if each presents a conductive face toward the other. Wire has a single
- * graph identity per block (its whole body is one electrical point, conductive on all six faces).
- * A component instead gets <b>two separate</b> graph identities - one per lead - keyed by
- * {@code (pos, side)} rather than by its bare position. Keying both leads by the same block
- * position would let the component's own body union-find its way into being a single node,
- * short-circuiting the very element it's supposed to be wired across.
+ * the same electrical node if each presents a conductive face toward the other. A
+ * {@link SingleNodeBlockEntity} (wire, ground) has a single graph identity per block - its whole
+ * body is one electrical point, conductive on all six faces. Anything else (a two-terminal
+ * component, or a three-terminal op-amp) instead gets one separate graph identity per lead,
+ * keyed by {@code (pos, side)} rather than by its bare position: keying every lead by the same
+ * block position would let the block's own body union-find its way into a single node,
+ * short-circuiting the very element it's supposed to be wired across. This generalizes to any
+ * number of terminals for free - {@link #keyFor} only needs to know whether an entity is a
+ * single shared point or not, since the specific conductive {@code direction} that triggered a
+ * given union already identifies exactly which lead is involved.
  */
 public class CircuitNetworkManager {
 	private static final Map<ServerLevel, CircuitNetworkManager> INSTANCES = new WeakHashMap<>();
@@ -110,7 +115,7 @@ public class CircuitNetworkManager {
 	}
 
 	private static Object keyFor(BlockPos pos, NetworkBlockEntity entity, Direction side) {
-		return entity instanceof ComponentBlockEntity ? new NodeKey(pos, side) : pos;
+		return entity instanceof SingleNodeBlockEntity ? pos : new NodeKey(pos, side);
 	}
 
 	private void rebuild() {
@@ -121,13 +126,11 @@ public class CircuitNetworkManager {
 		Map<Object, Object> parent = new HashMap<>();
 		for (Map.Entry<BlockPos, NetworkBlockEntity> entry : participants.entrySet()) {
 			BlockPos pos = entry.getKey();
-			if (entry.getValue() instanceof ComponentBlockEntity component) {
-				Object a = new NodeKey(pos, component.getFacing());
-				Object b = new NodeKey(pos, component.getFacing().getOpposite());
-				parent.put(a, a);
-				parent.put(b, b);
-			} else {
-				parent.put(pos, pos);
+			NetworkBlockEntity entity = entry.getValue();
+			for (Direction direction : Direction.values()) {
+				if (!entity.isConductiveTowards(direction)) continue;
+				Object key = keyFor(pos, entity, direction);
+				parent.putIfAbsent(key, key);
 			}
 		}
 
@@ -172,6 +175,11 @@ public class CircuitNetworkManager {
 				int nodeB = nodeIdByKey.get(new NodeKey(pos, component.getFacing().getOpposite()));
 				component.addToCircuit(circuit, nodeA, nodeB);
 				lastComponentNodes.put(pos, new int[] {nodeA, nodeB});
+			} else if (entity instanceof OpAmpBlockEntity opAmp) {
+				int nodeOut = nodeIdByKey.get(new NodeKey(pos, opAmp.outputFace()));
+				int nodeMinus = nodeIdByKey.get(new NodeKey(pos, opAmp.minusFace()));
+				int nodePlus = nodeIdByKey.get(new NodeKey(pos, opAmp.plusFace()));
+				opAmp.addToCircuit(circuit, nodeOut, nodeMinus, nodePlus);
 			} else if (entity instanceof SingleNodeBlockEntity singleNode) {
 				singleNode.bindNode(circuit, nodeIdByKey.get(pos));
 			}

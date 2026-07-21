@@ -3,6 +3,8 @@ package com.rpicos.minememristors;
 import com.rpicos.minememristors.network.CircuitNetworkManager;
 import com.rpicos.minememristors.network.ProbeDataPayload;
 import com.rpicos.minememristors.network.ProbeWatchManager;
+import com.rpicos.minememristors.network.XyProbeDataPayload;
+import com.rpicos.minememristors.network.XyProbeManager;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -28,13 +30,17 @@ public class MineMemristors implements ModInitializer {
 		ModCreativeTab.init();
 
 		PayloadTypeRegistry.clientboundPlay().register(ProbeDataPayload.TYPE, ProbeDataPayload.STREAM_CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(XyProbeDataPayload.TYPE, XyProbeDataPayload.STREAM_CODEC);
 
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) ->
-				ProbeWatchManager.clear(handler.getPlayer().getUUID()));
+		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+			ProbeWatchManager.clear(handler.getPlayer().getUUID());
+			XyProbeManager.clear(handler.getPlayer().getUUID());
+		});
 
 		ServerTickEvents.END_LEVEL_TICK.register(level -> {
 			CircuitNetworkManager.forLevel(level).tick(level);
 			ProbeWatchManager.tick(level);
+			XyProbeManager.tick(level);
 		});
 	}
 
