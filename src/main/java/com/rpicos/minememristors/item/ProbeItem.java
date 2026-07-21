@@ -1,6 +1,6 @@
 package com.rpicos.minememristors.item;
 
-import com.rpicos.minememristors.blockentity.ComponentBlockEntity;
+import com.rpicos.minememristors.blockentity.Probeable;
 import com.rpicos.minememristors.network.ProbeWatchManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -29,7 +29,7 @@ public class ProbeItem extends Item {
 		}
 
 		BlockPos pos = context.getClickedPos();
-		if (level.getBlockEntity(pos) instanceof ComponentBlockEntity component
+		if (level.getBlockEntity(pos) instanceof Probeable component
 				&& context.getPlayer() instanceof ServerPlayer player) {
 			String readout = String.format("%s | V=%.2fV  I=%.4fA",
 					component.probeSummary(), component.probeVoltage(), component.probeCurrent());

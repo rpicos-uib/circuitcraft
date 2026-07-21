@@ -22,6 +22,7 @@ public final class ModItems {
 	public static final Item AMMETER = registerBlockItem("ammeter", ModBlocks.AMMETER);
 	public static final Item VOLTAGE_MODULE = registerBlockItem("voltage_module", ModBlocks.VOLTAGE_MODULE);
 	public static final Item FREQUENCY_MODULE = registerBlockItem("frequency_module", ModBlocks.FREQUENCY_MODULE);
+	public static final Item GROUND = registerBlockItem("ground", ModBlocks.GROUND);
 
 	public static final Item PROBE = registerItem("probe", ProbeItem::new);
 

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:iron_nugget",
+    "minecraft:copper_ingot"
+  ],
+  "result": {
+    "id": "minememristors:ground",
+    "count": 4
+  }
+}

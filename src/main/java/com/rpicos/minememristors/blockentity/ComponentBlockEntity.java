@@ -7,21 +7,16 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /** A two-terminal circuit component sitting on one block, wired along its FACING axis. */
-public abstract class ComponentBlockEntity extends NetworkBlockEntity {
+public abstract class ComponentBlockEntity extends NetworkBlockEntity implements Probeable {
 
-	private static final int HISTORY_SIZE = 200;
+	private final ProbeHistory history = new ProbeHistory();
 
 	private Circuit circuit;
 	private int nodeA = -1;
 	private int nodeB = -1;
-
-	private final float[] history = new float[HISTORY_SIZE];
-	private int historyWriteIndex = 0;
-	private int historyCount = 0;
 
 	protected ComponentBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -45,13 +40,16 @@ public abstract class ComponentBlockEntity extends NetworkBlockEntity {
 		this.nodeB = nodeB;
 	}
 
+	@Override
 	public double probeVoltage() {
 		return circuit == null ? 0 : circuit.getVoltage(nodeA) - circuit.getVoltage(nodeB);
 	}
 
+	@Override
 	public abstract double probeCurrent();
 
 	/** Short human-readable description of this component's current state, for the probe readout. */
+	@Override
 	public abstract String probeSummary();
 
 	/** Right-click-without-item interaction: cycle to the next preset value. */
@@ -63,20 +61,13 @@ public abstract class ComponentBlockEntity extends NetworkBlockEntity {
 		return probeVoltage();
 	}
 
-	/** Called once per tick (from the network manager, after the circuit solve) to append a scope sample. */
+	@Override
 	public void recordSample() {
-		history[historyWriteIndex] = (float) sampleValue();
-		historyWriteIndex = (historyWriteIndex + 1) % HISTORY_SIZE;
-		historyCount = Math.min(historyCount + 1, HISTORY_SIZE);
+		history.record(sampleValue());
 	}
 
-	/** Oldest-to-newest snapshot of recent voltage samples, for the oscilloscope. */
+	@Override
 	public List<Float> historySnapshot() {
-		List<Float> out = new ArrayList<>(historyCount);
-		int start = (historyWriteIndex - historyCount + HISTORY_SIZE) % HISTORY_SIZE;
-		for (int i = 0; i < historyCount; i++) {
-			out.add(history[(start + i) % HISTORY_SIZE]);
-		}
-		return out;
+		return history.snapshot();
 	}
 }

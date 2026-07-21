@@ -30,6 +30,7 @@ public final class ModCreativeTab {
 						output.accept(ModItems.AMMETER);
 						output.accept(ModItems.VOLTAGE_MODULE);
 						output.accept(ModItems.FREQUENCY_MODULE);
+						output.accept(ModItems.GROUND);
 						output.accept(ModItems.PROBE);
 					})
 					.build()

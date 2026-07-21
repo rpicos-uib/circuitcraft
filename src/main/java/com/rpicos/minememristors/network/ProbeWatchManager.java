@@ -1,6 +1,6 @@
 package com.rpicos.minememristors.network;
 
-import com.rpicos.minememristors.blockentity.ComponentBlockEntity;
+import com.rpicos.minememristors.blockentity.Probeable;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -53,7 +53,7 @@ public final class ProbeWatchManager {
 				continue;
 			}
 			for (BlockPos pos : List.copyOf(pins)) {
-				if (level.getBlockEntity(pos) instanceof ComponentBlockEntity component) {
+				if (level.getBlockEntity(pos) instanceof Probeable component) {
 					List<Float> history = component.historySnapshot();
 					ProbeDataPayload payload = new ProbeDataPayload(
 							pos, component.probeSummary(), (float) component.probeVoltage(),

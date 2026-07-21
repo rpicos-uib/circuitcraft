@@ -4,6 +4,7 @@ import com.rpicos.minememristors.blockentity.AmmeterBlockEntity;
 import com.rpicos.minememristors.blockentity.CapacitorBlockEntity;
 import com.rpicos.minememristors.blockentity.FrequencyModuleBlockEntity;
 import com.rpicos.minememristors.blockentity.FunctionGeneratorBlockEntity;
+import com.rpicos.minememristors.blockentity.GroundBlockEntity;
 import com.rpicos.minememristors.blockentity.InductorBlockEntity;
 import com.rpicos.minememristors.blockentity.MemristorBlockEntity;
 import com.rpicos.minememristors.blockentity.PowerSupplyBlockEntity;
@@ -41,6 +42,8 @@ public final class ModBlockEntities {
 			register("voltage_module", VoltageModuleBlockEntity::new, ModBlocks.VOLTAGE_MODULE);
 	public static final BlockEntityType<FrequencyModuleBlockEntity> FREQUENCY_MODULE =
 			register("frequency_module", FrequencyModuleBlockEntity::new, ModBlocks.FREQUENCY_MODULE);
+	public static final BlockEntityType<GroundBlockEntity> GROUND =
+			register("ground", GroundBlockEntity::new, ModBlocks.GROUND);
 
 	private static <T extends BlockEntity> BlockEntityType<T> register(
 			String path, BlockEntityType.BlockEntitySupplier<T> factory, Block block) {

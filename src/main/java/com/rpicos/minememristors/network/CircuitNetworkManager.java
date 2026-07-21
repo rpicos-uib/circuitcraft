@@ -2,7 +2,10 @@ package com.rpicos.minememristors.network;
 
 import com.rpicos.minememristors.MineMemristors;
 import com.rpicos.minememristors.blockentity.ComponentBlockEntity;
+import com.rpicos.minememristors.blockentity.GroundBlockEntity;
 import com.rpicos.minememristors.blockentity.NetworkBlockEntity;
+import com.rpicos.minememristors.blockentity.Probeable;
+import com.rpicos.minememristors.blockentity.SingleNodeBlockEntity;
 import com.rpicos.minememristors.sim.Circuit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -79,8 +82,8 @@ public class CircuitNetworkManager {
 				return;
 			}
 			for (NetworkBlockEntity entity : participants.values()) {
-				if (entity instanceof ComponentBlockEntity component) {
-					component.recordSample();
+				if (entity instanceof Probeable probeable) {
+					probeable.recordSample();
 				}
 			}
 		}
@@ -144,6 +147,16 @@ public class CircuitNetworkManager {
 		}
 
 		Map<Object, Integer> nodeIdByRoot = new HashMap<>();
+		// Any network a Ground block touches gets anchored to the solver's real node 0 (always
+		// exactly 0V, per Circuit.getVoltage) instead of an arbitrary freshly-allocated node - that
+		// gives every other node in the same network a meaningful "voltage at this point" reading,
+		// rather than one relative to an arbitrary internal reference.
+		for (Map.Entry<BlockPos, NetworkBlockEntity> entry : participants.entrySet()) {
+			if (entry.getValue() instanceof GroundBlockEntity) {
+				nodeIdByRoot.put(find(parent, entry.getKey()), 0);
+			}
+		}
+
 		Map<Object, Integer> nodeIdByKey = new HashMap<>();
 		for (Object key : parent.keySet()) {
 			Object root = find(parent, key);
@@ -152,12 +165,15 @@ public class CircuitNetworkManager {
 		}
 
 		for (Map.Entry<BlockPos, NetworkBlockEntity> entry : participants.entrySet()) {
-			if (entry.getValue() instanceof ComponentBlockEntity component) {
-				BlockPos pos = entry.getKey();
+			BlockPos pos = entry.getKey();
+			NetworkBlockEntity entity = entry.getValue();
+			if (entity instanceof ComponentBlockEntity component) {
 				int nodeA = nodeIdByKey.get(new NodeKey(pos, component.getFacing()));
 				int nodeB = nodeIdByKey.get(new NodeKey(pos, component.getFacing().getOpposite()));
 				component.addToCircuit(circuit, nodeA, nodeB);
 				lastComponentNodes.put(pos, new int[] {nodeA, nodeB});
+			} else if (entity instanceof SingleNodeBlockEntity singleNode) {
+				singleNode.bindNode(circuit, nodeIdByKey.get(pos));
 			}
 		}
 	}

@@ -4,6 +4,7 @@ import com.rpicos.minememristors.block.AmmeterBlock;
 import com.rpicos.minememristors.block.CapacitorBlock;
 import com.rpicos.minememristors.block.FrequencyModuleBlock;
 import com.rpicos.minememristors.block.FunctionGeneratorBlock;
+import com.rpicos.minememristors.block.GroundBlock;
 import com.rpicos.minememristors.block.InductorBlock;
 import com.rpicos.minememristors.block.MemristorBlock;
 import com.rpicos.minememristors.block.PowerSupplyBlock;
@@ -31,6 +32,7 @@ public final class ModBlocks {
 	public static final Block AMMETER = register("ammeter", AmmeterBlock::new, componentProperties());
 	public static final Block VOLTAGE_MODULE = register("voltage_module", VoltageModuleBlock::new, componentProperties());
 	public static final Block FREQUENCY_MODULE = register("frequency_module", FrequencyModuleBlock::new, componentProperties());
+	public static final Block GROUND = register("ground", GroundBlock::new, componentProperties());
 
 	private static BlockBehaviour.Properties componentProperties() {
 		return BlockBehaviour.Properties.of().strength(1.0F).sound(SoundType.METAL);
