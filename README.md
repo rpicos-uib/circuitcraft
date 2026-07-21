@@ -159,6 +159,32 @@ Issues and PRs welcome. If you're adding a component, please include a note on t
 you used (a link to the equations is enough) — the goal of this mod is that in-game behavior is
 actually correct, not just plausible-looking.
 
+## Citation
+
+If you use Mine Memristors — in a classroom, a paper, a demo, a derivative mod, anywhere — please
+credit the original author, Rodrigo Picos. A link back to this repository is enough for informal
+use; for academic work, please cite it as:
+
+```
+Rodrigo Picos. Mine Memristors: a Fabric mod for teaching analog electronics in Minecraft.
+https://github.com/rpicos-uib/mine-memristors, 2026.
+```
+
+BibTeX:
+
+```bibtex
+@software{picos_mine_memristors,
+  author = {Picos, Rodrigo},
+  title  = {Mine Memristors: a Fabric mod for teaching analog electronics in Minecraft},
+  url    = {https://github.com/rpicos-uib/mine-memristors},
+  year   = {2026}
+}
+```
+
+See also [`CITATION.cff`](CITATION.cff), which GitHub reads automatically for its "Cite this
+repository" button.
+
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT — see [LICENSE](LICENSE). The license permits reuse without attribution; the citation request
+above is a courtesy ask on top of that, not an added legal restriction.
