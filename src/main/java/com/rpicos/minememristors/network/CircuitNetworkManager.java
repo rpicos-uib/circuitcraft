@@ -17,9 +17,12 @@ import java.util.WeakHashMap;
  * tick, rebuilds the circuit topology (only when something changed) and steps the simulation.
  *
  * <p>Topology is a union-find over "conductive" adjacency: two neighbouring positions merge into
- * the same electrical node if each presents a conductive face toward the other. Wires are
- * conductive on all six faces; components only on their two lead faces (their facing axis) - so a
- * component's insulated sides never short its two terminals together.
+ * the same electrical node if each presents a conductive face toward the other. Wire has a single
+ * graph identity per block (its whole body is one electrical point, conductive on all six faces).
+ * A component instead gets <b>two separate</b> graph identities - one per lead - keyed by
+ * {@code (pos, side)} rather than by its bare position. Keying both leads by the same block
+ * position would let the component's own body union-find its way into being a single node,
+ * short-circuiting the very element it's supposed to be wired across.
  */
 public class CircuitNetworkManager {
 	private static final Map<ServerLevel, CircuitNetworkManager> INSTANCES = new WeakHashMap<>();
@@ -97,14 +100,32 @@ public class CircuitNetworkManager {
 		}
 	}
 
+	/** A wire's graph identity is just its position (one electrical point for the whole block).
+	 *  A component's graph identity is one of these per lead, so its two terminals can never be
+	 *  merged into each other via the component's own body. */
+	private record NodeKey(BlockPos pos, Direction side) {
+	}
+
+	private static Object keyFor(BlockPos pos, NetworkBlockEntity entity, Direction side) {
+		return entity instanceof ComponentBlockEntity ? new NodeKey(pos, side) : pos;
+	}
+
 	private void rebuild() {
 		dirty = false;
 		circuit = new Circuit();
 		lastComponentNodes.clear();
 
-		Map<BlockPos, BlockPos> parent = new HashMap<>();
-		for (BlockPos p : participants.keySet()) {
-			parent.put(p, p);
+		Map<Object, Object> parent = new HashMap<>();
+		for (Map.Entry<BlockPos, NetworkBlockEntity> entry : participants.entrySet()) {
+			BlockPos pos = entry.getKey();
+			if (entry.getValue() instanceof ComponentBlockEntity component) {
+				Object a = new NodeKey(pos, component.getFacing());
+				Object b = new NodeKey(pos, component.getFacing().getOpposite());
+				parent.put(a, a);
+				parent.put(b, b);
+			} else {
+				parent.put(pos, pos);
+			}
 		}
 
 		for (Map.Entry<BlockPos, NetworkBlockEntity> entry : participants.entrySet()) {
@@ -115,53 +136,49 @@ public class CircuitNetworkManager {
 				BlockPos neighborPos = pos.relative(direction);
 				NetworkBlockEntity neighbor = participants.get(neighborPos);
 				if (neighbor != null && neighbor.isConductiveTowards(direction.getOpposite())) {
-					union(parent, pos, neighborPos);
+					Object myKey = keyFor(pos, entity, direction);
+					Object neighborKey = keyFor(neighborPos, neighbor, direction.getOpposite());
+					union(parent, myKey, neighborKey);
 				}
 			}
 		}
 
-		Map<BlockPos, Integer> nodeIdByRoot = new HashMap<>();
-		Map<BlockPos, Integer> nodeIdByPos = new HashMap<>();
-		for (BlockPos p : participants.keySet()) {
-			BlockPos root = find(parent, p);
+		Map<Object, Integer> nodeIdByRoot = new HashMap<>();
+		Map<Object, Integer> nodeIdByKey = new HashMap<>();
+		for (Object key : parent.keySet()) {
+			Object root = find(parent, key);
 			int nodeId = nodeIdByRoot.computeIfAbsent(root, r -> circuit.addNode());
-			nodeIdByPos.put(p, nodeId);
+			nodeIdByKey.put(key, nodeId);
 		}
 
-		for (NetworkBlockEntity entity : participants.values()) {
-			if (entity instanceof ComponentBlockEntity component) {
-				int nodeA = nodeFor(component.terminalA(), nodeIdByPos, circuit);
-				int nodeB = nodeFor(component.terminalB(), nodeIdByPos, circuit);
+		for (Map.Entry<BlockPos, NetworkBlockEntity> entry : participants.entrySet()) {
+			if (entry.getValue() instanceof ComponentBlockEntity component) {
+				BlockPos pos = entry.getKey();
+				int nodeA = nodeIdByKey.get(new NodeKey(pos, component.getFacing()));
+				int nodeB = nodeIdByKey.get(new NodeKey(pos, component.getFacing().getOpposite()));
 				component.addToCircuit(circuit, nodeA, nodeB);
-				lastComponentNodes.put(component.getBlockPos(), new int[] {nodeA, nodeB});
+				lastComponentNodes.put(pos, new int[] {nodeA, nodeB});
 			}
 		}
 	}
 
-	private static int nodeFor(BlockPos terminalPos, Map<BlockPos, Integer> nodeIdByPos, Circuit circuit) {
-		Integer existing = nodeIdByPos.get(terminalPos);
-		// An unwired terminal gets its own floating node - harmless thanks to the solver's
-		// ground-leak conductance, and lets a half-built circuit still simulate.
-		return existing != null ? existing : circuit.addNode();
-	}
-
-	private static BlockPos find(Map<BlockPos, BlockPos> parent, BlockPos p) {
-		BlockPos root = p;
+	private static Object find(Map<Object, Object> parent, Object key) {
+		Object root = key;
 		while (!parent.get(root).equals(root)) {
 			root = parent.get(root);
 		}
-		BlockPos cur = p;
+		Object cur = key;
 		while (!cur.equals(root)) {
-			BlockPos next = parent.get(cur);
+			Object next = parent.get(cur);
 			parent.put(cur, root);
 			cur = next;
 		}
 		return root;
 	}
 
-	private static void union(Map<BlockPos, BlockPos> parent, BlockPos a, BlockPos b) {
-		BlockPos rootA = find(parent, a);
-		BlockPos rootB = find(parent, b);
+	private static void union(Map<Object, Object> parent, Object a, Object b) {
+		Object rootA = find(parent, a);
+		Object rootB = find(parent, b);
 		if (!rootA.equals(rootB)) {
 			parent.put(rootA, rootB);
 		}

@@ -31,14 +31,6 @@ public abstract class ComponentBlockEntity extends NetworkBlockEntity {
 		return getBlockState().getValue(BlockStateProperties.FACING);
 	}
 
-	public BlockPos terminalA() {
-		return getBlockPos().relative(getFacing());
-	}
-
-	public BlockPos terminalB() {
-		return getBlockPos().relative(getFacing().getOpposite());
-	}
-
 	@Override
 	public boolean isConductiveTowards(Direction direction) {
 		return direction == getFacing() || direction == getFacing().getOpposite();
