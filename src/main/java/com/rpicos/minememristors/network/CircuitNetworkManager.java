@@ -1,5 +1,6 @@
 package com.rpicos.minememristors.network;
 
+import com.rpicos.minememristors.MineMemristors;
 import com.rpicos.minememristors.blockentity.ComponentBlockEntity;
 import com.rpicos.minememristors.blockentity.NetworkBlockEntity;
 import com.rpicos.minememristors.sim.Circuit;
@@ -31,6 +32,10 @@ public class CircuitNetworkManager {
 	private final Map<BlockPos, NetworkBlockEntity> participants = new HashMap<>();
 	private boolean dirty = true;
 	private Circuit circuit;
+	// Set when the last step() threw (e.g. a voltage source shorted across itself); stepping is
+	// skipped until the topology changes again, so one bad wiring doesn't spam the log every tick
+	// or take down the server thread.
+	private boolean faulted;
 
 	public void register(BlockPos pos, NetworkBlockEntity entity) {
 		participants.put(pos.immutable(), entity);
@@ -53,9 +58,18 @@ public class CircuitNetworkManager {
 
 		if (dirty) {
 			rebuild();
+			faulted = false;
 		}
-		if (circuit != null) {
-			circuit.step(TICK_SECONDS);
+		if (circuit != null && !faulted) {
+			try {
+				circuit.step(TICK_SECONDS);
+			} catch (ArithmeticException e) {
+				faulted = true;
+				MineMemristors.LOGGER.warn(
+						"Circuit network paused after solver error (will resume once its wiring changes): {}",
+						e.getMessage());
+				return;
+			}
 			for (NetworkBlockEntity entity : participants.values()) {
 				if (entity instanceof ComponentBlockEntity component) {
 					component.recordSample();
