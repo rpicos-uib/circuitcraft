@@ -25,7 +25,10 @@ import java.util.List;
  * trade-off is that a shape only has its true aspect ratio (an equal-amplitude, 90-degree
  * phase-shifted pair tracing an actual circle) when the two channels' peaks happen to match -
  * which they still do whenever amplitudes are in fact equal, since the two independent scales
- * then coincide. Note that {@link com.rpicos.circuitcraft.network.XyProbeManager} always
+ * then coincide. Consecutive samples are connected with straight line segments (via a small
+ * Bresenham rasterizer, since the extractor has no arbitrary-line primitive) rather than
+ * plotted as isolated points, so the trace reads as a continuous curve. Note that
+ * {@link com.rpicos.circuitcraft.network.XyProbeManager} always
  * appends the just-pinned position to the end of its 2-slot list, so the block a player is
  * about to right-click - whether it is brand new, currently X, or currently Y - always
  * becomes (or remains) the Y channel once pinned.
@@ -80,10 +83,16 @@ public class XyOscilloscopeHud implements HudElement {
 
 		int n = Math.min(xHistory.size(), yHistory.size());
 		float half = PLOT_SIZE / 2f;
+		int prevPx = 0;
+		int prevPy = 0;
 		for (int i = 0; i < n; i++) {
 			int px = plotCenterX + Math.round(xHistory.get(i) / maxAbsX * half);
 			int py = plotCenterY - Math.round(yHistory.get(i) / maxAbsY * half);
-			extractor.fill(px, py, px + 1, py + 1, TRACE_COLOR);
+			if (i > 0) {
+				drawLine(extractor, prevPx, prevPy, px, py, TRACE_COLOR);
+			}
+			prevPx = px;
+			prevPy = py;
 		}
 
 		int textY = plotY0 + PLOT_SIZE + 4;
@@ -99,5 +108,33 @@ public class XyOscilloscopeHud implements HudElement {
 		ItemStack main = player.getMainHandItem();
 		ItemStack off = player.getOffhandItem();
 		return main.getItem() instanceof XyProbeItem || off.getItem() instanceof XyProbeItem;
+	}
+
+	/** Bresenham's line algorithm, since {@link GuiGraphicsExtractor} only exposes axis-aligned
+	 *  fills and horizontal/vertical lines - no arbitrary-angle line primitive - so consecutive
+	 *  sample points are connected one single-pixel fill at a time instead. */
+	private static void drawLine(GuiGraphicsExtractor extractor, int x0, int y0, int x1, int y1, int color) {
+		int dx = Math.abs(x1 - x0);
+		int sx = x0 < x1 ? 1 : -1;
+		int dy = -Math.abs(y1 - y0);
+		int sy = y0 < y1 ? 1 : -1;
+		int error = dx + dy;
+		int x = x0;
+		int y = y0;
+		while (true) {
+			extractor.fill(x, y, x + 1, y + 1, color);
+			if (x == x1 && y == y1) {
+				break;
+			}
+			int e2 = 2 * error;
+			if (e2 >= dy) {
+				error += dy;
+				x += sx;
+			}
+			if (e2 <= dx) {
+				error += dx;
+				y += sy;
+			}
+		}
 	}
 }
