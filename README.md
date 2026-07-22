@@ -182,11 +182,13 @@ actually correct, not just plausible-looking.
 ## Citation
 
 If you use CircuitCraft — in a classroom, a paper, a demo, a derivative mod, anywhere — please
-credit the original author, Rodrigo Picos. A link back to this repository is enough for informal
-use; for academic work, please cite it as:
+credit the authors: Rodrigo Picos, Stavros G. Stavrinides, George Stavrinides, Ariadna Picos,
+and Gerard Picos. A link back to this repository is enough for informal use; for academic
+work, please cite it as:
 
 ```
-Rodrigo Picos. CircuitCraft: a Fabric mod for teaching analog electronics in Minecraft.
+Rodrigo Picos, Stavros G. Stavrinides, George Stavrinides, Ariadna Picos, and Gerard Picos.
+CircuitCraft: a Fabric mod for teaching analog electronics in Minecraft.
 https://github.com/rpicos-uib/circuitcraft, 2026.
 ```
 
@@ -194,7 +196,7 @@ BibTeX:
 
 ```bibtex
 @software{picos_mine_memristors,
-  author = {Picos, Rodrigo},
+  author = {Picos, Rodrigo and Stavrinides, Stavros G. and Stavrinides, George and Picos, Ariadna and Picos, Gerard},
   title  = {CircuitCraft: a Fabric mod for teaching analog electronics in Minecraft},
   url    = {https://github.com/rpicos-uib/circuitcraft},
   year   = {2026}
