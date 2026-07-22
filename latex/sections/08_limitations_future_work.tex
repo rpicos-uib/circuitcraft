@@ -12,12 +12,22 @@ planned future work and is primarily a bookkeeping problem: the new topology's n
 must be matched to the element's previous node indices before its stored voltage or current
 can be meaningfully re-applied.
 
-\textbf{Fixed presets rather than continuous values.} Every adjustable quantity -- a
-resistor's resistance, a source's amplitude or frequency -- is one of a small number of
-discrete presets cycled by right-clicking, rather than a numeric entry. This design keeps
-the interaction model consistent with the remainder of the base game (no custom text-entry
-interface is required), at the cost of the fine-grained control an actual bench instrument
-provides; a numeric-entry interface for these values is a natural extension.
+\textbf{Discrete presets remain the default interaction, alongside an optional numeric
+entry.} Every adjustable quantity -- a resistor's resistance, a source's amplitude or
+frequency, the memristor's $R_{on}$, $R_{off}$, and switching-charge parameters -- is still,
+by default, one of a small number of discrete presets cycled by an empty-hand right-click,
+preserving the interaction model this paper's own worked experiments
+(Section~\ref{sec:experiments}) rely on. A shift-right-click now additionally opens a
+text-entry screen, in the same interaction spirit as editing a sign, letting a player type
+any value directly rather than only stepping through the fixed cycle; the screen clamps
+entry to the same $[\min,\max]$ range the existing preset cycle already spans for that
+quantity; the server independently re-clamps whatever value it receives, rather than trusting
+the client's own display-side clamping. This does not yet extend to every adjustable
+quantity in the mod (the diode's silicon/germanium/LED family and the function generator's
+waveform shape remain categorical presets with no single underlying numeric value to type),
+and the interaction itself -- typing into a floating on-screen box while looking at the
+block -- is a more conventional GUI paradigm than the rest of the mod's otherwise
+purely block-placement-driven interface, a design tension future work could revisit.
 
 \textbf{Solver scalability.} The MNA system for each independent network is solved by dense
 Gaussian elimination every tick, which is adequate for the circuit sizes a single player

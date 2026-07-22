@@ -62,12 +62,19 @@ Useful dev tasks: `./gradlew runClient` (launches a dev client with the mod load
 
 ## The components
 
+For any component whose value is a single number rather than a category (resistance,
+capacitance, inductance, voltage, frequency, the memristor's parameters), an empty-hand
+**shift+right-click** opens a text-entry screen — the same interaction spirit as editing a
+sign — pre-filled with the current value(s) and the same min/max range its preset cycle
+already covers. A plain empty-hand right-click still cycles through the fixed presets exactly
+as before; the two interactions coexist.
+
 | | Block/Item | What it is |
 |---|---|---|
 | <img src="docs/icons/resistor.png" width="32"> | **Resistor** | Ohmic resistor. Right-click (empty hand) to cycle 10 / 100 / 1,000 / 10,000 Ω. |
 | <img src="docs/icons/capacitor.png" width="32"> | **Capacitor** | Ideal capacitor, trapezoidal-integration model. Cycles 1 / 10 / 100 / 1,000 µF. |
 | <img src="docs/icons/inductor.png" width="32"> | **Inductor** | Ideal inductor, trapezoidal-integration model. Cycles 0.01 / 0.1 / 1 / 5 H (scaled for Minecraft's tick rate, not real-world component ratings). |
-| <img src="docs/icons/memristor.png" width="32"> | **Memristor** | Charge-controlled linear-drift (HP) memristor model. Resistance drifts between 100 Ω and 10,000 Ω based on accumulated charge through it — the "memory" persists even when the circuit is rebuilt. Cycles a "switching speed" preset. |
+| <img src="docs/icons/memristor.png" width="32"> | **Memristor** | Charge-controlled linear-drift (HP) memristor model. Resistance drifts between $R_{on}$ and $R_{off}$ based on accumulated charge through it — the "memory" persists even when the circuit is rebuilt. Empty-hand right-click cycles a "switching speed" ($q_{max}$) preset as before (defaults: $R_{on}=100\,\Omega$, $R_{off}=10{,}000\,\Omega$); shift+right-click opens the value editor for all three parameters at once — $R_{on}$ (10–1,000 Ω), $R_{off}$ (1,000–100,000 Ω), and $q_{max}$ (1e-4–1e-2 C). |
 | <img src="docs/icons/power_supply.png" width="32"> | **Power Supply** | Ideal DC voltage source. Cycles 1.5 / 5 / 9 / 12 / 24 V. Inactive (open-circuit) until it receives a redstone signal - wire up the circuit first, then power it on. |
 | <img src="docs/icons/function_generator.png" width="32"> | **Function Generator** | Time-varying voltage source. Cycles sine/square/triangle presets (waveform shape only - see Voltage/Frequency Module below for amplitude and frequency). Same redstone-activation behavior as the Power Supply. Defaults to 5V/1Hz with no modules attached. |
 | <img src="docs/icons/wire.png" width="32"> | **Wire** | Zero-resistance conductor block. Connects on all six faces. Probeable in its own right (see Probe below) - gives the absolute voltage at that point in the circuit, not just a drop across two leads. |

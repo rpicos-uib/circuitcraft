@@ -7,11 +7,14 @@ import com.rpicos.circuitcraft.sim.Waveform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class PowerSupplyBlockEntity extends ComponentBlockEntity {
+import java.util.List;
+
+public class PowerSupplyBlockEntity extends ComponentBlockEntity implements ValueEditable {
 
 	private static final double[] PRESETS_VOLTS = {1.5, 5, 9, 12, 24};
 
 	private int presetIndex = 1;
+	private double voltageVolts = PRESETS_VOLTS[presetIndex];
 	private VoltageSource live;
 	private boolean redstonePowered = false;
 
@@ -22,6 +25,18 @@ public class PowerSupplyBlockEntity extends ComponentBlockEntity {
 	@Override
 	public void cyclePreset() {
 		presetIndex = (presetIndex + 1) % PRESETS_VOLTS.length;
+		voltageVolts = PRESETS_VOLTS[presetIndex];
+	}
+
+	@Override
+	public List<EditableField> editableFields() {
+		return List.of(new EditableField("Voltage", "V",
+				PRESETS_VOLTS[0], PRESETS_VOLTS[PRESETS_VOLTS.length - 1], voltageVolts));
+	}
+
+	@Override
+	public void applyEditedValues(List<Double> values) {
+		voltageVolts = Math.clamp(values.get(0), PRESETS_VOLTS[0], PRESETS_VOLTS[PRESETS_VOLTS.length - 1]);
 	}
 
 	/** Called by {@link com.rpicos.circuitcraft.block.PowerSupplyBlock#neighborChanged} whenever
@@ -44,7 +59,7 @@ public class PowerSupplyBlockEntity extends ComponentBlockEntity {
 			live = null;
 			return;
 		}
-		live = new VoltageSource(nodeA, nodeB, Waveform.dc(PRESETS_VOLTS[presetIndex]));
+		live = new VoltageSource(nodeA, nodeB, Waveform.dc(voltageVolts));
 		circuit.add(live);
 	}
 
@@ -55,7 +70,7 @@ public class PowerSupplyBlockEntity extends ComponentBlockEntity {
 
 	@Override
 	public String probeSummary() {
-		String base = "Power Supply " + PRESETS_VOLTS[presetIndex] + " V DC";
+		String base = "Power Supply " + voltageVolts + " V DC";
 		return redstonePowered ? base : base + " (off - needs redstone)";
 	}
 }

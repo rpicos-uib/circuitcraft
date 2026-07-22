@@ -1,6 +1,7 @@
 package com.rpicos.circuitcraft.block;
 
 import com.rpicos.circuitcraft.blockentity.ModuleBlockEntity;
+import com.rpicos.circuitcraft.network.ValueEditorOpener;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -41,6 +42,9 @@ public abstract class ModuleBlock extends Block implements EntityBlock {
 			return InteractionResult.SUCCESS;
 		}
 		if (level.getBlockEntity(pos) instanceof ModuleBlockEntity module) {
+			if (ValueEditorOpener.tryOpen(module, pos, player)) {
+				return InteractionResult.SUCCESS_SERVER;
+			}
 			module.cyclePreset(level.getGameTime());
 			player.sendOverlayMessage(Component.literal(module.summary()));
 		}

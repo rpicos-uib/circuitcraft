@@ -7,6 +7,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.List;
+
 /**
  * A configuration block (Voltage/Frequency module) that cycles a preset value on right-click and
  * pushes it into any adjacent {@link FunctionGeneratorBlockEntity}.
@@ -21,7 +23,7 @@ import net.minecraft.world.level.block.state.BlockState;
  * reachable chain, propagating outward one hop per tick (imperceptibly fast at 20 ticks/second for
  * any normal build).
  */
-public abstract class ModuleBlockEntity extends BlockEntity {
+public abstract class ModuleBlockEntity extends BlockEntity implements ValueEditable {
 
 	public enum Channel {VOLTAGE, FREQUENCY}
 
@@ -29,7 +31,9 @@ public abstract class ModuleBlockEntity extends BlockEntity {
 	}
 
 	private int presetIndex;
+	private double ownValue;
 	private long ownSetTick;
+	private boolean ownValueInitialized = false;
 
 	// "Nobody has authored this yet" placeholders: Long.MIN_VALUE always loses to any module that
 	// actually owns the channel (whose tick starts at 0 from construction), but still gives every
@@ -47,9 +51,37 @@ public abstract class ModuleBlockEntity extends BlockEntity {
 
 	protected abstract String unitSuffix();
 
+	protected abstract String fieldLabel();
+
+	private double ownValue() {
+		if (!ownValueInitialized) {
+			ownValue = presets()[presetIndex];
+			ownValueInitialized = true;
+		}
+		return ownValue;
+	}
+
 	public void cyclePreset(long currentTick) {
 		presetIndex = (presetIndex + 1) % presets().length;
+		ownValue = presets()[presetIndex];
+		ownValueInitialized = true;
 		ownSetTick = currentTick;
+		setChanged();
+	}
+
+	@Override
+	public List<EditableField> editableFields() {
+		double[] presets = presets();
+		return List.of(new EditableField(fieldLabel(), unitSuffix(),
+				presets[0], presets[presets.length - 1], ownValue()));
+	}
+
+	@Override
+	public void applyEditedValues(List<Double> values) {
+		double[] presets = presets();
+		ownValue = Math.clamp(values.get(0), presets[0], presets[presets.length - 1]);
+		ownValueInitialized = true;
+		ownSetTick = level == null ? ownSetTick : level.getGameTime();
 		setChanged();
 	}
 
@@ -61,10 +93,10 @@ public abstract class ModuleBlockEntity extends BlockEntity {
 	/** Called once per tick (see the owning Block's {@code getTicker}). */
 	public void tickModule(Level level, BlockPos pos, long currentTick) {
 		ChannelValue bestVoltage = channel() == Channel.VOLTAGE
-				? new ChannelValue(presets()[presetIndex], ownSetTick)
+				? new ChannelValue(ownValue(), ownSetTick)
 				: voltage;
 		ChannelValue bestFrequency = channel() == Channel.FREQUENCY
-				? new ChannelValue(presets()[presetIndex], ownSetTick)
+				? new ChannelValue(ownValue(), ownSetTick)
 				: frequency;
 
 		for (Direction direction : Direction.values()) {

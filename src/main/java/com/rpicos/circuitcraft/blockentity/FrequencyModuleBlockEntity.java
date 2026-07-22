@@ -26,4 +26,9 @@ public class FrequencyModuleBlockEntity extends ModuleBlockEntity {
 	protected String unitSuffix() {
 		return "Hz";
 	}
+
+	@Override
+	protected String fieldLabel() {
+		return "Frequency";
+	}
 }

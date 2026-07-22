@@ -26,4 +26,9 @@ public class VoltageModuleBlockEntity extends ModuleBlockEntity {
 	protected String unitSuffix() {
 		return "V";
 	}
+
+	@Override
+	protected String fieldLabel() {
+		return "Voltage";
+	}
 }

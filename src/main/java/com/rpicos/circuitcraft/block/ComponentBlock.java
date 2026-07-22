@@ -1,6 +1,7 @@
 package com.rpicos.circuitcraft.block;
 
 import com.rpicos.circuitcraft.blockentity.ComponentBlockEntity;
+import com.rpicos.circuitcraft.network.ValueEditorOpener;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -60,6 +61,9 @@ public abstract class ComponentBlock extends Block implements EntityBlock {
 			return InteractionResult.SUCCESS;
 		}
 		if (level.getBlockEntity(pos) instanceof ComponentBlockEntity component) {
+			if (ValueEditorOpener.tryOpen(component, pos, player)) {
+				return InteractionResult.SUCCESS_SERVER;
+			}
 			component.cyclePreset();
 			component.markNetworkDirty();
 			player.sendOverlayMessage(Component.literal(component.probeSummary()));
