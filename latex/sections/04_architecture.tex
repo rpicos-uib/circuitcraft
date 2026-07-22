@@ -92,10 +92,7 @@ horizontal axis, the other's on the vertical axis, the same X-Y display mode a r
 oscilloscope provides. Pinning is append-only with a two-slot cap: whichever position was
 just right-clicked -- new or already pinned -- always becomes the more recently pinned of
 the two, which unconditionally assigns it to the vertical (Y) axis, demoting the previous Y
-to X and, if both slots were already occupied, evicting the previous X entirely. Consecutive
-samples are connected with straight line segments, drawn with a small Bresenham rasterizer
-since the heads-up-display drawing interface exposes no arbitrary-angle line primitive, so
-the trace renders as a continuous curve rather than a scatter of isolated points.
+to X and, if both slots were already occupied, evicting the previous X entirely.
 
 Each axis is scaled independently to its own channel's peak magnitude, rather than sharing a
 single scale, so that two signals of very different size -- a few volts on one channel,
