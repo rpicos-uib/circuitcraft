@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:iron_nugget",
+    "minecraft:iron_nugget",
+    "minecraft:paper"
+  ],
+  "result": {
+    "id": "circuitcraft:capacitor",
+    "count": 2
+  }
+}

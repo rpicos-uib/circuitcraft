@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "circuitcraft:block/capacitor",
+    "north": "circuitcraft:block/terminal",
+    "south": "circuitcraft:block/terminal",
+    "east": "circuitcraft:block/capacitor",
+    "west": "circuitcraft:block/capacitor",
+    "up": "circuitcraft:block/capacitor",
+    "down": "circuitcraft:block/capacitor"
+  }
+}

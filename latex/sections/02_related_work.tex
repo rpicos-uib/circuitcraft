@@ -11,7 +11,7 @@ reactive elements replaced by companion resistive/source models derived from a n
 integration rule. Educational tools such as the Falstad circuit simulator and PhET's Circuit
 Construction Kit lower the barrier to entry by replacing SPICE's netlist syntax with direct
 schematic manipulation and are widely used in introductory courses. All three tools,
-however, present the circuit as a two-dimensional schematic. Mine Memristors uses the same
+however, present the circuit as a two-dimensional schematic. CircuitCraft uses the same
 underlying numerical technique (Sections~\ref{sec:architecture}
 and~\ref{sec:circuit-solver} describe an MNA solver employing trapezoidal-integration
 companion models for reactive elements, the family of technique SPICE itself uses) but
@@ -47,7 +47,7 @@ classrooms identifies a theme common to each of the studies above: teachers repo
 engagement and motivation fairly consistently, whereas rigorously measured gains in specific
 learning outcomes are reported less often and less consistently, a caveat also present in
 the general simulation-games literature~\cite{sitzmann2011meta} and one this paper does not
-claim to have resolved for Mine Memristors specifically (Section~\ref{sec:limitations}).
+claim to have resolved for CircuitCraft specifically (Section~\ref{sec:limitations}).
 
 Within that broader literature, the subset closest to the present paper's subject concerns
 Minecraft's native redstone subsystem, already a common entry point for teaching digital
@@ -56,7 +56,7 @@ memory cells entirely from in-game blocks. Dezuanni et al.~\cite{dezuanni2015red
 document children describing and reasoning about redstone circuits in explicitly electrical
 language, notwithstanding that the underlying mechanic is a discrete, boolean signal rather
 than a continuous one (the mechanics of redstone itself are described in
-Section~\ref{sec:minecraft-mechanics}). This is the literature to which Mine Memristors is
+Section~\ref{sec:minecraft-mechanics}). This is the literature to which CircuitCraft is
 closest, and from which it departs most directly: the case studies cited above use
 Minecraft's existing mechanics, redstone included, as the vehicle for a lesson, whereas Mine
 Memristors introduces an entirely new, continuous-time simulation layer, because redstone's
@@ -92,7 +92,7 @@ Tetzlaff~\cite{alchawa2020simple} present a simplified compact model aimed speci
 neuromorphic ReRAM applications, where computational efficiency across large device arrays
 is often prioritized over matching any single device's measured characteristics exactly.
 
-Mine Memristors implements Strukov et al.'s original linear-drift formulation specifically,
+CircuitCraft implements Strukov et al.'s original linear-drift formulation specifically,
 rather than any of the refinements above, because the priorities of a teaching tool differ
 from those of a circuit designer or device physicist: the model must be simple enough to
 verify in closed form (Section~\ref{sec:validation}) and traceable, step by step, to the

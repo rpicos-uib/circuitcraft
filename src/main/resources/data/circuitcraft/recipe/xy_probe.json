@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "R": "minecraft:redstone",
+    "Q": "minecraft:quartz",
+    "S": "minecraft:stick"
+  },
+  "pattern": [
+    " R ",
+    " Q ",
+    " S "
+  ],
+  "result": {
+    "id": "circuitcraft:xy_probe",
+    "count": 1
+  }
+}

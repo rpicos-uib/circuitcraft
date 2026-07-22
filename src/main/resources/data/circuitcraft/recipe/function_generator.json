@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "C": "minecraft:copper_ingot",
+    "Q": "minecraft:quartz",
+    "R": "minecraft:redstone_torch"
+  },
+  "pattern": [
+    "ICI",
+    "QRQ",
+    "ICI"
+  ],
+  "result": {
+    "id": "circuitcraft:function_generator",
+    "count": 1
+  }
+}

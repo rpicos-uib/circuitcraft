@@ -1,8 +1,8 @@
 {
 	"schemaVersion": 1,
-	"id": "minememristors",
+	"id": "circuitcraft",
 	"version": "${version}",
-	"name": "Mine Memristors",
+	"name": "CircuitCraft",
 	"description": "Teach analog electronics in Minecraft: resistors, capacitors, inductors, memristors, sources and an oscilloscope probe, all backed by a real circuit solver.",
 	"authors": [
 		"rpicos"
@@ -10,14 +10,14 @@
 	"contact": {
 	},
 	"license": "CC0-1.0",
-	"icon": "assets/minememristors/icon.png",
+	"icon": "assets/circuitcraft/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.rpicos.minememristors.MineMemristors"
+			"com.rpicos.circuitcraft.CircuitCraft"
 		],
 		"client": [
-			"com.rpicos.minememristors.client.MineMemristorsClient"
+			"com.rpicos.circuitcraft.client.CircuitCraftClient"
 		]
 	},
 	"depends": {

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:amethyst_shard",
+    "minecraft:redstone",
+    "minecraft:iron_nugget"
+  ],
+  "result": {
+    "id": "circuitcraft:frequency_module",
+    "count": 1
+  }
+}

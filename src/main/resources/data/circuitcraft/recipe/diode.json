@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:iron_nugget",
+    "minecraft:redstone",
+    "minecraft:quartz"
+  ],
+  "result": {
+    "id": "circuitcraft:diode",
+    "count": 2
+  }
+}

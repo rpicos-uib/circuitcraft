@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "circuitcraft:block/memristor",
+    "north": "circuitcraft:block/terminal",
+    "south": "circuitcraft:block/terminal",
+    "east": "circuitcraft:block/memristor",
+    "west": "circuitcraft:block/memristor",
+    "up": "circuitcraft:block/memristor",
+    "down": "circuitcraft:block/memristor"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "facing=down":  { "model": "circuitcraft:block/inductor", "x": 90 },
+    "facing=up":    { "model": "circuitcraft:block/inductor", "x": 270 },
+    "facing=north": { "model": "circuitcraft:block/inductor" },
+    "facing=south": { "model": "circuitcraft:block/inductor", "y": 180 },
+    "facing=west":  { "model": "circuitcraft:block/inductor", "y": 270 },
+    "facing=east":  { "model": "circuitcraft:block/inductor", "y": 90 }
+  }
+}

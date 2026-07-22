@@ -1,0 +1,18 @@
+{
+  "block.circuitcraft.resistor": "Resistor",
+  "block.circuitcraft.capacitor": "Capacitor",
+  "block.circuitcraft.inductor": "Inductor",
+  "block.circuitcraft.memristor": "Memristor",
+  "block.circuitcraft.power_supply": "Power Supply",
+  "block.circuitcraft.function_generator": "Function Generator",
+  "block.circuitcraft.wire": "Circuit Wire",
+  "block.circuitcraft.ammeter": "Ammeter",
+  "block.circuitcraft.voltage_module": "Voltage Module",
+  "block.circuitcraft.frequency_module": "Frequency Module",
+  "block.circuitcraft.ground": "Ground",
+  "block.circuitcraft.diode": "Diode",
+  "block.circuitcraft.op_amp": "Ideal Op-Amp",
+  "item.circuitcraft.probe": "Oscilloscope Probe",
+  "item.circuitcraft.xy_probe": "X-Y Oscilloscope Probe",
+  "itemGroup.circuitcraft.components": "CircuitCraft"
+}

@@ -1,4 +1,4 @@
-# Mine Memristors
+# CircuitCraft
 
 A Fabric mod that turns Minecraft into an analog electronics lab. Place resistors, capacitors,
 inductors and memristors as blocks, wire them up, drive them with power supplies and function
@@ -36,7 +36,7 @@ Resistor, each with their own color-coded trace and live V/I readout:
 2. Download the **Fabric API** jar for 26.2 from [Modrinth](https://modrinth.com/mod/fabric-api) or
    [CurseForge](https://www.curseforge.com/minecraft/mc-mods/fabric-api) and drop it in your
    `mods` folder.
-3. Grab `minememristors-<version>.jar` from this repo's [Releases](../../releases) page and drop
+3. Grab `circuitcraft-<version>.jar` from this repo's [Releases](../../releases) page and drop
    it in the same `mods` folder.
 4. Make sure the profile you launch with is on Java 25+ (recent launchers that auto-manage a JVM
    per Minecraft version will already do this once you select 26.2).
@@ -45,12 +45,12 @@ Resistor, each with their own color-coded trace and live V/I readout:
 ### Option B — build from source
 
 ```bash
-git clone https://github.com/rpicos-uib/mine-memristors.git
+git clone https://github.com/rpicos-uib/circuitcraft.git
 cd mine-memristors
 ./gradlew build
 ```
 
-The mod jar comes out at `build/libs/minememristors-<version>.jar`. You need a JDK 25 available;
+The mod jar comes out at `build/libs/circuitcraft-<version>.jar`. You need a JDK 25 available;
 either make it your default `java`, or point Gradle at it explicitly:
 
 ```bash
@@ -119,18 +119,18 @@ None of these have recipe-book unlock advancements yet, so they won't show a "ne
 but they're fully craftable by hand right now. See [Contributing](#contributing) if you want to add
 those.
 
-All items are also available in their own **Mine Memristors** creative-inventory tab.
+All items are also available in their own **CircuitCraft** creative-inventory tab.
 
 ## Architecture, for anyone extending this
 
 ```
-src/main/java/com/rpicos/minememristors/
+src/main/java/com/rpicos/circuitcraft/
   sim/            Pure-Java circuit solver — zero Minecraft dependency, unit-testable standalone
   block/          Block classes (placement, orientation, right-click interactions)
   blockentity/    BlockEntity classes (the actual sim state + circuit wiring per component)
   network/        World-side wire connectivity graph + the client<->server probe protocol
   item/           The probe item
-src/client/java/com/rpicos/minememristors/client/   HUD rendering, client-side networking
+src/client/java/com/rpicos/circuitcraft/client/   HUD rendering, client-side networking
 ```
 
 ### The solver (`sim` package)
@@ -160,7 +160,7 @@ and the memristor's analytic charge-controlled ODE.
    shared `terminal.png` lead texture, so you only need the body texture for the other four
    faces), a `blockstates/your_component.json` and `models/block/your_component.json` (copy an
    existing pair — they're generic besides the texture path), and a lang entry.
-6. Optionally add a `data/minememristors/recipe/your_component.json`.
+6. Optionally add a `data/circuitcraft/recipe/your_component.json`.
 
 ### Known limitations (v0.2)
 
@@ -181,13 +181,13 @@ actually correct, not just plausible-looking.
 
 ## Citation
 
-If you use Mine Memristors — in a classroom, a paper, a demo, a derivative mod, anywhere — please
+If you use CircuitCraft — in a classroom, a paper, a demo, a derivative mod, anywhere — please
 credit the original author, Rodrigo Picos. A link back to this repository is enough for informal
 use; for academic work, please cite it as:
 
 ```
-Rodrigo Picos. Mine Memristors: a Fabric mod for teaching analog electronics in Minecraft.
-https://github.com/rpicos-uib/mine-memristors, 2026.
+Rodrigo Picos. CircuitCraft: a Fabric mod for teaching analog electronics in Minecraft.
+https://github.com/rpicos-uib/circuitcraft, 2026.
 ```
 
 BibTeX:
@@ -195,8 +195,8 @@ BibTeX:
 ```bibtex
 @software{picos_mine_memristors,
   author = {Picos, Rodrigo},
-  title  = {Mine Memristors: a Fabric mod for teaching analog electronics in Minecraft},
-  url    = {https://github.com/rpicos-uib/mine-memristors},
+  title  = {CircuitCraft: a Fabric mod for teaching analog electronics in Minecraft},
+  url    = {https://github.com/rpicos-uib/circuitcraft},
   year   = {2026}
 }
 ```

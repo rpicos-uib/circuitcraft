@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:gold_nugget",
+    "minecraft:gold_nugget",
+    "minecraft:redstone",
+    "minecraft:quartz"
+  ],
+  "result": {
+    "id": "circuitcraft:op_amp",
+    "count": 1
+  }
+}

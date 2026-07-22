@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:redstone",
+    "minecraft:amethyst_shard",
+    "minecraft:iron_nugget"
+  ],
+  "result": {
+    "id": "circuitcraft:memristor",
+    "count": 1
+  }
+}
