@@ -1,0 +1,183 @@
+\section{Worked Experiments}
+\label{sec:experiments}
+
+To ground the pedagogical claims of Section~\ref{sec:pedagogy} in something a reader can
+reproduce rather than take on faith, this section specifies five complete circuits, each
+built from the mod's own components and each demonstrating a distinct piece of standard
+analog-circuits curriculum: a resistive divider, a first-order RC step response, a
+second-order RLC step response, a diode rectifier, and a memristor's characteristic pinched
+hysteresis loop. None uses the ideal op-amp, since every one of these five topologies is
+standard undergraduate material well before an op-amp is introduced. Every circuit was built
+directly into the same persistent world used throughout this paper's own development, laid
+out as five side-by-side benches on a flattened platform beginning a few blocks east of the
+world's spawn point, so a reader with access to that world can walk up to any of them
+immediately rather than reconstruct them from a diagram. Because every predicted value below
+follows from closed-form analysis of the exact component values specified (Section~\ref{sec:circuit-solver}
+gives the governing equations for each element), a reader who instead prefers to build these
+circuits independently, anywhere, need only reproduce the topology and preset values given
+here.
+
+\subsection{A methodological note on presets}
+
+None of the mod's block entities persist their right-click-selected preset (resistance,
+capacitance, waveform kind, and so on) across a world save and reload -- confirmed directly
+against the source, no block entity in the mod overrides Minecraft's block-entity NBT
+read/write methods. Consequently every component below, freshly placed, loads at its
+hardcoded default preset regardless of which value the experiment actually calls for, and
+reaching the intended value is itself the first step of performing the experiment, exactly
+as a student wiring up a real bench supply must first turn its dial to the desired voltage
+rather than finding it pre-set. Each experiment below states the default and the exact
+number of right-clicks needed to reach the intended value, using the fixed cycle order each
+preset wraps through (Section~\ref{sec:circuit-solver} and the appendix give the full preset
+tables). A power supply or function generator additionally remains electrically
+disconnected -- an open circuit, not a 0~V source -- until it receives a redstone signal
+(Section~\ref{sec:circuit-solver}); each bench includes a lever placed directly on top of its
+source block for exactly this purpose, left off by default so that flipping it marks a clean
+$t=0$ for whichever transient the experiment observes.
+
+\subsection{Experiment 1: basic voltage divider}
+\label{sec:exp-divider}
+
+The simplest circuit in this set: a DC source and two resistors in series, tapped at their
+midpoint. Built as a single row -- power supply, resistor $R_1$, a wire tap, resistor $R_2$
+-- closed into a loop by a plain wire return path and a ground reference, ten blocks east of
+spawn. Both resistors are left at their default 100~$\Omega$ preset and the supply at its
+default 5~V preset, so this experiment requires no right-clicks at all beyond flipping the
+lever.
+
+\textbf{Procedure.} Flip the lever on top of the power supply. Pin the oscilloscope probe to
+the wire block between the two resistors (the divider's midpoint) to read its absolute
+voltage relative to the ground block elsewhere in the same network.
+
+\textbf{Expected result.} By the standard voltage-divider relation,
+\begin{equation}
+V_{\text{tap}} = V_{\text{supply}} \cdot \frac{R_2}{R_1 + R_2} = 5~\text{V} \cdot \frac{100}{100+100} = 2.5~\text{V},
+\end{equation}
+a steady 2.5~V once the lever is flipped, with no transient of any kind (every element here
+is purely resistive). A useful follow-up, left to the reader: right-click $R_2$ twice
+(100~$\Omega \to 1000~\Omega \to 10\,000~\Omega$) and confirm the tap voltage rises to
+$5 \cdot 10\,000/10\,100 \approx 4.95$~V, reproducing the divider relation at a different
+ratio without changing the topology at all.
+
+\subsection{Experiment 2: simple RC step response}
+\label{sec:exp-rc}
+
+A power supply, a resistor, and a capacitor in series, with the capacitor's far lead tied to
+ground -- probing the capacitor directly therefore reads its absolute voltage, the classic RC
+charging curve. Built 26 blocks east of spawn. Right-click the power supply twice
+($5 \to 9 \to 12$~V) and the resistor twice ($100 \to 1000 \to 10\,000\,\Omega$); right-click
+the capacitor once ($10 \to 100\,\mu\text{F}$). This gives a time constant
+$\tau = RC = 10\,000 \cdot 100\times10^{-6} = 1$~s -- 20 game ticks -- chosen specifically to
+be slow enough to watch on the oscilloscope's rolling 200-sample (10~s) history window, yet
+fast enough that the whole curve, not just its first fraction, fits comfortably inside that
+window.
+
+\textbf{Procedure.} Pin the probe to the capacitor \emph{before} flipping the lever, so the
+charging transient is captured from $t=0$. Flip the lever and observe.
+
+\textbf{Expected result.} The standard first-order step response,
+\begin{equation}
+V_C(t) = V_{\text{supply}}\left(1 - e^{-t/\tau}\right),
+\end{equation}
+predicts $V_C(\tau) = 12(1 - e^{-1}) \approx 7.58$~V at $t=1$~s, and
+$V_C(5\tau) = 12(1 - e^{-5}) \approx 11.92$~V (within 0.7\% of fully charged) at $t=5$~s --
+both comfortably inside the 10~s history window, so a single screenshot taken any time after
+about 5 seconds should show the full exponential rise settled at its plateau.
+
+\subsection{Experiment 3: simple RLC step response}
+\label{sec:exp-rlc}
+
+The same idea as Experiment~\ref{sec:exp-rc}, but with an inductor inserted between the
+resistor and capacitor, turning a first-order response into a second-order one capable of
+ringing. Built 42 blocks east of spawn. Right-click the power supply twice (to 12~V, as
+above). Right-click the resistor \emph{three} times, cycling
+$100 \to 1000 \to 10\,000 \to 10~\Omega$ -- the fourth and smallest preset, reached by
+wrapping back around past the top of the cycle rather than by cycling downward directly.
+Right-click the inductor twice ($0.1 \to 1 \to 5$~H) and the capacitor twice
+($10 \to 100 \to 1000\,\mu\text{F}$) -- both to their largest available preset, which gives
+the lowest achievable natural frequency and therefore the most visually legible ringing given
+the fixed 20~Hz solve rate.
+
+\textbf{Expected result.} With $R=10\,\Omega$, $L=5$~H, $C=1000\,\mu\text{F}$, the standard
+series-RLC step response gives an undamped natural frequency, damping ratio, and damped
+frequency of
+\begin{equation}
+\omega_0 = \frac{1}{\sqrt{LC}} \approx 14.14~\text{rad/s}, \qquad
+\zeta = \frac{R}{2}\sqrt{\frac{C}{L}} \approx 0.0707, \qquad
+\omega_d = \omega_0\sqrt{1-\zeta^2} \approx 14.09~\text{rad/s},
+\end{equation}
+a lightly damped ring at $f_d = \omega_d/2\pi \approx 2.24$~Hz (a period of about 9 ticks).
+The capacitor voltage overshoots its 12~V final value, peaking at
+\begin{equation}
+V_{\text{peak}} = V_{\text{supply}}\left(1 + e^{-\zeta\pi/\sqrt{1-\zeta^2}}\right) \approx 21.6~\text{V}
+\end{equation}
+at $t = \pi/\omega_d \approx 0.22$~s (about 4--5 ticks after flipping the lever), before
+ringing down and settling to 12~V with a 2\%-settling time of
+$4/(\zeta\omega_0) \approx 4$~s -- comfortably spanning close to half of the 10~s history
+window, so the ringing itself, not just its first peak, is directly visible without needing
+to time the screenshot precisely. This combination -- a real, undamped-looking oscillatory
+transient rather than one visibly flattened by numerical damping -- is precisely the
+motivation given in Section~\ref{sec:circuit-solver} for using trapezoidal integration over
+backward Euler for the reactive-element companion models.
+
+\subsection{Experiment 4: half-wave rectifier}
+\label{sec:exp-rectifier}
+
+A function generator driving a diode and a load resistor in series, with the resistor's far
+lead grounded so it, too, reads an absolute voltage directly. Built 58 blocks east of spawn.
+The diode is placed facing \emph{toward} the generator (its anode is the lead facing the
+direction it was placed, per Section~\ref{sec:circuit-solver}), so that current flows readily
+generator-to-load on the forward half of each cycle and is blocked on the reverse half. No
+right-clicks are required at all: the function generator's own default -- a 5~V, 1~Hz sine,
+once its lever is flipped -- and the diode's default silicon preset (approximately 0.7~V
+forward drop) and the resistor's default 100~$\Omega$ load are exactly the values used.
+
+\textbf{Procedure.} Flip the lever. For the clearest comparison, pin the function generator
+itself (giving the undistorted input, since a component's trace is the voltage across its
+own two leads) as one channel of the time-domain probe and the load resistor (giving the
+rectified output) as a second channel, so both waveforms are visible on the same
+oscilloscope at once.
+
+\textbf{Expected result.} On each positive half-cycle, once the instantaneous input exceeds
+the diode's forward voltage, the output approximately follows the input minus that drop,
+peaking around $5 - 0.7 = 4.3$~V; on each negative half-cycle the diode is reverse-biased and
+the output reads approximately 0~V. At 1~Hz, ten such rectified pulses appear across the 10~s
+history window -- a textbook half-wave-rectified sine, clearly distinguishable from the
+smooth input sine on the companion channel.
+
+\subsection{Experiment 5: memristor pinched hysteresis loop}
+\label{sec:exp-memristor}
+
+The most advanced circuit in this set, and the only one using the X-Y oscilloscope probe
+(Section~\ref{sec:architecture}) rather than the time-domain one: a function generator
+driving a memristor in series with an ammeter, tracing the memristor's current against its
+own voltage. A pinched hysteresis loop through the origin -- present at any drive frequency,
+collapsing to a single-valued curve only in the DC limit -- is the experimental signature
+that originally motivated the memristor's postulation and its subsequent physical
+confirmation (Section~\ref{sec:related-work}). Built 74 blocks east of spawn, with a
+frequency module (default 0.5~Hz, requiring no clicks) placed against the function
+generator's north face to slow its default 1~Hz down to 0.5~Hz; the generator's default 5~V
+amplitude and sine waveform are used unchanged. The memristor is left at its default
+$q_{\max} = 10^{-3}$~C preset ($R_{on}=100\,\Omega$, $R_{off}=10\,000\,\Omega$ are fixed,
+not presets, per Section~\ref{sec:circuit-solver}).
+
+\textbf{Procedure.} Flip the lever. Pin the memristor \emph{first} with the X-Y probe and
+the ammeter \emph{second}: the probe's pinning rule (Section~\ref{sec:architecture}) always
+assigns the most recently pinned position to the vertical (Y) axis, so pinning in this order
+puts the memristor's voltage on X and the ammeter's current on Y.
+
+\textbf{Expected result.} Unlike the previous four circuits, this one is genuinely nonlinear
+-- the memristor's own resistance depends on the full time history of the current through
+it, which in turn depends on that same resistance -- so no closed-form prediction is offered
+here; the qualitative shape is the point of the experiment. The current-voltage trace should
+appear as a pinched loop crossing through the origin on every cycle (the defining signature
+of a memristor, as opposed to an ordinary resistor's straight line or an ordinary
+reactive element's open ellipse), widest where the driving voltage is largest and
+progressively narrowing toward the origin. Because this mod implements the original,
+unwindowed HP linear-drift model (Section~\ref{sec:related-work}), a rough charge-balance
+estimate for these parameters (amplitude, frequency, and $q_{\max}$) suggests the accumulated
+charge over each half-cycle approaches a substantial fraction of $q_{\max}$, so the loop may
+visibly flatten as it approaches its boundary within a half-cycle rather than tracing a
+smooth figure-eight throughout -- itself a direct, hands-on illustration of the boundary-pinning
+limitation that Biolek et al.'s windowed model was later designed to address, discussed
+already in Section~\ref{sec:related-work} and Section~\ref{sec:limitations}.
