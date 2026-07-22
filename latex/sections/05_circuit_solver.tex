@@ -131,22 +131,7 @@ same network, turning the abstract notion of a reference node into an object a p
 establish explicitly, in the same way an actual measurement requires choosing where to
 attach the ground lead before any other reading becomes meaningful.
 
-\subsection{Adjustable sources and value propagation}
-
-The function generator's waveform shape (sine, square, or triangle) is a preset cycled
-directly on the block, whereas its amplitude and frequency are set externally by two small
-utility blocks, a voltage module and a frequency module, that a player places in contact
-with the generator, or in contact with a chain of other modules of either kind that
-eventually reaches one or more generators. Each module tracks two independently propagated
-quantities, a voltage value and a frequency value, each tagged with the game tick at which
-it was last \emph{authored} (set directly by a player right-clicking that specific module).
-A module authors only the channel matching its own kind; for the remaining channel, it
-purely relays whatever value and tag it most recently observed. Once per tick, every module
-compares both of its channels against every immediately adjacent module of either kind and
-adopts whichever possesses the more recent authoring tick, subsequently propagating its
-resolved voltage and frequency to any adjacent generator. This mechanism allows a single
-control to reach an arbitrarily long, possibly mixed chain of modules and every generator at
-its far end, converging one hop per tick (at 20 ticks per second, imperceptibly fast for any
-construction a player is likely to build), while remaining simple enough to implement
-without introducing a separate, explicit ``wiring'' concept distinct from ordinary block
-adjacency.
+The function generator's amplitude and frequency, unlike its waveform shape, are not set by
+a preset cycled on the block itself but by a separate control mechanism entirely distinct
+from the MNA network described above; Section~\ref{sec:control-network} describes it in
+detail.

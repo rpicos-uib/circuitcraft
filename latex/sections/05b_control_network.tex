@@ -1,0 +1,89 @@
+\section{The Function Generator's Control Network}
+\label{sec:control-network}
+
+The function generator is the only source whose output is not simply a fixed preset: its
+amplitude and frequency are set by two small, undirected utility blocks, a voltage module
+and a frequency module, rather than by right-clicking the generator itself (which instead
+only cycles its waveform shape -- sine, square, or triangle -- a purely local preset that
+never propagates). This section describes the mechanism by which a module's setting reaches
+one or more generators, because it is easy to mistake for an extension of the electrical
+topology described in Section~\ref{sec:architecture} when it is, in fact, a second and
+entirely independent network built on the same primitive (block-to-block adjacency) for a
+different purpose.
+
+\subsection{Why a second network}
+
+Section~\ref{sec:limitations} notes that every adjustable quantity in the mod, amplitude and
+frequency included, is one of a small number of discrete presets rather than a numeric
+entry, to avoid introducing a text-input interface foreign to the base game. A single
+right-click-to-cycle control on the generator itself would satisfy that constraint for one
+generator, but a classroom exercise frequently calls for several generators sharing one
+setting -- for instance, driving multiple parallel RC networks with an identical input to
+compare their responses side by side, an exercise Section~\ref{sec:pedagogy} discusses.
+Requiring every generator in such a bank to be clicked to the same preset individually, and
+kept in sync by hand as the exercise evolves, would be tedious and error-prone. The voltage
+and frequency modules solve this by letting a single click on one module drive every
+generator reachable through a chain of like-purpose blocks, the same one-to-many relationship
+a bench power supply's daisy-chained ``sync'' output provides to several instruments at once.
+
+\subsection{Modules: undirected cubes, not electrical components}
+
+A voltage module and a frequency module are both instances of the same abstract block
+entity, differing only in which of two channels, voltage or frequency, they \emph{author}.
+Neither has an orientation or electrical leads: unlike a resistor or diode, which expose
+exactly two faces as leads and insulate the remaining four, a module treats all six of its
+faces identically, and a module may attach to a generator, or to another module, on any
+face -- including a generator's own electrical lead faces, since this contact is never
+folded into the union--find partitioning that Section~\ref{sec:architecture} describes and
+never contributes a term to the MNA system in Section~\ref{sec:circuit-solver}. A module's
+own adjustable quantity is a preset cycled by an empty-handed right-click, exactly as a
+resistor's resistance or a source's waveform is: a voltage module cycles among
+$\{1.5, 5, 9, 12, 24\}$~V and a frequency module among $\{0.5, 1, 2, 5, 10\}$~Hz.
+
+\subsection{Authorship and one-hop-per-tick relay}
+
+Every module, regardless of which channel it authors, stores \emph{both} channels as a pair
+$(\text{value}, \tau)$, where $\tau$ is the game tick at which that channel's value was most
+recently \emph{authored} -- either directly, when a player cycles that module's own preset
+(which always re-stamps $\tau$ to the current tick, even if the cycle happens to land back
+on the same value), or indirectly, by adopting a neighboring module's more recently authored
+pair. Once per game tick, independently for each channel, every module compares its own
+stored $\tau$ against every immediately adjacent module's $\tau$ for that same channel and
+adopts whichever pair carries the strictly larger tick:
+\begin{equation}
+(\text{value}, \tau) \leftarrow \operatorname*{arg\,max}_{\tau' \,\in\, \{\tau\} \,\cup\,
+\{\tau_n : n \in \mathcal{N}\}} \tau',
+\end{equation}
+where $\mathcal{N}$ is the set of the module's face-adjacent neighboring modules. A tie is
+resolved in favor of the module's own current value (no oscillation results from two
+equally recent authors reaching a module simultaneously), and a module with no neighbor at
+all simply keeps relaying its last-known pair indefinitely, including after a neighbor is
+removed -- there is no explicit ``disconnected'' state, only a value that stops receiving
+fresher ticks. After updating both of its channels, a module unconditionally pushes its
+resolved voltage and frequency to every function generator directly adjacent to it.
+
+Because each module consults only its immediate neighbors' \emph{already-updated} values
+from the previous tick, and does not look further ahead along the chain, a freshly
+authored value advances exactly one block per game tick, a discrete diffusion rather than
+an instantaneous update. At 20 ticks per second this delay is imperceptible for any chain a
+player is likely to build by hand (a twenty-block chain, for instance, fully converges in
+one second), but it is a real, measurable propagation time rather than an idealization, and
+is mentioned here specifically because it is the one place in the mod where an in-world
+distance between two blocks has a temporal consequence, unlike the electrical network, whose
+solve is global and instantaneous within a tick regardless of how large the constructed
+circuit is.
+
+\subsection{Mixed chains and multiple generators}
+
+A single physical chain may freely mix voltage and frequency modules: each block relays both
+channels regardless of which one it authors, so a chain alternating between the two kinds
+still carries a single, globally agreed voltage value and a single, globally agreed
+frequency value end to end, authored independently by whichever module of each kind was most
+recently clicked anywhere in the chain. Any number of generators may attach to any module in
+the chain, at any point along it, and each receives the same converged amplitude and
+frequency every tick; the push to a generator is idempotent (a generator only remarks its
+network dirty, prompting a resynchronization to clients, if the incoming value actually
+differs from its current one), so a large bank of generators sharing one control imposes no
+per-tick cost beyond the assignment itself. A generator with no module attached at all
+retains its default amplitude and frequency (5~V, 1~Hz) rather than becoming unset, so a
+newly placed generator is immediately usable before any module is ever placed.

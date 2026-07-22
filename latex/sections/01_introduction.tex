@@ -54,7 +54,10 @@ theory. Section~\ref{sec:architecture} describes the mod's own software architec
 particular the topology-construction algorithm used to translate a player's in-world wiring
 into a circuit graph. Section~\ref{sec:circuit-solver} describes the solver itself,
 including the explicit, player-placeable ground reference that allows the notion of
-``ground'' to be taught rather than assumed. Section~\ref{sec:pedagogy} discusses the
+``ground'' to be taught rather than assumed. Section~\ref{sec:control-network} describes a
+second, independent network, unrelated to the electrical topology, by which a voltage or
+frequency module propagates a shared amplitude or frequency setting to one or more function
+generators. Section~\ref{sec:pedagogy} discusses the
 pedagogical rationale underlying each design choice. Section~\ref{sec:validation} describes
 how the solver and the surrounding game logic were verified during development.
 Section~\ref{sec:limitations} discusses current limitations and planned classroom
