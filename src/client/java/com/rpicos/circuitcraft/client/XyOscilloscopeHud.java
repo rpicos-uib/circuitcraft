@@ -66,6 +66,7 @@ public class XyOscilloscopeHud implements HudElement {
 		int plotCenterX = plotX0 + PLOT_SIZE / 2;
 		int plotCenterY = plotY0 + PLOT_SIZE / 2;
 
+		ScopeGrid.draw(extractor, plotX0, plotY0, plotX0 + PLOT_SIZE, plotY0 + PLOT_SIZE, 4, 4);
 		extractor.horizontalLine(plotX0, plotX0 + PLOT_SIZE, plotCenterY, 0xFF2E2E4A);
 		extractor.verticalLine(plotCenterX, plotY0, plotY0 + PLOT_SIZE, 0xFF2E2E4A);
 

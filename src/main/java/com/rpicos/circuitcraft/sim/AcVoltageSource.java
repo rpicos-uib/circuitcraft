@@ -10,6 +10,7 @@ public final class AcVoltageSource {
 	private final Complex value;
 
 	int branchIndex = -1;
+	private Complex current = Complex.ZERO;
 
 	public AcVoltageSource(int a, int b, Complex value) {
 		this.a = a;
@@ -31,5 +32,16 @@ public final class AcVoltageSource {
 
 	public Complex value() {
 		return value;
+	}
+
+	void setSolvedCurrent(Complex current) {
+		this.current = current;
+	}
+
+	/** The branch current solved for this source at the most recent {@link AcCircuit#solve}, in
+	 *  the same a-to-b sense as {@link com.rpicos.circuitcraft.sim.VoltageSource#current()}. Zero
+	 *  until the first solve. */
+	public Complex current() {
+		return current;
 	}
 }

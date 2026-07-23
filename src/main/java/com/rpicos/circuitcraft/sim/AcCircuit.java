@@ -132,6 +132,9 @@ public class AcCircuit {
 		for (int i = 0; i < n; i++) {
 			nodeVoltages[i + 1] = x[i];
 		}
+		for (AcVoltageSource s : sources) {
+			s.setSolvedCurrent(x[n + s.branchIndex]);
+		}
 	}
 
 	/** Complex Gaussian elimination with partial pivoting (by magnitude). */

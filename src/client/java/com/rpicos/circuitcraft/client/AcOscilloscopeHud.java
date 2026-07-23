@@ -91,6 +91,7 @@ public class AcOscilloscopeHud implements HudElement {
 		}
 		int height = y1 - y0;
 
+		ScopeGrid.draw(extractor, x0, y0, x1, y1, 6, 4);
 		extractor.text(font, String.format("%.0f%s", max, unit), x0, y0, 0xFF9090A8, false);
 		extractor.text(font, String.format("%.0f%s", min, unit), x0, y1 - 8, 0xFF9090A8, false);
 

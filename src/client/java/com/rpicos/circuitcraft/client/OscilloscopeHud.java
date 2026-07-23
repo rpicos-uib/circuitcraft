@@ -80,6 +80,7 @@ public class OscilloscopeHud implements HudElement {
 		int graphHeight = graphY1 - graphY0;
 		int midY = graphY0 + graphHeight / 2;
 
+		ScopeGrid.draw(extractor, graphX0, graphY0, graphX1, graphY1, 4, 4);
 		extractor.horizontalLine(graphX0, graphX1, midY, 0xFF2E4A2E);
 
 		float maxAbs = 0.001f;

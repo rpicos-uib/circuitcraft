@@ -3,6 +3,7 @@ package com.rpicos.circuitcraft.network;
 import com.rpicos.circuitcraft.CircuitCraft;
 import com.rpicos.circuitcraft.blockentity.AcSourceBlockEntity;
 import com.rpicos.circuitcraft.blockentity.AcStampable;
+import com.rpicos.circuitcraft.blockentity.AmmeterBlockEntity;
 import com.rpicos.circuitcraft.blockentity.ComponentBlockEntity;
 import com.rpicos.circuitcraft.blockentity.GroundBlockEntity;
 import com.rpicos.circuitcraft.blockentity.NetworkBlockEntity;
@@ -284,7 +285,17 @@ public class CircuitNetworkManager {
 		return new AcSweepResult(freqs, mags, phases, null);
 	}
 
+	/** Returns whatever quantity an AC-probed signal point should be judged against the source
+	 *  amplitude: normally that's the small-signal voltage across the pinned element, but an ideal
+	 *  ammeter is electrically a wire, so the voltage across it is identically zero at every
+	 *  frequency by construction - probing one for voltage would always show a flat, meaningless
+	 *  trace. Its branch current (see {@link AmmeterBlockEntity#acCurrent}) is used instead, which
+	 *  makes the resulting ratio a transadmittance rather than a unitless gain, exactly as pinning
+	 *  the regular (transient) probe on an ammeter already reads current instead of voltage. */
 	private static Complex readAcVoltage(BlockPos pos, NetworkBlockEntity entity, NodeAssignment assignment, AcCircuit acCircuit) {
+		if (entity instanceof AmmeterBlockEntity ammeter) {
+			return ammeter.acCurrent();
+		}
 		if (entity instanceof OpAmpBlockEntity opAmp) {
 			int nodeOut = assignment.nodeIdByKey().get(new NodeKey(pos, opAmp.outputFace()));
 			return acCircuit.getVoltage(nodeOut);
