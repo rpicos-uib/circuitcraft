@@ -17,16 +17,20 @@ clients, and a client-only package rendering the oscilloscope heads-up display.
 ]
 \node[box, fill=gray!10] (sim) {\texttt{sim} --- pure-Java MNA circuit solver\\(no Minecraft dependency)};
 \node[box, below=of sim, fill=blue!8] (blockentity) {\texttt{blockentity} --- per-block simulation state\\(components, wire/ground nodes, modules)};
-\node[box, below=of blockentity, fill=blue!8] (block) {\texttt{block} --- placement, orientation, right-click interaction};
+\node[box, below=of blockentity, fill=blue!8] (block) {\texttt{block} --- placement, orientation,\\right-click interaction};
 \node[box, below=of block, fill=orange!12] (network) {\texttt{network} --- topology construction, solve loop,\\multi-channel probe protocol};
-\node[box, below=of network, fill=green!10] (client) {\texttt{client} --- oscilloscope HUD rendering (client-side only)};
+\node[box, below=of network, fill=green!10] (client) {\texttt{client} --- oscilloscope HUD\\rendering (client-side only)};
 
 \draw[-{Latex[length=2mm]}] (blockentity) -- (sim);
 \draw[-{Latex[length=2mm]}] (block) -- (blockentity);
 \draw[-{Latex[length=2mm]}] (network) -- (blockentity);
 % Routed as a dogleg out to the right, rather than a straight line, since network and sim
 % are two boxes apart in the stack -- a direct line between their centers/anchors would cut
-% straight through the block and blockentity boxes' text in between.
+% straight through the block and blockentity boxes' text in between. The block and client
+% boxes' text above is now forced onto two lines, like the other three boxes, rather than one
+% long unbroken line -- their single-line text was wide enough to silently grow those two
+% boxes past the other three's 6.2cm width (minimum width is only a lower bound), which is
+% what left this dogleg's clearance too tight in practice despite the 0.6cm offset.
 \draw[-{Latex[length=2mm]}] (network.east) -- ++(0.6,0) |- (sim.east);
 \draw[-{Latex[length=2mm]}] (client) -- (network);
 \end{tikzpicture}
