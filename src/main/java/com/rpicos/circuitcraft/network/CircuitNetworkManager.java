@@ -227,6 +227,9 @@ public class CircuitNetworkManager {
 		if (!(participants.get(sourcePos) instanceof AcSourceBlockEntity acSource)) {
 			return AcSweepResult.error("Pinned position is not an AC Source block.");
 		}
+		if (!acSource.isRedstonePowered()) {
+			return AcSweepResult.error("AC Source has no redstone power.");
+		}
 		NetworkBlockEntity signalEntity = participants.get(signalPos);
 		if (signalEntity == null) {
 			return AcSweepResult.error("No wired component at the signal position.");

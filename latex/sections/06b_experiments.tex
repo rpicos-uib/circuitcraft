@@ -38,13 +38,15 @@ number of right-clicks needed to reach the intended value, using the fixed cycle
 preset wraps through (Section~\ref{sec:circuit-solver} and the appendix give the full preset
 tables); the AC Source's amplitude and frequency range, having no preset cycle of their own
 at all (Section~\ref{sec:ac-analysis}), are instead given as the exact values to type into
-the shift-right-click value editor. A power supply or function generator additionally
-remains electrically disconnected -- an open circuit, not a 0~V source -- until it receives
-a redstone signal (Section~\ref{sec:circuit-solver}); each bench using one includes a lever
-placed directly on top of its source block for exactly this purpose, left off by default so
-that flipping it marks a clean $t=0$ for whichever transient the experiment observes. The AC
-Source needs no such lever: it is only ever driven during an AC sweep, triggered directly by
-the AC probe rather than by continuous per-tick simulation (Section~\ref{sec:architecture}).
+the shift-right-click value editor. A power supply, function generator, or AC Source
+additionally remains disconnected from whatever it would otherwise drive until it receives a
+redstone signal: an open circuit rather than a 0~V source for the first two in the transient
+solver, or a silenced 0~V excitation for the AC Source during a sweep
+(Sections~\ref{sec:circuit-solver} and~\ref{sec:ac-analysis}). Every bench in this set
+therefore includes a lever placed directly on top of its source block, left off by default --
+marking a clean $t=0$ for whichever transient a time-domain experiment observes, or simply
+gating whether an AC Source's sweep shows anything at all -- and flipping it is accordingly
+the first step of every procedure below.
 
 \subsection{Experiment 1: basic voltage divider}
 \label{sec:exp-divider}
@@ -92,9 +94,9 @@ the asymptotic rolloff are all visible in a single sweep; its amplitude can be l
 $1$~V default, since a Bode plot's magnitude and phase are both independent of the driving
 amplitude entirely.
 
-\textbf{Procedure.} Right-click the AC probe against the AC Source to pin it (a hint
-confirms it is pinned), then right-click the capacitor to run the sweep and display the Bode
-plot.
+\textbf{Procedure.} Flip the lever. Right-click the AC probe against the AC Source to pin it
+(a hint confirms it is pinned), then right-click the capacitor to run the sweep and display
+the Bode plot.
 
 \textbf{Expected result.} The standard first-order low-pass transfer function,
 \begin{equation}
@@ -127,8 +129,8 @@ transient ringing response in earlier versions of this paper. Shift-right-click 
 Source and set its frequency range to a minimum of $0.2$~Hz and a maximum of $20$~Hz, a range
 centered (in log-frequency) almost exactly on this circuit's own resonance.
 
-\textbf{Procedure.} Right-click the AC probe against the AC Source, then right-click the
-capacitor to run the sweep.
+\textbf{Procedure.} Flip the lever. Right-click the AC probe against the AC Source, then
+right-click the capacitor to run the sweep.
 
 \textbf{Expected result.} With the same undamped natural frequency and damping ratio as
 before,
@@ -246,9 +248,10 @@ Source's default $1$~V amplitude is used unchanged, and its frequency range is s
 shift-right-click) to a minimum of $1$~Hz and a maximum of $10$~MHz, spanning several decades
 either side of both of the op-amp's fixed pole frequencies.
 
-\textbf{Procedure.} Right-click the AC probe against the AC Source, then right-click the
-op-amp block itself (probing a three-terminal component directly reads its output node's
-voltage, exactly as the ordinary time-domain probe already does for it) to run the sweep.
+\textbf{Procedure.} Flip the lever. Right-click the AC probe against the AC Source, then
+right-click the op-amp block itself (probing a three-terminal component directly reads its
+output node's voltage, exactly as the ordinary time-domain probe already does for it) to run
+the sweep.
 
 \textbf{Expected result.} With the two-pole model's fixed values $A_0 = 10^5$,
 $f_{p1} = 20$~Hz, $f_{p2} = 3$~MHz,

@@ -25,9 +25,12 @@ absolute voltage reading becomes meaningful (Section~\ref{sec:circuit-solver}), 
 reference an object for which the player is responsible, rather than a background
 assumption.
 
-\textbf{Sources that must be switched on.} Both voltage sources are wired to a redstone
-input and remain electrically inert -- an open circuit, contributing nothing to the solved
-system -- until that input is active. This arrangement mirrors an actual laboratory
+\textbf{Sources that must be switched on.} All three voltage sources -- power supply,
+function generator, and AC Source -- are wired to a redstone input and remain inert until
+that input is active: the first two an open circuit, contributing nothing to the solved
+transient system; the AC Source a silenced 0~V excitation, contributing nothing to a Bode
+sweep, since it never participates in the transient system at all
+(Section~\ref{sec:ac-analysis}). This arrangement mirrors an actual laboratory
 workflow (wire the circuit completely, verify it, and only then switch the bench supply on)
 rather than a schematic tool's power sources, which are implicitly ``live'' the instant they
 are drawn. It further allows a player to make, and recover from, the same wiring error a
