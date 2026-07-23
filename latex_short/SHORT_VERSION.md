@@ -7,8 +7,11 @@ extensive (roughly 60% of the long version's body word count) for conditional in
 stay readable. **If the long version changes after this split, port relevant changes here by
 hand** — nothing keeps the two in sync automatically.
 
-Reuses `../latex/figures/` (via `\graphicspath`) and `../latex/references.bib` (via
-`\bibliography{../latex/references}`) directly rather than duplicating them.
+Reuses `../latex/figures/` via `\graphicspath` rather than duplicating them.
+`references.bib` was originally shared the same way, but Overleaf moved it into this
+directory directly (rather than copying it) while editing there, which briefly broke the long
+version's bibliography until it was restored — both versions now keep an independent copy of
+`references.bib`, and it needs manual syncing if either version's citations change.
 
 ## What's cut relative to the long version
 
@@ -36,6 +39,14 @@ Reuses `../latex/figures/` (via `\graphicspath`) and `../latex/references.bib` (
   model is mentioned without its display equation, since no kept experiment exercises it.
 - **Pedagogy / Limitations**: same points, each cut to roughly a third of its long-version
   length.
+- **Section count**: consolidated from 11 numbered top-level sections down to 7, merging
+  pairs that were already logically adjacent into section+subsection pairs rather than
+  separate top-level sections: Minecraft Mechanics + System Architecture; the transient and AC
+  circuit solvers (now "The Circuit Solver" with two subsections); Pedagogical Design +
+  Worked Experiments; and Verification + Limitations/Future Work. No prose was cut for this —
+  only section-level headers were merged/demoted (\section to \subsection, and the two worked
+  experiments from \subsection to \subsubsection), so this didn't change length materially.
+  The long version was left alone; ask if it should get the same treatment.
 
 ## Page-count status
 
