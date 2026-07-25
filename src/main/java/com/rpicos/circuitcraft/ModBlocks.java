@@ -40,8 +40,16 @@ public final class ModBlocks {
 	public static final Block OP_AMP = register("op_amp", OpAmpBlock::new, componentProperties());
 	public static final Block AC_SOURCE = register("ac_source", AcSourceBlock::new, componentProperties());
 
+	/** Plain block, no facing/block-entity: the Electrician's job site, not a circuit
+	 *  participant, so it doesn't extend ComponentBlock or implement EntityBlock. */
+	public static final Block BREADBOARD = register("breadboard", Block::new, breadboardProperties());
+
 	private static BlockBehaviour.Properties componentProperties() {
 		return BlockBehaviour.Properties.of().strength(1.0F).sound(SoundType.METAL);
+	}
+
+	private static BlockBehaviour.Properties breadboardProperties() {
+		return BlockBehaviour.Properties.of().strength(2.5F).sound(SoundType.WOOD);
 	}
 
 	private static <T extends Block> T register(String path, Function<BlockBehaviour.Properties, T> factory, BlockBehaviour.Properties properties) {

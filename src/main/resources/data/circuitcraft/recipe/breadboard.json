@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": "minecraft:oak_planks",
+    "N": "minecraft:iron_nugget",
+    "R": "minecraft:redstone"
+  },
+  "pattern": [
+    "PPP",
+    "NRN",
+    "PPP"
+  ],
+  "result": {
+    "id": "circuitcraft:breadboard",
+    "count": 1
+  }
+}

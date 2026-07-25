@@ -88,6 +88,7 @@ as before; the two interactions coexist.
 | <img src="docs/icons/probe.png" width="32"> | **Probe** | Right-click a component, Wire, or Ground to pin it as one of up to 3 channels shown simultaneously on the oscilloscope HUD (pinning a 4th evicts the oldest); shift+right-click unpins it. Hold the probe in either hand to see the HUD - each pinned channel gets its own scrolling trace, color-coded, stacked in the corner. A component shows the voltage drop across its two leads; a Wire or Ground shows the absolute voltage at that single point. Each channel's trace is auto-scaled to its own history, with the full-scale value printed at the top and bottom of its graph in SI-prefixed form (k/m/u/n/p, whichever keeps the number compact). Once all 3 slots are full, the oldest channel is outlined in yellow and labeled "(next)" so you can see which one a new pin would evict before you commit to it. |
 | <img src="docs/icons/xy_probe.png" width="32"> | **X-Y Oscilloscope Probe** | A second, independent probe: instead of plotting channels against time, it plots one pinned channel's voltage against another's - a real bench oscilloscope's X-Y mode, tracing Lissajous figures for phase/frequency comparisons. Right-click to pin - whichever block you just clicked always becomes (or stays) the **Y** channel, demoting the previous Y to X and evicting the old X if both slots were already full; shift+right-click unpins. Each axis is scaled independently to its own channel's peak magnitude, with the full-scale value printed at both ends of each axis directly on the plot in SI-prefixed form (k/m/u/n/p), so two very differently sized signals both use the plot's full range instead of one being squashed by a shared scale - a 90°-phase-shifted, equal-amplitude pair still traces an actual circle, since the two independent scales coincide whenever the amplitudes actually match. Independent of the regular Probe's own pins - hold both at once to see both HUDs side by side. |
 | <img src="docs/icons/ac_probe.png" width="32"> | **AC Oscilloscope Probe** | A genuine two-step probe, unlike the other two: right-click an AC Source first to pin it as the sweep's excitation (a hint appears; nothing is computed yet). Right-click a second, different point afterward - any component, wire, or ground - to run the sweep (60 log-spaced frequencies across the source's configured range) and show a Bode plot: magnitude in dB on top, phase in degrees below, both against log-frequency. The source stays pinned afterward, so you can probe more points against it without re-clicking it each time; shift+right-click unpins. |
+| <img src="docs/icons/breadboard.png" width="32"> | **Breadboard** | Not a circuit component - it has no leads and takes no part in the solver. It's the **Electrician** villager's job site block (see below): place one, let an unemployed villager claim it, and it starts selling the rest of this table. |
 
 ### Wiring rules
 
@@ -125,12 +126,58 @@ of ingredients; shaped ones show the actual 3×3 grid layout.
 | <img src="docs/recipes/xy_probe.png"> | **X-Y Oscilloscope Probe ×1** — redstone, quartz, and a stick, stacked vertically. |
 | *(no image yet)* | **AC Source ×1** — redstone, glowstone dust, gold nugget (shapeless). |
 | *(no image yet)* | **AC Oscilloscope Probe ×1** — redstone, glowstone dust, and a stick, stacked vertically. |
+| <img src="docs/recipes/breadboard.png"> | **Breadboard ×1** — 3×3, oak planks frame around a redstone-and-iron-nugget core. |
 
 None of these have recipe-book unlock advancements yet, so they won't show a "new recipe" toast —
 but they're fully craftable by hand right now. See [Contributing](#contributing) if you want to add
 those.
 
 All items are also available in their own **CircuitCraft** creative-inventory tab.
+
+## The Electrician villager
+
+Place a **Breadboard** (crafted as shown above) and let an unemployed villager claim it as a job
+site; it becomes an **Electrician** and sells the mod's own components for emeralds instead of
+vanilla trades. Like every vanilla profession, it levels up (Novice → Master) as it successfully
+trades, unlocking later tiers:
+
+| Level | Sells |
+|---|---|
+| 1 — Novice | Wire, Ground, Resistor, Capacitor, Inductor |
+| 2 — Apprentice | Power Supply, Function Generator, Voltage Module, Frequency Module |
+| 3 — Journeyman | AC Source |
+| 4 — Expert | Probe, X-Y Oscilloscope Probe, AC Oscilloscope Probe |
+| 5 — Master | Memristor |
+
+Each level only ever offers a handful of its listed trades at once (chosen at random, same as
+vanilla professions), not the whole row simultaneously. Trades are entirely data-driven
+(`data/circuitcraft/{villager_trade,tags/villager_trade,trade_set}/electrician/`) rather than
+hardcoded in Java — this Minecraft version's `VillagerProfession` only points at `TradeSet`
+resource keys per level, so rebalancing prices or adding trades is a JSON edit, no rebuild
+required.
+
+### Electrician's Workshop
+
+The mod ships a ready-made shop as a datapack function - no manual building required. Stand
+where you want it (any terrain: it clears its own footprint and pours its own foundation first,
+so uneven ground, slopes, or ungenerated chunks are all fine) and run:
+
+```
+/function circuitcraft:electrician_shop
+```
+
+This builds a small oak-and-copper workshop with a slab roof, a lightning rod finial (the most
+literal "electrician" symbol available), and a Breadboard already placed inside against the back
+wall next to a small shelf of stock (wire, a resistor, a capacitor) - ready for a villager to
+walk in and take the job:
+
+<img src="docs/screenshots/electrician_workshop_exterior.png" width="500">
+
+<img src="docs/screenshots/electrician_workshop_interior.png" width="500">
+
+The function's source (`data/circuitcraft/function/electrician_shop.mcfunction`) is plain
+`/fill`/`/setblock` commands if you want to reskin it - see
+[`MOD_ARCHITECTURE.md`](MOD_ARCHITECTURE.md) for how it was built and verified.
 
 ## Architecture, for anyone extending this
 
@@ -182,7 +229,7 @@ references (a resistive divider's flat response, an RC/RL divider's -3dB/45° cu
    existing pair — they're generic besides the texture path), and a lang entry.
 6. Optionally add a `data/circuitcraft/recipe/your_component.json`.
 
-### Known limitations (v0.5)
+### Known limitations (v0.6)
 
 - **Component state resets on circuit rebuild.** `CircuitNetworkManager` rebuilds the whole
   `Circuit` from scratch whenever wiring changes anywhere in that network, so a capacitor's charge

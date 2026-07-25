@@ -17,8 +17,8 @@ authors:
   - family-names: "Picos"
     given-names: "Gerard"
     affiliation: "Universitat de les Illes Balears"
-version: 0.5.2
-date-released: 2026-07-23
+version: 0.6.0
+date-released: 2026-07-25
 url: "https://github.com/rpicos-uib/circuitcraft"
 repository-code: "https://github.com/rpicos-uib/circuitcraft"
 license: MIT

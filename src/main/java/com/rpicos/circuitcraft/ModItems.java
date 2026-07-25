@@ -28,6 +28,7 @@ public final class ModItems {
 	public static final Item DIODE = registerBlockItem("diode", ModBlocks.DIODE);
 	public static final Item OP_AMP = registerBlockItem("op_amp", ModBlocks.OP_AMP);
 	public static final Item AC_SOURCE = registerBlockItem("ac_source", ModBlocks.AC_SOURCE);
+	public static final Item BREADBOARD = registerBlockItem("breadboard", ModBlocks.BREADBOARD);
 
 	public static final Item PROBE = registerItem("probe", ProbeItem::new);
 	public static final Item XY_PROBE = registerItem("xy_probe", XyProbeItem::new);

@@ -1,0 +1,12 @@
+{
+  "gives": {
+    "id": "circuitcraft:ac_probe"
+  },
+  "max_uses": 6.0,
+  "reputation_discount": 0.05,
+  "wants": {
+    "count": 7,
+    "id": "minecraft:emerald"
+  },
+  "xp": 10.0
+}

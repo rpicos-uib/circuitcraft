@@ -38,6 +38,7 @@ public class CircuitCraft implements ModInitializer {
 		ModBlockEntities.init();
 		ModItems.init();
 		ModCreativeTab.init();
+		ModVillagers.init();
 
 		PayloadTypeRegistry.clientboundPlay().register(ProbeDataPayload.TYPE, ProbeDataPayload.STREAM_CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(XyProbeDataPayload.TYPE, XyProbeDataPayload.STREAM_CODEC);

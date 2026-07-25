@@ -1,0 +1,12 @@
+{
+  "gives": {
+    "id": "circuitcraft:power_supply"
+  },
+  "max_uses": 8.0,
+  "reputation_discount": 0.05,
+  "wants": {
+    "count": 4,
+    "id": "minecraft:emerald"
+  },
+  "xp": 5.0
+}

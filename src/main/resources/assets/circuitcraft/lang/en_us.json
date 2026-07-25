@@ -13,8 +13,10 @@
   "block.circuitcraft.diode": "Diode",
   "block.circuitcraft.op_amp": "Ideal Op-Amp",
   "block.circuitcraft.ac_source": "AC Source",
+  "block.circuitcraft.breadboard": "Breadboard",
   "item.circuitcraft.probe": "Oscilloscope Probe",
   "item.circuitcraft.xy_probe": "X-Y Oscilloscope Probe",
   "item.circuitcraft.ac_probe": "AC Oscilloscope Probe",
-  "itemGroup.circuitcraft.components": "CircuitCraft"
+  "itemGroup.circuitcraft.components": "CircuitCraft",
+  "entity.circuitcraft.villager.electrician": "Electrician"
 }

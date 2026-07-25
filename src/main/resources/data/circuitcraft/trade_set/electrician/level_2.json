@@ -1,0 +1,5 @@
+{
+  "amount": 2.0,
+  "random_sequence": "circuitcraft:trade_set/electrician/level_2",
+  "trades": "#circuitcraft:electrician/level_2"
+}
