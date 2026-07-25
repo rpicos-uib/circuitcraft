@@ -138,8 +138,10 @@ All items are also available in their own **CircuitCraft** creative-inventory ta
 
 Place a **Breadboard** (crafted as shown above) and let an unemployed villager claim it as a job
 site; it becomes an **Electrician** and sells the mod's own components for emeralds instead of
-vanilla trades. Like every vanilla profession, it levels up (Novice → Master) as it successfully
-trades, unlocking later tiers:
+vanilla trades. It has its own look, not the default missing-texture placeholder: a slate/steel
+tool apron with warning-yellow badge accents, distinct from any vanilla profession's outfit.
+Like every vanilla profession, it levels up (Novice → Master) as it successfully trades,
+unlocking later tiers:
 
 | Level | Sells |
 |---|---|
