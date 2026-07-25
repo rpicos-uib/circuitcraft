@@ -12,6 +12,9 @@
 	"license": "CC0-1.0",
 	"icon": "assets/circuitcraft/icon.png",
 	"environment": "*",
+	"mixins": [
+		"circuitcraft.mixins.json"
+	],
 	"entrypoints": {
 		"main": [
 			"com.rpicos.circuitcraft.CircuitCraft"

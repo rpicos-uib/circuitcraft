@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "com.rpicos.circuitcraft.mixin",
+  "mixins": [
+    "PoiTypesInvokerMixin"
+  ],
+  "client": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

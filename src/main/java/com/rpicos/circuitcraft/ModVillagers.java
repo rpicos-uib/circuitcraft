@@ -1,7 +1,9 @@
 package com.rpicos.circuitcraft;
 
 import com.google.common.collect.ImmutableSet;
+import com.rpicos.circuitcraft.mixin.PoiTypesInvokerMixin;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -32,7 +34,16 @@ public final class ModVillagers {
 
 	public static void init() {
 		Set<BlockState> jobSiteStates = ImmutableSet.copyOf(ModBlocks.BREADBOARD.getStateDefinition().getPossibleStates());
-		Registry.register(BuiltInRegistries.POINT_OF_INTEREST_TYPE, ELECTRICIAN_POI, new PoiType(jobSiteStates, 1, 1));
+		Holder.Reference<PoiType> poiHolder = Registry.registerForHolder(
+				BuiltInRegistries.POINT_OF_INTEREST_TYPE, ELECTRICIAN_POI, new PoiType(jobSiteStates, 1, 1));
+		// Registering the PoiType above is not enough on its own: PoiManager (the class that
+		// actually scans placed blocks and decides whether a position is a job site) never
+		// looks at the registry - it only ever calls PoiTypes.forState(BlockState), a private
+		// static lookup table that vanilla's own bootstrap populates for the built-in
+		// professions and nothing else touches. Without this call, a placed Breadboard is
+		// invisible to every villager's own job-site search, even though the PoiType and
+		// VillagerProfession are both otherwise correctly registered.
+		PoiTypesInvokerMixin.circuitcraft$registerBlockStates(poiHolder, jobSiteStates);
 
 		Int2ObjectMap<ResourceKey<TradeSet>> tradeSetsByLevel = Int2ObjectMap.ofEntries(
 				Int2ObjectMap.entry(1, tradeSetLevel(1)),
