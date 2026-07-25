@@ -3,7 +3,7 @@
 	"id": "circuitcraft",
 	"version": "${version}",
 	"name": "CircuitCraft",
-	"description": "Teach analog electronics in Minecraft: resistors, capacitors, inductors, memristors, sources and an oscilloscope probe, all backed by a real circuit solver.",
+	"description": "Teach analog electronics in Minecraft: resistors, capacitors, inductors, memristors, sources and an oscilloscope probe, all backed by a real circuit solver - plus an Electrician villager who sells them.",
 	"authors": [
 		"rpicos"
 	],
