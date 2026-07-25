@@ -60,7 +60,10 @@ Once per game tick, for each independent group of adjacent, mutually-conductive 
 (a ``network''), the mod rebuilds a union--find partition over every block face that
 presents a conductive surface toward a conductive neighbor, assigns one MNA node index to
 each resulting partition, and instructs every component in that network to stamp itself
-into the circuit between its resolved node indices.
+into the circuit between its resolved node indices. An eighteenth item, the Breadboard
+introduced in Section~\ref{sec:electrician}, deliberately falls outside this set entirely: it
+presents no conductive face on any side and never participates in the topology algorithm, since
+its role is acquisition rather than circuit construction.
 
 The ideal op-amp (Section~\ref{sec:circuit-solver}) is the mod's first component with three
 electrical leads rather than two, which the topology algorithm above accommodates without
@@ -195,3 +198,37 @@ an actual circle rather than a stretched ellipse, since their independently comp
 necessarily coincide. This mode is pedagogically distinct from the time-domain probe: it
 makes the relative phase and amplitude between two signals directly visible as a shape,
 rather than requiring a player to compare two scrolling traces by eye.
+
+\subsection{Acquisition: the Electrician villager}
+\label{sec:electrician}
+
+A learner cannot wire a circuit with components they do not yet possess, and the seventeen
+blocks and items above are otherwise obtained the same way as any other vanilla item --
+crafted by hand from a recipe, or found. CircuitCraft adds one further, eighteenth block, the
+Breadboard, whose sole purpose is to let a villager claim it as a job site and become an
+\emph{Electrician}, a new villager profession that sells the mod's other seventeen items for
+emeralds instead of any vanilla trade. Figure~\ref{fig:workshop} shows a complete Electrician's
+Workshop, itself generated on demand by a bundled world-generation function
+(\texttt{/function circuitcraft:electrician\_shop}) that clears its own footprint, pours its
+own foundation, and places a Breadboard inside regardless of the underlying terrain, so an
+instructor can seed a classroom world with a working shop in one command rather than building
+one by hand.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.9\columnwidth]{figures/electrician_workshop.png}
+\caption{A generated Electrician's Workshop, with a Breadboard placed against the back wall.}
+\label{fig:workshop}
+\end{figure}
+
+Like every vanilla villager profession, the Electrician levels up (Novice through Master)
+as it successfully trades, unlocking further tiers of stock rather than offering all
+seventeen items from the outset. The five tiers were chosen to mirror the order a learner
+would naturally be introduced to the material: Novice sells the passive elements (wire,
+ground, resistor, capacitor, inductor); Apprentice, the DC/time-varying sources and their
+adjustment modules; Journeyman, the AC Source; Expert, the three oscilloscope probes; and
+Master, the memristor alone, reserved for last as the component whose behavior depends on the
+integral of its own history rather than an instantaneous relation. Trades are themselves
+data-driven configuration rather than code, so an instructor may re-tier or re-price them
+(for instance, to gate the memristor behind a specific in-class milestone) without modifying
+the mod itself.
