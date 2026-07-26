@@ -15,8 +15,10 @@
 # Clear the build volume first so trees/terrain can't poke through the walls or roof.
 fill ~-5 ~-3 ~-5 ~5 ~6 ~5 minecraft:air
 
-# Solid footing, two blocks thick, regardless of what's underneath.
-fill ~-4 ~-3 ~-4 ~4 ~-2 ~4 minecraft:stone
+# Solid footing, two blocks thick, regardless of what's underneath. Matches the clear
+# volume's full x/z extent (not just the walls' footprint) so the outer ring cleared above
+# doesn't get left as an open-air trench with nothing under it.
+fill ~-5 ~-3 ~-5 ~5 ~-2 ~5 minecraft:stone
 
 # Floor.
 fill ~-3 ~-1 ~-3 ~3 ~-1 ~3 minecraft:polished_andesite
