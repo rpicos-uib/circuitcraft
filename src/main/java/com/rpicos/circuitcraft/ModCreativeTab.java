@@ -34,6 +34,8 @@ public final class ModCreativeTab {
 						output.accept(ModItems.DIODE);
 						output.accept(ModItems.OP_AMP);
 						output.accept(ModItems.AC_SOURCE);
+						output.accept(ModItems.R2V_CONVERTER);
+						output.accept(ModItems.V2R_CONVERTER);
 						output.accept(ModItems.BREADBOARD);
 						output.accept(ModItems.PROBE);
 						output.accept(ModItems.XY_PROBE);

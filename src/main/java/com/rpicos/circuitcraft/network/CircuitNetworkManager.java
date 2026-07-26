@@ -10,6 +10,7 @@ import com.rpicos.circuitcraft.blockentity.NetworkBlockEntity;
 import com.rpicos.circuitcraft.blockentity.OpAmpBlockEntity;
 import com.rpicos.circuitcraft.blockentity.Probeable;
 import com.rpicos.circuitcraft.blockentity.SingleNodeBlockEntity;
+import com.rpicos.circuitcraft.blockentity.V2RConverterBlockEntity;
 import com.rpicos.circuitcraft.sim.AcCircuit;
 import com.rpicos.circuitcraft.sim.Circuit;
 import com.rpicos.circuitcraft.sim.Complex;
@@ -102,6 +103,9 @@ public class CircuitNetworkManager {
 			for (NetworkBlockEntity entity : participants.values()) {
 				if (entity instanceof Probeable probeable) {
 					probeable.recordSample();
+				}
+				if (entity instanceof V2RConverterBlockEntity v2r) {
+					v2r.refreshRedstoneOutput();
 				}
 			}
 		}

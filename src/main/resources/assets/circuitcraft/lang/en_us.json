@@ -13,6 +13,8 @@
   "block.circuitcraft.diode": "Diode",
   "block.circuitcraft.op_amp": "Ideal Op-Amp",
   "block.circuitcraft.ac_source": "AC Source",
+  "block.circuitcraft.r2v_converter": "R2V Converter",
+  "block.circuitcraft.v2r_converter": "V2R Converter",
   "block.circuitcraft.breadboard": "Breadboard",
   "item.circuitcraft.probe": "Oscilloscope Probe",
   "item.circuitcraft.xy_probe": "X-Y Oscilloscope Probe",

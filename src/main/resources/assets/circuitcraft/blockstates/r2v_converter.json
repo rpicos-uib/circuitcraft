@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "facing=up": { "model": "circuitcraft:block/r2v_converter" },
+    "facing=down": { "model": "circuitcraft:block/r2v_converter" },
+    "facing=north": { "model": "circuitcraft:block/r2v_converter" },
+    "facing=south": { "model": "circuitcraft:block/r2v_converter" },
+    "facing=east": { "model": "circuitcraft:block/r2v_converter" },
+    "facing=west": { "model": "circuitcraft:block/r2v_converter" }
+  }
+}

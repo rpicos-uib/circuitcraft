@@ -50,17 +50,19 @@ it.}
 
 A two-terminal component occupies a single block, oriented along the horizontal or vertical
 axis the player was facing when it was placed; its two electrical leads are its front and
-back faces along that axis, and its other four faces are electrically insulated. Which of the
-four figures below a given block appears in (Sections~\ref{sec:circuit-elements}
+back faces along that axis, and its other four faces are electrically insulated. (The R2V and
+V2R Converters, Section~\ref{sec:redstone-interfaces}, are the one exception: their orientation
+is always fixed rather than player-chosen, since two of their faces are reserved for redstone
+I/O.) Which of the figures below a given block appears in (Sections~\ref{sec:circuit-elements}
 through~\ref{sec:probes}) depends only on its electrical role -- element, topology-only,
-source, or measurement tool -- not on any special-casing in the topology algorithm itself,
-which treats all seventeen blocks and items uniformly.
+source, interface, or measurement tool -- not on any special-casing in the topology algorithm
+itself, which treats all nineteen circuit-participating blocks and items uniformly.
 
 Once per game tick, for each independent group of adjacent, mutually-conductive blocks
 (a ``network''), the mod rebuilds a union--find partition over every block face that
 presents a conductive surface toward a conductive neighbor, assigns one MNA node index to
 each resulting partition, and instructs every component in that network to stamp itself
-into the circuit between its resolved node indices. An eighteenth item, the Breadboard
+into the circuit between its resolved node indices. A twentieth item, the Breadboard
 introduced in Section~\ref{sec:electrician}, deliberately falls outside this set entirely: it
 presents no conductive face on any side and never participates in the topology algorithm, since
 its role is acquisition rather than circuit construction.
@@ -135,6 +137,25 @@ the two modules, voltage and frequency, that adjust the function generator's out
 \label{fig:generators}
 \end{figure*}
 
+\subsection{Redstone-voltage interfaces}
+\label{sec:redstone-interfaces}
+
+Every source described above is gated by redstone only as a boolean on/off signal. The R2V and
+V2R Converters instead exchange \emph{quantitative} information with Minecraft's own redstone
+system, giving a player a way to drive the circuit's continuous voltage domain from
+Minecraft's own discrete 0--15 signal-strength domain, and vice versa. Both are placed directly
+on top of a Ground block -- simultaneously a placement requirement and the guarantee that their
+electrical reference is always the network's true 0~V node, not an arbitrary floating one. The
+R2V Converter reads two independent 0--15 redstone strengths from its north and south faces
+(A and B respectively) and stamps a fixed DC voltage source of $V = A \times 15 + B$ onto its
+remaining wired lead, exposing a 0--240~V range at effectively $1/15\,\mathrm{V}$ resolution
+from two ordinary redstone signals. The V2R Converter performs the exact inverse: it reads
+whatever voltage is wired into it (as an ideal voltmeter -- it stamps nothing into the circuit
+and so never loads down what it measures) and decodes it back into two 0--15 redstone outputs
+on the same two faces. Chained together, the pair lets a player route a circuit's live state
+back into Minecraft's own redstone contraptions -- comparators, repeaters, redstone lamps -- and
+back again, without ever leaving the mod's own components.
+
 \subsection{Probes}
 \label{sec:probes}
 
@@ -202,9 +223,9 @@ rather than requiring a player to compare two scrolling traces by eye.
 \subsection{Acquisition: the Electrician villager}
 \label{sec:electrician}
 
-A learner cannot wire a circuit with components they do not yet possess, and the seventeen
+A learner cannot wire a circuit with components they do not yet possess, and the nineteen
 blocks and items above are otherwise obtained the same way as any other vanilla item --
-crafted by hand from a recipe, or found. CircuitCraft adds one further, eighteenth block, the
+crafted by hand from a recipe, or found. CircuitCraft adds one further, twentieth block, the
 Breadboard, whose sole purpose is to let a villager claim it as a job site and become an
 \emph{Electrician}, a new villager profession that both sells a subset of the mod's own
 components and buys back the raw crafting materials those components are made from, all for
@@ -226,17 +247,22 @@ Like every vanilla villager profession, the Electrician levels up (Novice throug
 as it successfully trades, unlocking further tiers of stock rather than offering everything
 from the outset. Each tier deliberately offers no more than two components to sell and no
 more than two raw materials to buy -- always both, never a partial or randomized subset --
-so a single villager is never a wall of trades. The five tiers were chosen to mirror the
-order a learner would naturally be introduced to the material, and each tier's buy offers are
-simply the crafting ingredients of that tier's sell offers: Novice sells the resistor and
-capacitor (buying iron nuggets and clay balls); Apprentice, the power supply and function
-generator (buying iron and copper ingots); Journeyman, the AC Source alone (buying gold
-nuggets and glowstone dust); Expert, the probe and AC probe (buying redstone and sticks); and
-Master, the memristor alone (buying amethyst shards and redstone), reserved for last as the
-component whose behavior depends on the integral of its own history rather than an
-instantaneous relation. The two-item cap means not every craftable item is villager-tradeable
--- the wire, ground, inductor, and the two source-adjustment modules, for instance, remain
-available only through their own (simple) crafting recipes. Trades are themselves
-data-driven configuration rather than code, so an instructor may re-tier or re-price them
-(for instance, to gate the memristor behind a specific in-class milestone) without modifying
-the mod itself.
+so a single villager is never a wall of trades, with one deliberate exception at the top tier
+(below). The five tiers were chosen to mirror the order a learner would naturally be
+introduced to the material, and each tier's buy offers are simply the crafting ingredients of
+that tier's sell offers: Novice sells the resistor and capacitor (buying iron nuggets and clay
+balls); Apprentice, the power supply and function generator (buying iron and copper ingots);
+Journeyman, the AC Source alone (buying gold nuggets and glowstone dust); Expert, the probe
+and AC probe (buying redstone and sticks); and Master offers any two of the memristor, the R2V
+Converter, and the V2R Converter (buying amethyst shards and redstone, usually both) --
+reserved for last as the most conceptually demanding tier. Master's sell pool of three,
+randomly reduced to two per villager, is a deliberate departure from every other tier's
+fully-deterministic offer: Minecraft's own trade-selection mechanism can only randomize
+across one combined pool per level, so guaranteeing "any two of three" for the sell side means
+the two buy items are occasionally not both guaranteed present either, a trade-off accepted
+only at this one tier. The two-item cap otherwise means not every craftable item is
+villager-tradeable -- the wire, ground, inductor, and the two source-adjustment modules, for
+instance, remain available only through their own (simple) crafting recipes. Trades are
+themselves data-driven configuration rather than code, so an instructor may re-tier or
+re-price them (for instance, to gate the memristor behind a specific in-class milestone)
+without modifying the mod itself.

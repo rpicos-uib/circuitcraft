@@ -11,7 +11,9 @@ import com.rpicos.circuitcraft.block.InductorBlock;
 import com.rpicos.circuitcraft.block.MemristorBlock;
 import com.rpicos.circuitcraft.block.OpAmpBlock;
 import com.rpicos.circuitcraft.block.PowerSupplyBlock;
+import com.rpicos.circuitcraft.block.R2VConverterBlock;
 import com.rpicos.circuitcraft.block.ResistorBlock;
+import com.rpicos.circuitcraft.block.V2RConverterBlock;
 import com.rpicos.circuitcraft.block.VoltageModuleBlock;
 import com.rpicos.circuitcraft.block.WireBlock;
 import net.minecraft.core.Registry;
@@ -39,6 +41,8 @@ public final class ModBlocks {
 	public static final Block DIODE = register("diode", DiodeBlock::new, componentProperties());
 	public static final Block OP_AMP = register("op_amp", OpAmpBlock::new, componentProperties());
 	public static final Block AC_SOURCE = register("ac_source", AcSourceBlock::new, componentProperties());
+	public static final Block R2V_CONVERTER = register("r2v_converter", R2VConverterBlock::new, componentProperties());
+	public static final Block V2R_CONVERTER = register("v2r_converter", V2RConverterBlock::new, componentProperties());
 
 	/** Plain block, no facing/block-entity: the Electrician's job site, not a circuit
 	 *  participant, so it doesn't extend ComponentBlock or implement EntityBlock. */

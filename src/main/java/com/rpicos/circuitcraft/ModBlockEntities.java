@@ -11,7 +11,9 @@ import com.rpicos.circuitcraft.blockentity.InductorBlockEntity;
 import com.rpicos.circuitcraft.blockentity.MemristorBlockEntity;
 import com.rpicos.circuitcraft.blockentity.OpAmpBlockEntity;
 import com.rpicos.circuitcraft.blockentity.PowerSupplyBlockEntity;
+import com.rpicos.circuitcraft.blockentity.R2VConverterBlockEntity;
 import com.rpicos.circuitcraft.blockentity.ResistorBlockEntity;
+import com.rpicos.circuitcraft.blockentity.V2RConverterBlockEntity;
 import com.rpicos.circuitcraft.blockentity.VoltageModuleBlockEntity;
 import com.rpicos.circuitcraft.blockentity.WireBlockEntity;
 import net.minecraft.core.Registry;
@@ -53,6 +55,10 @@ public final class ModBlockEntities {
 			register("op_amp", OpAmpBlockEntity::new, ModBlocks.OP_AMP);
 	public static final BlockEntityType<AcSourceBlockEntity> AC_SOURCE =
 			register("ac_source", AcSourceBlockEntity::new, ModBlocks.AC_SOURCE);
+	public static final BlockEntityType<R2VConverterBlockEntity> R2V_CONVERTER =
+			register("r2v_converter", R2VConverterBlockEntity::new, ModBlocks.R2V_CONVERTER);
+	public static final BlockEntityType<V2RConverterBlockEntity> V2R_CONVERTER =
+			register("v2r_converter", V2RConverterBlockEntity::new, ModBlocks.V2R_CONVERTER);
 
 	private static <T extends BlockEntity> BlockEntityType<T> register(
 			String path, BlockEntityType.BlockEntitySupplier<T> factory, Block block) {

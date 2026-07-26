@@ -88,6 +88,8 @@ as before; the two interactions coexist.
 | <img src="docs/icons/probe.png" width="32"> **Probe** | Right-click a component, Wire, or Ground to pin it as one of up to 3 channels shown simultaneously on the oscilloscope HUD (pinning a 4th evicts the oldest); shift+right-click unpins it. Hold the probe in either hand to see the HUD - each pinned channel gets its own scrolling trace, color-coded, stacked in the corner. A component shows the voltage drop across its two leads; a Wire or Ground shows the absolute voltage at that single point. Each channel's trace is auto-scaled to its own history, with the full-scale value printed at the top and bottom of its graph in SI-prefixed form (k/m/u/n/p, whichever keeps the number compact). Once all 3 slots are full, the oldest channel is outlined in yellow and labeled "(next)" so you can see which one a new pin would evict before you commit to it. |
 | <img src="docs/icons/xy_probe.png" width="32"> **X-Y Oscilloscope Probe** | A second, independent probe: instead of plotting channels against time, it plots one pinned channel's voltage against another's - a real bench oscilloscope's X-Y mode, tracing Lissajous figures for phase/frequency comparisons. Right-click to pin - whichever block you just clicked always becomes (or stays) the **Y** channel, demoting the previous Y to X and evicting the old X if both slots were already full; shift+right-click unpins. Each axis is scaled independently to its own channel's peak magnitude, with the full-scale value printed at both ends of each axis directly on the plot in SI-prefixed form (k/m/u/n/p), so two very differently sized signals both use the plot's full range instead of one being squashed by a shared scale - a 90°-phase-shifted, equal-amplitude pair still traces an actual circle, since the two independent scales coincide whenever the amplitudes actually match. Independent of the regular Probe's own pins - hold both at once to see both HUDs side by side. |
 | <img src="docs/icons/ac_probe.png" width="32"> **AC Oscilloscope Probe** | A genuine two-step probe, unlike the other two: right-click an AC Source first to pin it as the sweep's excitation (a hint appears; nothing is computed yet). Right-click a second, different point afterward - any component, wire, or ground - to run the sweep (60 log-spaced frequencies across the source's configured range) and show a Bode plot: magnitude in dB on top, phase in degrees below, both against log-frequency. The source stays pinned afterward, so you can probe more points against it without re-clicking it each time; shift+right-click unpins. |
+| <img src="docs/icons/r2v_converter.png" width="32"> **R2V Converter** | Redstone-to-voltage interface: must be placed directly on top of a **Ground** block (both a placement requirement and its 0V electrical reference). Reads two 0-15 redstone signal strengths - North = A, South = B - and outputs V = A×15 + B (0-240V) on its top face, wired into the rest of the circuit like any other source. No value editor; the output is entirely redstone-driven. |
+| <img src="docs/icons/v2r_converter.png" width="32"> **V2R Converter** | The inverse of the R2V Converter: also placed directly on Ground, reads whatever voltage is wired into its top face (an ideal voltmeter - draws no current, never loads down what it's measuring), and decodes it back into two 0-15 redstone outputs on its North (A) and South (B) faces, the exact inverse of V = A×15 + B. |
 | <img src="docs/icons/breadboard.png" width="32"> **Breadboard** | Not a circuit component - it has no leads and takes no part in the solver. It's the **Electrician** villager's job site block (see below): place one, let an unemployed villager claim it, and it starts selling the rest of this table. |
 
 ### Wiring rules
@@ -101,6 +103,11 @@ other, no wire needed in between.
 
 An unconnected lead doesn't crash anything — it's treated as a floating node, so you can build a
 circuit incrementally and it'll simulate (uselessly, but safely) at every intermediate stage.
+
+The R2V/V2R Converters are the one exception to "leads follow the direction you were looking
+when placed": their orientation is always fixed (up = the wired electrical lead, down = the
+required Ground connection, north/south = redstone I/O), regardless of which way you were
+facing when you placed them.
 
 ## Crafting recipes
 
@@ -128,6 +135,8 @@ same result, rather than merged into one image.
 | <img src="docs/recipes/xy_probe.png"> | **X-Y Oscilloscope Probe ×1** — redstone, quartz, and a stick, stacked vertically. |
 | <img src="docs/recipes/ac_source.png"> | **AC Source ×1** — redstone, glowstone dust, gold nugget (shapeless). |
 | <img src="docs/recipes/ac_probe.png"> | **AC Oscilloscope Probe ×1** — redstone, glowstone dust, and a stick, stacked vertically. |
+| <img src="docs/recipes/r2v_converter.png"> | **R2V Converter ×1** — 3×3 iron/copper shell around a Comparator core, the vanilla device for reading redstone strength. |
+| <img src="docs/recipes/v2r_converter.png"> | **V2R Converter ×1** — 3×3 iron/gold shell around a Comparator core. |
 | <img src="docs/recipes/breadboard.png"> | **Breadboard ×1** — 3×3, oak planks frame around a redstone-and-iron-nugget core. |
 
 None of these have recipe-book unlock advancements yet, so they won't show a "new recipe" toast —
@@ -145,7 +154,8 @@ own look, not the default missing-texture placeholder: a slate/steel tool apron 
 warning-yellow badge accents, distinct from any vanilla profession's outfit. Like every vanilla
 profession, it levels up (Novice → Master) as it successfully trades, unlocking later tiers. Each
 level offers **at most two components to sell and at most two raw materials to buy** (never more,
-always both), so no single villager is ever a wall of trades:
+always both), so no single villager is ever a wall of trades - **except Master**, which is a
+deliberate exception (see below):
 
 | Level | Sells | Buys |
 |---|---|---|
@@ -153,7 +163,7 @@ always both), so no single villager is ever a wall of trades:
 | 2 — Apprentice | Power Supply, Function Generator | Iron Ingot, Copper Ingot |
 | 3 — Journeyman | AC Source | Gold Nugget, Glowstone Dust |
 | 4 — Expert | Probe, AC Oscilloscope Probe | Redstone, Stick |
-| 5 — Master | Memristor | Amethyst Shard, Redstone |
+| 5 — Master | any 2 of Memristor / R2V Converter / V2R Converter | Amethyst Shard, Redstone (usually both) |
 
 Buy trades collect **15** of the raw material per trade; sell trades keep each component's
 original per-trade quantity (1-2 at a time, unchanged from before). Every trade - buy and sell
@@ -172,6 +182,17 @@ rebuild required. Each level's `trade_set` `amount` is set equal to its trade po
 every listed trade is always offered together rather than a random subset (unlike vanilla
 professions, which usually roll a handful from a larger pool) - the only way to guarantee the
 "both sell items and both buy items are always present" promise above.
+
+**Master is the one deliberate exception.** At the user's request, Master's sell pool has three
+items (Memristor, R2V Converter, V2R Converter) instead of two, and any given Electrician
+randomly offers only two of the three - real vanilla-style randomness, reintroduced on purpose
+for this one tier. Minecraft's trade-set system can only randomize across *one* combined
+pool per level, with no way to keep a subset (the two buy trades) deterministic while
+randomizing another subset (the three sell trades) within that same level - so Master's full
+pool is 5 entries (3 sell + 2 buy) with `amount: 4`, meaning exactly one entry gets excluded at
+random. Most of the time that's one of the three sell items (giving the intended "any two of
+three"), but occasionally it's one of the two buy items instead - Master is the only tier where
+the "both buy items always present" guarantee isn't absolute.
 
 ### Electrician's Workshop
 

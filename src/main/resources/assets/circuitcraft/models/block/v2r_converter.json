@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "circuitcraft:block/v2r_converter",
+    "north": "circuitcraft:block/v2r_output_a",
+    "south": "circuitcraft:block/v2r_output_b",
+    "up": "circuitcraft:block/terminal",
+    "down": "circuitcraft:block/ground_terminal",
+    "east": "circuitcraft:block/v2r_converter",
+    "west": "circuitcraft:block/v2r_converter"
+  }
+}

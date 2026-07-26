@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "C": "minecraft:copper_ingot",
+    "M": "minecraft:comparator"
+  },
+  "pattern": [
+    "ICI",
+    "CMC",
+    "ICI"
+  ],
+  "result": {
+    "id": "circuitcraft:r2v_converter",
+    "count": 1
+  }
+}

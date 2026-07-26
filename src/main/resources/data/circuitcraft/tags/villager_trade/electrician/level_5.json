@@ -1,6 +1,8 @@
 {
   "values": [
     "circuitcraft:electrician/5/memristor_emerald",
+    "circuitcraft:electrician/5/r2v_converter_emerald",
+    "circuitcraft:electrician/5/v2r_converter_emerald",
     "circuitcraft:electrician/5/amethyst_shard_buy",
     "circuitcraft:electrician/5/redstone_buy"
   ]
