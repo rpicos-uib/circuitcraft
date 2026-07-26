@@ -80,6 +80,20 @@ public class Circuit {
 		if (b != 0) z[b - 1] += i;
 	}
 
+	/** Adds an asymmetric transconductance stamp: a current {@code gm * (V[ctrlPlus] -
+	 *  V[ctrlMinus])} flows from {@code outPlus} to {@code outMinus}, WITHOUT the reciprocal
+	 *  term {@link #stampConductance} would also add at the control nodes - the defining
+	 *  asymmetry of a dependent/active element (a transistor, a controlled source) versus a
+	 *  passive resistor, which is reciprocal by construction. Shared by every element whose
+	 *  output current is proportional to a voltage sensed elsewhere: {@code Vccs}, the
+	 *  MOSFET models' drain current, and the BJT models' collector-current companion term. */
+	public void stampTransconductance(double[][] mat, int outPlus, int outMinus, int ctrlPlus, int ctrlMinus, double gm) {
+		if (outPlus != 0 && ctrlPlus != 0) mat[outPlus - 1][ctrlPlus - 1] += gm;
+		if (outPlus != 0 && ctrlMinus != 0) mat[outPlus - 1][ctrlMinus - 1] -= gm;
+		if (outMinus != 0 && ctrlPlus != 0) mat[outMinus - 1][ctrlPlus - 1] -= gm;
+		if (outMinus != 0 && ctrlMinus != 0) mat[outMinus - 1][ctrlMinus - 1] += gm;
+	}
+
 	public void step(double dt) {
 		assignBranchIndices();
 

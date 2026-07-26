@@ -60,7 +60,7 @@ JAVA_HOME=/path/to/jdk-25 ./gradlew build
 Useful dev tasks: `./gradlew runClient` (launches a dev client with the mod loaded) and
 `./gradlew runServer` (headless dedicated server — handy for checking the mod loads without a GUI).
 
-## The components
+## Basic Components
 
 For any component whose value is a single number rather than a category (resistance,
 capacitance, inductance, voltage, frequency, the memristor's parameters), an empty-hand
@@ -68,6 +68,11 @@ capacitance, inductance, voltage, frequency, the memristor's parameters), an emp
 sign — pre-filled with the current value(s) and the same min/max range its preset cycle
 already covers. A plain empty-hand right-click still cycles through the fixed presets exactly
 as before; the two interactions coexist.
+
+These are the **Electrician** villager's stock-in-trade (see below) — the everyday passive
+components, sources, and instrumentation you need for a basic circuit. Transistors, controlled
+sources, and the diode live in [Advanced Components](#advanced-components) instead, sold by the
+**Electronics Engineer**.
 
 | Block/Item | What it is |
 |---|---|
@@ -80,7 +85,6 @@ as before; the two interactions coexist.
 | <img src="docs/icons/wire.png" width="32"> **Wire** | Zero-resistance conductor block. Connects on all six faces. Probeable in its own right (see Probe below) - gives the absolute voltage at that point in the circuit, not just a drop across two leads. |
 | <img src="docs/icons/ground.png" width="32"> **Ground** | Ties whatever network it's wired into to a real 0V reference point, the same way a real circuit needs a ground reference before "voltage at this node" means anything. Conductive on all six faces, wire it in like any other participant. Probing it always reads exactly 0V, confirming what's actually tied to reference. |
 | <img src="docs/icons/ammeter.png" width="32"> **Ammeter** | A 0V voltage source in series - electrically an ideal wire, so it doesn't disturb the circuit, but gives an exact current reading. Pin it with the Probe to see a live current trace on the oscilloscope, the same way you'd watch a voltage. |
-| <img src="docs/icons/diode.png" width="32"> **Diode** | The lead facing the direction you were looking when you placed it is the anode, the opposite lead is the cathode - current flows readily anode→cathode past the forward voltage, and is (almost) blocked in reverse. Right-click cycles silicon (~0.7V) / germanium (~0.3V) / red LED (~2V) presets - a categorical choice, so there's no shift+right-click value editor for the diode. Modeled with a linearized Shockley diode equation re-fit every tick, not a lookup table. |
 | <img src="docs/icons/op_amp.png" width="32"> **Ideal Op-Amp** | Infinite gain, infinite input impedance, zero output impedance - the textbook ideal op-amp, enforcing a "virtual short" between its two inputs via its own dedicated branch-current unknown in the solver (the same MNA trick used for voltage sources, just referencing different nodes for the constraint than for the current injection). The only 3-terminal component: output and the inverting input (V−) are the front/back leads as usual; the non-inverting input (V+) is the block's top face (or its north face, if the block itself is oriented vertically). Fixed, ideal behavior with no adjustable parameter at all, so there's no preset cycle and no value editor; the AC (Bode-plot) solver instead uses a fixed two-pole gain model (100dB DC gain, poles at 20Hz and 3MHz) - see AC Source/AC Probe below. |
 | <img src="docs/icons/ac_source.png" width="32"> **AC Source** | The excitation for an AC (small-signal) sweep. Wired like any other two-terminal component, but electrically a 0V source (a plain wire) in the regular DC/transient simulation - its real behavior only appears through the AC Probe. All three parameters (amplitude, min frequency, max frequency) are set through shift+right-click only, since a frequency *range* isn't the kind of thing a short preset list represents well - there's no plain-right-click preset cycle at all for this one. |
 | <img src="docs/icons/voltage_module.png" width="32"> **Voltage Module** | Undirected utility cube (no facing, no leads) that touches a Function Generator on any face and sets its amplitude. Right-click cycles its own preset (1.5/5/9/12/24 V); shift+right-click opens the value editor for an exact voltage. Same-kind modules touching each other relay one shared value along the whole chain - whichever module was right-clicked most recently wins and propagates to every generator the chain reaches, so one control can drive several generators at once. |
@@ -104,10 +108,49 @@ other, no wire needed in between.
 An unconnected lead doesn't crash anything — it's treated as a floating node, so you can build a
 circuit incrementally and it'll simulate (uselessly, but safely) at every intermediate stage.
 
-The R2V/V2R Converters are the one exception to "leads follow the direction you were looking
-when placed": their orientation is always fixed (up = the wired electrical lead, down = the
-required Ground connection, north/south = redstone I/O), regardless of which way you were
-facing when you placed them.
+The R2V/V2R Converters and the four controlled sources (VCVS/VCCS/CCCS/CCVS, see
+[Advanced Components](#advanced-components)) are the exception to "leads follow the direction
+you were looking when placed": their orientation is always fixed (up = the wired electrical
+lead(s), down = the required Ground connection, north/south = redstone I/O or control leads),
+regardless of which way you were facing when you placed them. They also physically require a
+**Ground** block directly beneath them to place at all — break that Ground and the converter
+or controlled source breaks with it.
+
+The transistors (NPN/PNP/NMOS/PMOS) and the Ideal Op-Amp are **3-terminal** components: front
+and back are two of the three leads as usual, and the third (base/gate, or the op-amp's V+) is
+the block's top face — or its north face, if the block itself is oriented vertically (facing
+up or down).
+
+## Advanced Components
+
+Transistors, the four classic dependent/controlled sources, and a couple of instrumentation
+pieces that round out a real bench — sold by the **Electronics Engineer** villager (see below),
+not the Electrician. All the "simplest model" parameters below (β, threshold voltage,
+transconductance, gain) are editable via shift+right-click, the same value-editor convention as
+the basic components.
+
+Every dependent source here relies on a deliberate one-tick lag: `Circuit.step()` stamps every
+element *before* solving, so any element that reads another node's already-solved voltage (or
+another source's already-solved current) while building its own stamp is necessarily reading the
+*previous* tick's converged value — the same "linearize about last tick" philosophy the Diode
+already used. This is what lets all four controlled sources, the BJTs, and the MOSFETs work
+without any change to `Circuit`'s core solve loop (aside from one new stamping helper,
+`stampTransconductance` — see [`MOD_ARCHITECTURE.md`](MOD_ARCHITECTURE.md) for the full writeup).
+
+| Block/Item | What it is |
+|---|---|
+| <img src="docs/icons/diode.png" width="32"> **Diode** | The lead facing the direction you were looking when you placed it is the anode, the opposite lead is the cathode - current flows readily anode→cathode past the forward voltage, and is (almost) blocked in reverse. Right-click cycles silicon (~0.7V) / germanium (~0.3V) / red LED (~2V) presets - a categorical choice, so there's no shift+right-click value editor for the diode. Modeled with a linearized Shockley diode equation re-fit every tick, not a lookup table. |
+| <img src="docs/icons/current_source.png" width="32"> **Current Source** | Ideal independent DC current source - the dual of the Power Supply. Cycles 0.1 / 0.5 / 1 / 2 A; shift+right-click opens the value editor for an exact current. Same redstone-activation behavior as the Power Supply (inactive = open circuit until powered). |
+| <img src="docs/icons/voltmeter.png" width="32"> **Voltmeter** | An ideal voltmeter in series - infinite input impedance, draws no current, never loads down the circuit it's reading. The voltage dual of the Ammeter: pin it with the Probe to see a live voltage trace, same as any other component. |
+| <img src="docs/icons/npn.png" width="32"> **NPN Transistor** | Collector is the front (facing) lead, emitter the back, base the top face (or north, if placed vertically). Base-emitter junction reuses the Diode's own linearized Shockley model; collector current is β × base current, stamped as an exact transconductance term (no lag) via `stampTransconductance`. Shift+right-click edits β (current gain), 5–500. |
+| <img src="docs/icons/pnp.png" width="32"> **PNP Transistor** | Same model and leads as the NPN, with every current direction reversed (`polarity = -1` in the underlying `Bjt` model). Shift+right-click edits β, 5–500. |
+| <img src="docs/icons/nmos.png" width="32"> **NMOS Transistor** | Drain is the front lead, source the back, gate the top face (or north, if placed vertically). Square-law, saturation-only model, linearized each tick around the previous drain current. Shift+right-click edits threshold voltage (0.1–5 V) and transconductance *k* (1e-4–0.1 S). |
+| <img src="docs/icons/pmos.png" width="32"> **PMOS Transistor** | Same model and leads as the NMOS, with drain current direction reversed. Shift+right-click edits the same two parameters. |
+| <img src="docs/icons/vcvs.png" width="32"> **VCVS** (voltage-controlled voltage source) | Must be placed directly on a **Ground** block, like the R2V/V2R Converters. North face senses a control voltage (against Ground); the output (gain × control voltage) is driven onto the top face. Shift+right-click edits the gain, 0.1–100. |
+| <img src="docs/icons/vccs.png" width="32"> **VCCS** (voltage-controlled current source) | Same shape as the VCVS, but drives a current (transconductance × control voltage) out its top face instead of a voltage - stamped as an exact transconductance term, no lag, since it's a purely linear relation. Shift+right-click edits the transconductance, 1e-4–1 S. |
+| <img src="docs/icons/cccs.png" width="32"> **CCCS** (current-controlled current source) | A 4-face component: north/south are the control-current sense leads (an internal 0V ammeter, like the Ammeter block), top drives the output current (current gain × sensed current) against the required Ground below. Shift+right-click edits the current gain, 0.1–100. |
+| <img src="docs/icons/ccvs.png" width="32"> **CCVS** (current-controlled voltage source) | Same 4-face shape as the CCCS, driving a voltage (transresistance × sensed current) instead of a current. Shift+right-click edits the transresistance, 1–1,000 Ω. |
+| <img src="docs/icons/workbench.png" width="32"> **Workbench** | Not a circuit component - it has no leads and takes no part in the solver. It's the **Electronics Engineer** villager's job site block (see below): place one, let an unemployed villager claim it, and it starts selling the rest of this table. |
 
 ## Crafting recipes
 
@@ -138,6 +181,17 @@ same result, rather than merged into one image.
 | <img src="docs/recipes/r2v_converter.png"> | **R2V Converter ×1** — 3×3 iron/copper shell around a Comparator core, the vanilla device for reading redstone strength. |
 | <img src="docs/recipes/v2r_converter.png"> | **V2R Converter ×1** — 3×3 iron/gold shell around a Comparator core. |
 | <img src="docs/recipes/breadboard.png"> | **Breadboard ×1** — 3×3, oak planks frame around a redstone-and-iron-nugget core. |
+| <img src="docs/recipes/current_source.png"> | **Current Source ×1** — 3×3 gold/copper shell around a redstone block core (the Power Supply's dual). |
+| <img src="docs/recipes/voltmeter.png"> | **Voltmeter ×2** — iron nugget, gold nugget, redstone. |
+| <img src="docs/recipes/npn.png"> | **NPN Transistor ×2** — 2 iron nuggets, quartz, redstone. |
+| <img src="docs/recipes/pnp.png"> | **PNP Transistor ×2** — 2 iron nuggets, glowstone dust, redstone. |
+| <img src="docs/recipes/nmos.png"> | **NMOS Transistor ×2** — 2 iron nuggets, paper (gate insulation), quartz. |
+| <img src="docs/recipes/pmos.png"> | **PMOS Transistor ×2** — 2 iron nuggets, paper, glowstone dust. |
+| <img src="docs/recipes/vcvs.png"> | **VCVS ×1** — 3×3 copper/gold shell around a Comparator core. |
+| <img src="docs/recipes/vccs.png"> | **VCCS ×1** — 3×3 copper/iron shell around a Comparator core. |
+| <img src="docs/recipes/cccs.png"> | **CCCS ×1** — 3×3 gold/copper shell around a Comparator core. |
+| <img src="docs/recipes/ccvs.png"> | **CCVS ×1** — 3×3 gold/iron shell around a Comparator core. |
+| <img src="docs/recipes/workbench.png"> | **Workbench ×1** — 3×3, smooth stone frame around a redstone-and-iron-nugget core (the Breadboard's own job-site pattern, restyled in stone). |
 
 None of these have recipe-book unlock advancements yet, so they won't show a "new recipe" toast —
 but they're fully craftable by hand right now. See [Contributing](#contributing) if you want to add
@@ -175,7 +229,9 @@ less than the finished component they go into.
 
 Not every craftable item is sellable this way anymore - Wire, Ground, Inductor, Voltage Module,
 Frequency Module, and the X-Y Oscilloscope Probe were trimmed out to keep to the two-per-level
-cap (all six are still simple, cheap crafting-table recipes, unaffected). Trades are entirely
+cap (all six are still simple, cheap crafting-table recipes, unaffected). The Diode isn't trimmed,
+just relocated - it's sold by the **Electronics Engineer** instead (see below), not the
+Electrician. Trades are entirely
 data-driven (`data/circuitcraft/{villager_trade,tags/villager_trade,trade_set}/electrician/`)
 rather than hardcoded in Java - this Minecraft version's `VillagerProfession` only points at
 `TradeSet` resource keys per level, so rebalancing prices or adding trades is a JSON edit, no
@@ -218,6 +274,49 @@ The function's source (`data/circuitcraft/function/electrician_shop.mcfunction`)
 `/fill`/`/setblock` commands if you want to reskin it - see
 [`MOD_ARCHITECTURE.md`](MOD_ARCHITECTURE.md) for how it was built and verified.
 
+## The Electronics Engineer villager
+
+Place a **Workbench** (crafted as shown above) and let an unemployed villager claim it as a job
+site; it becomes an **Electronics Engineer** and sells/buys the [Advanced Components](#advanced-components)
+table above, the same way the Electrician handles the basic one. It has its own distinct look
+too — a white lab-coat recolor of the Electrician's own texture, with the badge accents shifted
+from warning-yellow to a diode-red glow, so the two professions are never visually confused.
+Same leveling (Novice → Master), same "at most two sells and buys per level, never more" rule,
+with Master again the deliberate exception:
+
+| Level | Sells | Buys |
+|---|---|---|
+| 1 — Novice | Diode, Voltmeter | Quartz, Paper |
+| 2 — Apprentice | Current Source, NPN Transistor | Iron Nugget |
+| 3 — Journeyman | PNP Transistor, NMOS Transistor | Glowstone Dust |
+| 4 — Expert | PMOS Transistor, VCVS | Gold Ingot |
+| 5 — Master | any 2 of VCCS / CCCS / CCVS | Redstone Block (usually present) |
+
+Same trading terms as the Electrician throughout: buy trades collect **8** of the raw material
+per trade (**4** redstone blocks at Master, the priciest one), every trade allows **15** uses
+before restocking, and sell prices scale up with tier (2 emeralds at Novice up to 8 at Master,
+matching the Electrician's own R2V/V2R-tier pricing for the dependent sources). Master's sell
+pool has three items with only two ever offered at once — the same reused "random exclusion"
+trick as the Electrician's own Master tier, except here the full pool is 4 entries (3 sell + 1
+buy) with `amount: 3`, so occasionally the excluded entry is the buy trade instead of a sell
+item, not just "any two of three" sells.
+
+### Electronics Engineer's Workshop
+
+Same idea as the Electrician's Workshop, deliberately built in a different palette so the two
+professions' buildings read as distinct at a glance — a stone-brick-and-polished-andesite "lab"
+with iron bars and a quartz finial, instead of the Electrician's oak-and-copper cabin:
+
+```
+/function circuitcraft:engineer_workshop
+```
+
+This places a Workbench against the back wall with a small stock shelf (a Diode and an NPN
+Transistor) next to it, exactly like the Electrician's own shop places a Breadboard and starter
+stock. The function's source is
+`data/circuitcraft/function/engineer_workshop.mcfunction` — plain `/fill`/`/setblock` commands,
+same as the Electrician's.
+
 ## Architecture, for anyone extending this
 
 ```
@@ -234,10 +333,17 @@ src/client/java/com/rpicos/circuitcraft/client/   HUD rendering, client-side net
 
 `Circuit` is a general modified-nodal-analysis engine: node 0 is always ground, every other node
 is an integer you allocate with `addNode()`. `Element` implementations (`Resistor`, `Capacitor`,
-`Inductor`, `Memristor`) stamp themselves into the conductance matrix each step; `VoltageSource`
-gets its own branch-current unknown, the standard MNA treatment for ideal sources. Reactive
-elements use trapezoidal-integration companion models (the same technique SPICE uses) rather than
-backward Euler, so LC-type behavior doesn't get artificially damped out.
+`Inductor`, `Memristor`, `CurrentSource`, `Vccs`, `Bjt`, `Mosfet`) stamp themselves into the
+conductance matrix each step; `VoltageSource` gets its own branch-current unknown, the standard
+MNA treatment for ideal sources — `Vcvs` and `Ccvs` are both thin factories that just build one.
+Reactive elements use trapezoidal-integration companion models (the same technique SPICE uses)
+rather than backward Euler, so LC-type behavior doesn't get artificially damped out; the BJT and
+MOSFET models reuse that same "linearize about last tick" spirit (the BJT's base-emitter junction
+literally reuses the Diode's own `DiodeMath` helper). Every dependent/active element's defining
+asymmetry versus a passive, reciprocal resistor is captured in one shared stamping helper,
+`stampTransconductance` — see [Advanced Components](#advanced-components) above for the one-tick-lag
+reasoning that lets all four controlled sources and both transistor families work without touching
+this solve loop at all.
 
 A second, complex-valued solver, `AcCircuit`, sits alongside it for AC (Bode-plot) analysis:
 `Complex` is a plain immutable complex number, `AcElement` implementations stamp a frequency-dependent
@@ -268,7 +374,16 @@ references (a resistive divider's flat response, an RC/RL divider's -3dB/45° cu
    existing pair — they're generic besides the texture path), and a lang entry.
 6. Optionally add a `data/circuitcraft/recipe/your_component.json`.
 
-### Known limitations (v0.6)
+If your component has 3+ terminals, extend `NetworkBlockEntity` directly instead of
+`ComponentBlockEntity` (see `OpAmpBlockEntity`, `NpnBlockEntity`, or the `Vcvs`/`Vccs`/`Cccs`/`Ccvs`
+family for precedent) and add your own dispatch branch in `CircuitNetworkManager.rebuild()`. If it
+should always sit on a Ground block with a fixed orientation (like the R2V/V2R converters and the
+four controlled sources), extend `GroundedComponentBlock` rather than `ComponentBlock` directly.
+See [`COMPONENT_ADD.md`](COMPONENT_ADD.md) and [`MOD_ARCHITECTURE.md`](MOD_ARCHITECTURE.md) for
+the full walkthrough, including the second-villager-profession pattern if your component should be
+sold by a new profession rather than an existing one.
+
+### Known limitations (v0.8)
 
 - **Component state resets on circuit rebuild.** `CircuitNetworkManager` rebuilds the whole
   `Circuit` from scratch whenever wiring changes anywhere in that network, so a capacitor's charge
@@ -277,11 +392,20 @@ references (a resistive divider's flat response, an RC/RL divider's -3dB/45° cu
   of a memristor. Making the others persist too is a good first contribution.
 - **No recipe-book unlock advancements** — recipes work but won't appear highlighted/toast when
   first available.
-- **AC analysis is small-signal only.** Every independent source other than the pinned AC Source
-  is always stamped at 0V during a sweep, regardless of its own redstone-activated state; the
-  op-amp's two-pole gain (100dB DC gain, poles at 20Hz/3MHz) is a fixed constant, not yet exposed
-  through the value editor; and the memristor's AC case is simply a frozen resistor with no
-  frequency dependence of its own modeled yet.
+- **AC analysis is small-signal only, and doesn't cover the Advanced Components at all yet.** Every
+  independent source other than the pinned AC Source is always stamped at 0V during a sweep,
+  regardless of its own redstone-activated state; the op-amp's two-pole gain (100dB DC gain, poles
+  at 20Hz/3MHz) is a fixed constant, not yet exposed through the value editor; and the memristor's
+  AC case is simply a frozen resistor with no frequency dependence of its own modeled yet. The
+  transistors and the four controlled sources simply have no `AcStampable` implementation at all,
+  so they behave as an open circuit during a Bode-plot sweep by omission rather than by any
+  deliberate small-signal model — a real next contribution, not a design choice.
+- **The base/gate badge texture on a vertically-placed transistor is unverified.** The Java
+  electrical model is orientation-correct regardless (base/gate is always the block's north face
+  when placed facing up/down, per the wiring rules above) — what's untested is only whether the
+  *texture* painted on that literal north face reads correctly to the player when the block itself
+  is lying on its side. Confirmed correct for all four horizontal orientations; not yet visually
+  checked for facing up/down.
 
 ## Contributing
 

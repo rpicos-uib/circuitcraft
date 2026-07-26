@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": "minecraft:smooth_stone",
+    "N": "minecraft:iron_nugget",
+    "R": "minecraft:redstone"
+  },
+  "pattern": [
+    "PPP",
+    "NRN",
+    "PPP"
+  ],
+  "result": {
+    "id": "circuitcraft:workbench",
+    "count": 1
+  }
+}

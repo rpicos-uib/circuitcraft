@@ -15,10 +15,22 @@
   "block.circuitcraft.ac_source": "AC Source",
   "block.circuitcraft.r2v_converter": "R2V Converter",
   "block.circuitcraft.v2r_converter": "V2R Converter",
+  "block.circuitcraft.current_source": "Current Source",
+  "block.circuitcraft.voltmeter": "Voltmeter",
+  "block.circuitcraft.npn": "NPN Transistor",
+  "block.circuitcraft.pnp": "PNP Transistor",
+  "block.circuitcraft.nmos": "NMOS Transistor",
+  "block.circuitcraft.pmos": "PMOS Transistor",
+  "block.circuitcraft.vcvs": "VCVS",
+  "block.circuitcraft.vccs": "VCCS",
+  "block.circuitcraft.cccs": "CCCS",
+  "block.circuitcraft.ccvs": "CCVS",
   "block.circuitcraft.breadboard": "Breadboard",
+  "block.circuitcraft.workbench": "Workbench",
   "item.circuitcraft.probe": "Oscilloscope Probe",
   "item.circuitcraft.xy_probe": "X-Y Oscilloscope Probe",
   "item.circuitcraft.ac_probe": "AC Oscilloscope Probe",
   "itemGroup.circuitcraft.components": "CircuitCraft",
-  "entity.circuitcraft.villager.electrician": "Electrician"
+  "entity.circuitcraft.villager.electrician": "Electrician",
+  "entity.circuitcraft.villager.electronics_engineer": "Electronics Engineer"
 }

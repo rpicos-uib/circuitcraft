@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:iron_nugget",
+    "minecraft:iron_nugget",
+    "minecraft:paper",
+    "minecraft:glowstone_dust"
+  ],
+  "result": {
+    "id": "circuitcraft:pmos",
+    "count": 2
+  }
+}

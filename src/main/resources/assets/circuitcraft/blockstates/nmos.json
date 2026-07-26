@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "circuitcraft:block/nmos",
+      "x": 90
+    },
+    "facing=up": {
+      "model": "circuitcraft:block/nmos",
+      "x": 270
+    },
+    "facing=north": {
+      "model": "circuitcraft:block/nmos"
+    },
+    "facing=south": {
+      "model": "circuitcraft:block/nmos",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "circuitcraft:block/nmos",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "circuitcraft:block/nmos",
+      "y": 90
+    }
+  }
+}

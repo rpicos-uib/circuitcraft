@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": "minecraft:copper_ingot",
+    "G": "minecraft:gold_ingot",
+    "M": "minecraft:comparator"
+  },
+  "pattern": [
+    "CGC",
+    "GMG",
+    "CGC"
+  ],
+  "result": {
+    "id": "circuitcraft:vcvs",
+    "count": 1
+  }
+}

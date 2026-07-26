@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:iron_nugget",
+    "minecraft:gold_nugget",
+    "minecraft:redstone"
+  ],
+  "result": {
+    "id": "circuitcraft:voltmeter",
+    "count": 2
+  }
+}

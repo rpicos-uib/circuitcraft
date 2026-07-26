@@ -4,13 +4,19 @@ import com.rpicos.circuitcraft.CircuitCraft;
 import com.rpicos.circuitcraft.blockentity.AcSourceBlockEntity;
 import com.rpicos.circuitcraft.blockentity.AcStampable;
 import com.rpicos.circuitcraft.blockentity.AmmeterBlockEntity;
+import com.rpicos.circuitcraft.blockentity.CccsBlockEntity;
+import com.rpicos.circuitcraft.blockentity.CcvsBlockEntity;
 import com.rpicos.circuitcraft.blockentity.ComponentBlockEntity;
 import com.rpicos.circuitcraft.blockentity.GroundBlockEntity;
 import com.rpicos.circuitcraft.blockentity.NetworkBlockEntity;
+import com.rpicos.circuitcraft.blockentity.NmosBlockEntity;
+import com.rpicos.circuitcraft.blockentity.NpnBlockEntity;
 import com.rpicos.circuitcraft.blockentity.OpAmpBlockEntity;
 import com.rpicos.circuitcraft.blockentity.Probeable;
 import com.rpicos.circuitcraft.blockentity.SingleNodeBlockEntity;
 import com.rpicos.circuitcraft.blockentity.V2RConverterBlockEntity;
+import com.rpicos.circuitcraft.blockentity.VccsBlockEntity;
+import com.rpicos.circuitcraft.blockentity.VcvsBlockEntity;
 import com.rpicos.circuitcraft.sim.AcCircuit;
 import com.rpicos.circuitcraft.sim.Circuit;
 import com.rpicos.circuitcraft.sim.Complex;
@@ -211,6 +217,38 @@ public class CircuitNetworkManager {
 				int nodeMinus = assignment.nodeIdByKey().get(new NodeKey(pos, opAmp.minusFace()));
 				int nodePlus = assignment.nodeIdByKey().get(new NodeKey(pos, opAmp.plusFace()));
 				opAmp.addToCircuit(circuit, nodeOut, nodeMinus, nodePlus);
+			} else if (entity instanceof NpnBlockEntity bjt) {
+				// Also matches PnpBlockEntity, which extends this class - see its own doc comment.
+				int nodeCollector = assignment.nodeIdByKey().get(new NodeKey(pos, bjt.collectorFace()));
+				int nodeEmitter = assignment.nodeIdByKey().get(new NodeKey(pos, bjt.emitterFace()));
+				int nodeBase = assignment.nodeIdByKey().get(new NodeKey(pos, bjt.baseFace()));
+				bjt.addToCircuit(circuit, nodeBase, nodeCollector, nodeEmitter);
+			} else if (entity instanceof NmosBlockEntity mosfet) {
+				// Also matches PmosBlockEntity.
+				int nodeDrain = assignment.nodeIdByKey().get(new NodeKey(pos, mosfet.drainFace()));
+				int nodeSource = assignment.nodeIdByKey().get(new NodeKey(pos, mosfet.sourceFace()));
+				int nodeGate = assignment.nodeIdByKey().get(new NodeKey(pos, mosfet.gateFace()));
+				mosfet.addToCircuit(circuit, nodeGate, nodeDrain, nodeSource);
+			} else if (entity instanceof VcvsBlockEntity vcvs) {
+				// Fixed absolute faces, not resolved via getFacing() - GroundedComponentBlock
+				// pins FACING to UP permanently, so north/up are always these literal directions.
+				int nodeControl = assignment.nodeIdByKey().get(new NodeKey(pos, Direction.NORTH));
+				int nodeOutput = assignment.nodeIdByKey().get(new NodeKey(pos, Direction.UP));
+				vcvs.addToCircuit(circuit, nodeControl, nodeOutput);
+			} else if (entity instanceof VccsBlockEntity vccs) {
+				int nodeControl = assignment.nodeIdByKey().get(new NodeKey(pos, Direction.NORTH));
+				int nodeOutput = assignment.nodeIdByKey().get(new NodeKey(pos, Direction.UP));
+				vccs.addToCircuit(circuit, nodeControl, nodeOutput);
+			} else if (entity instanceof CccsBlockEntity cccs) {
+				int nodeControlIn = assignment.nodeIdByKey().get(new NodeKey(pos, Direction.NORTH));
+				int nodeControlOut = assignment.nodeIdByKey().get(new NodeKey(pos, Direction.SOUTH));
+				int nodeOutput = assignment.nodeIdByKey().get(new NodeKey(pos, Direction.UP));
+				cccs.addToCircuit(circuit, nodeControlIn, nodeControlOut, nodeOutput);
+			} else if (entity instanceof CcvsBlockEntity ccvs) {
+				int nodeControlIn = assignment.nodeIdByKey().get(new NodeKey(pos, Direction.NORTH));
+				int nodeControlOut = assignment.nodeIdByKey().get(new NodeKey(pos, Direction.SOUTH));
+				int nodeOutput = assignment.nodeIdByKey().get(new NodeKey(pos, Direction.UP));
+				ccvs.addToCircuit(circuit, nodeControlIn, nodeControlOut, nodeOutput);
 			} else if (entity instanceof SingleNodeBlockEntity singleNode) {
 				singleNode.bindNode(circuit, assignment.nodeIdByKey().get(pos));
 			}

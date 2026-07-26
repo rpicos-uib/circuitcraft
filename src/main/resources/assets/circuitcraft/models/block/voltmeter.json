@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "circuitcraft:block/voltmeter",
+    "north": "circuitcraft:block/terminal_plus",
+    "south": "circuitcraft:block/terminal_minus",
+    "east": "circuitcraft:block/voltmeter",
+    "west": "circuitcraft:block/voltmeter",
+    "up": "circuitcraft:block/voltmeter",
+    "down": "circuitcraft:block/voltmeter"
+  }
+}

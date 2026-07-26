@@ -1,0 +1,13 @@
+{
+  "gives": {
+    "count": 2,
+    "id": "circuitcraft:npn"
+  },
+  "max_uses": 15.0,
+  "reputation_discount": 0.05,
+  "wants": {
+    "count": 6,
+    "id": "minecraft:emerald"
+  },
+  "xp": 5.0
+}

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:iron_nugget",
+    "minecraft:iron_nugget",
+    "minecraft:paper",
+    "minecraft:quartz"
+  ],
+  "result": {
+    "id": "circuitcraft:nmos",
+    "count": 2
+  }
+}

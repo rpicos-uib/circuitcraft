@@ -3,18 +3,28 @@ package com.rpicos.circuitcraft;
 import com.rpicos.circuitcraft.blockentity.AcSourceBlockEntity;
 import com.rpicos.circuitcraft.blockentity.AmmeterBlockEntity;
 import com.rpicos.circuitcraft.blockentity.CapacitorBlockEntity;
+import com.rpicos.circuitcraft.blockentity.CccsBlockEntity;
+import com.rpicos.circuitcraft.blockentity.CcvsBlockEntity;
+import com.rpicos.circuitcraft.blockentity.CurrentSourceBlockEntity;
 import com.rpicos.circuitcraft.blockentity.DiodeBlockEntity;
 import com.rpicos.circuitcraft.blockentity.FrequencyModuleBlockEntity;
 import com.rpicos.circuitcraft.blockentity.FunctionGeneratorBlockEntity;
 import com.rpicos.circuitcraft.blockentity.GroundBlockEntity;
 import com.rpicos.circuitcraft.blockentity.InductorBlockEntity;
 import com.rpicos.circuitcraft.blockentity.MemristorBlockEntity;
+import com.rpicos.circuitcraft.blockentity.NmosBlockEntity;
+import com.rpicos.circuitcraft.blockentity.NpnBlockEntity;
 import com.rpicos.circuitcraft.blockentity.OpAmpBlockEntity;
+import com.rpicos.circuitcraft.blockentity.PmosBlockEntity;
+import com.rpicos.circuitcraft.blockentity.PnpBlockEntity;
 import com.rpicos.circuitcraft.blockentity.PowerSupplyBlockEntity;
 import com.rpicos.circuitcraft.blockentity.R2VConverterBlockEntity;
 import com.rpicos.circuitcraft.blockentity.ResistorBlockEntity;
 import com.rpicos.circuitcraft.blockentity.V2RConverterBlockEntity;
+import com.rpicos.circuitcraft.blockentity.VccsBlockEntity;
+import com.rpicos.circuitcraft.blockentity.VcvsBlockEntity;
 import com.rpicos.circuitcraft.blockentity.VoltageModuleBlockEntity;
+import com.rpicos.circuitcraft.blockentity.VoltmeterBlockEntity;
 import com.rpicos.circuitcraft.blockentity.WireBlockEntity;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -59,6 +69,26 @@ public final class ModBlockEntities {
 			register("r2v_converter", R2VConverterBlockEntity::new, ModBlocks.R2V_CONVERTER);
 	public static final BlockEntityType<V2RConverterBlockEntity> V2R_CONVERTER =
 			register("v2r_converter", V2RConverterBlockEntity::new, ModBlocks.V2R_CONVERTER);
+	public static final BlockEntityType<CurrentSourceBlockEntity> CURRENT_SOURCE =
+			register("current_source", CurrentSourceBlockEntity::new, ModBlocks.CURRENT_SOURCE);
+	public static final BlockEntityType<VoltmeterBlockEntity> VOLTMETER =
+			register("voltmeter", VoltmeterBlockEntity::new, ModBlocks.VOLTMETER);
+	public static final BlockEntityType<NpnBlockEntity> NPN =
+			register("npn", NpnBlockEntity::new, ModBlocks.NPN);
+	public static final BlockEntityType<PnpBlockEntity> PNP =
+			register("pnp", PnpBlockEntity::new, ModBlocks.PNP);
+	public static final BlockEntityType<NmosBlockEntity> NMOS =
+			register("nmos", NmosBlockEntity::new, ModBlocks.NMOS);
+	public static final BlockEntityType<PmosBlockEntity> PMOS =
+			register("pmos", PmosBlockEntity::new, ModBlocks.PMOS);
+	public static final BlockEntityType<VcvsBlockEntity> VCVS =
+			register("vcvs", VcvsBlockEntity::new, ModBlocks.VCVS);
+	public static final BlockEntityType<VccsBlockEntity> VCCS =
+			register("vccs", VccsBlockEntity::new, ModBlocks.VCCS);
+	public static final BlockEntityType<CccsBlockEntity> CCCS =
+			register("cccs", CccsBlockEntity::new, ModBlocks.CCCS);
+	public static final BlockEntityType<CcvsBlockEntity> CCVS =
+			register("ccvs", CcvsBlockEntity::new, ModBlocks.CCVS);
 
 	private static <T extends BlockEntity> BlockEntityType<T> register(
 			String path, BlockEntityType.BlockEntitySupplier<T> factory, Block block) {

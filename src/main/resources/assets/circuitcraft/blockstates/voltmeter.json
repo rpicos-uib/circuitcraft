@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "circuitcraft:block/voltmeter",
+      "x": 90
+    },
+    "facing=up": {
+      "model": "circuitcraft:block/voltmeter",
+      "x": 270
+    },
+    "facing=north": {
+      "model": "circuitcraft:block/voltmeter"
+    },
+    "facing=south": {
+      "model": "circuitcraft:block/voltmeter",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "circuitcraft:block/voltmeter",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "circuitcraft:block/voltmeter",
+      "y": 90
+    }
+  }
+}

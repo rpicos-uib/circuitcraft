@@ -1,6 +1,7 @@
 package com.rpicos.circuitcraft.block;
 
 import com.rpicos.circuitcraft.blockentity.ComponentBlockEntity;
+import com.rpicos.circuitcraft.blockentity.ValueEditable;
 import com.rpicos.circuitcraft.network.ValueEditorOpener;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -13,6 +14,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -60,10 +62,17 @@ public abstract class ComponentBlock extends Block implements EntityBlock {
 		if (level.isClientSide()) {
 			return InteractionResult.SUCCESS;
 		}
-		if (level.getBlockEntity(pos) instanceof ComponentBlockEntity component) {
-			if (ValueEditorOpener.tryOpen(component, pos, player)) {
-				return InteractionResult.SUCCESS_SERVER;
-			}
+		// Checked ahead of (and independent of) the ComponentBlockEntity branch below, so a
+		// 3-terminal component (a transistor, extending NetworkBlockEntity directly rather than
+		// ComponentBlockEntity - see OpAmpBlockEntity for why) can still support shift-right-click
+		// value editing without needing the usual two-terminal preset-cycle machinery. tryOpen
+		// itself already no-ops when the shift key isn't held, so this is a pure generalization -
+		// existing two-terminal ValueEditable components keep behaving exactly as before.
+		BlockEntity blockEntity = level.getBlockEntity(pos);
+		if (blockEntity instanceof ValueEditable && ValueEditorOpener.tryOpen(blockEntity, pos, player)) {
+			return InteractionResult.SUCCESS_SERVER;
+		}
+		if (blockEntity instanceof ComponentBlockEntity component) {
 			component.cyclePreset();
 			component.markNetworkDirty();
 			player.sendOverlayMessage(Component.literal(component.probeSummary()));

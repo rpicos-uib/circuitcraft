@@ -3,18 +3,28 @@ package com.rpicos.circuitcraft;
 import com.rpicos.circuitcraft.block.AcSourceBlock;
 import com.rpicos.circuitcraft.block.AmmeterBlock;
 import com.rpicos.circuitcraft.block.CapacitorBlock;
+import com.rpicos.circuitcraft.block.CccsBlock;
+import com.rpicos.circuitcraft.block.CcvsBlock;
+import com.rpicos.circuitcraft.block.CurrentSourceBlock;
 import com.rpicos.circuitcraft.block.DiodeBlock;
 import com.rpicos.circuitcraft.block.FrequencyModuleBlock;
 import com.rpicos.circuitcraft.block.FunctionGeneratorBlock;
 import com.rpicos.circuitcraft.block.GroundBlock;
 import com.rpicos.circuitcraft.block.InductorBlock;
 import com.rpicos.circuitcraft.block.MemristorBlock;
+import com.rpicos.circuitcraft.block.NmosBlock;
+import com.rpicos.circuitcraft.block.NpnBlock;
 import com.rpicos.circuitcraft.block.OpAmpBlock;
+import com.rpicos.circuitcraft.block.PmosBlock;
+import com.rpicos.circuitcraft.block.PnpBlock;
 import com.rpicos.circuitcraft.block.PowerSupplyBlock;
 import com.rpicos.circuitcraft.block.R2VConverterBlock;
 import com.rpicos.circuitcraft.block.ResistorBlock;
 import com.rpicos.circuitcraft.block.V2RConverterBlock;
+import com.rpicos.circuitcraft.block.VccsBlock;
+import com.rpicos.circuitcraft.block.VcvsBlock;
 import com.rpicos.circuitcraft.block.VoltageModuleBlock;
+import com.rpicos.circuitcraft.block.VoltmeterBlock;
 import com.rpicos.circuitcraft.block.WireBlock;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -43,10 +53,23 @@ public final class ModBlocks {
 	public static final Block AC_SOURCE = register("ac_source", AcSourceBlock::new, componentProperties());
 	public static final Block R2V_CONVERTER = register("r2v_converter", R2VConverterBlock::new, componentProperties());
 	public static final Block V2R_CONVERTER = register("v2r_converter", V2RConverterBlock::new, componentProperties());
+	public static final Block CURRENT_SOURCE = register("current_source", CurrentSourceBlock::new, componentProperties());
+	public static final Block VOLTMETER = register("voltmeter", VoltmeterBlock::new, componentProperties());
+	public static final Block NPN = register("npn", NpnBlock::new, componentProperties());
+	public static final Block PNP = register("pnp", PnpBlock::new, componentProperties());
+	public static final Block NMOS = register("nmos", NmosBlock::new, componentProperties());
+	public static final Block PMOS = register("pmos", PmosBlock::new, componentProperties());
+	public static final Block VCVS = register("vcvs", VcvsBlock::new, componentProperties());
+	public static final Block VCCS = register("vccs", VccsBlock::new, componentProperties());
+	public static final Block CCCS = register("cccs", CccsBlock::new, componentProperties());
+	public static final Block CCVS = register("ccvs", CcvsBlock::new, componentProperties());
 
 	/** Plain block, no facing/block-entity: the Electrician's job site, not a circuit
 	 *  participant, so it doesn't extend ComponentBlock or implement EntityBlock. */
 	public static final Block BREADBOARD = register("breadboard", Block::new, breadboardProperties());
+
+	/** The Electronics Engineer's job site - same shape as the Breadboard above. */
+	public static final Block WORKBENCH = register("workbench", Block::new, breadboardProperties());
 
 	private static BlockBehaviour.Properties componentProperties() {
 		return BlockBehaviour.Properties.of().strength(1.0F).sound(SoundType.METAL);

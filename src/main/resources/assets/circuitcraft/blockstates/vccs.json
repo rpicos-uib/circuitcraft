@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "facing=up": {
+      "model": "circuitcraft:block/vccs"
+    },
+    "facing=down": {
+      "model": "circuitcraft:block/vccs"
+    },
+    "facing=north": {
+      "model": "circuitcraft:block/vccs"
+    },
+    "facing=south": {
+      "model": "circuitcraft:block/vccs"
+    },
+    "facing=east": {
+      "model": "circuitcraft:block/vccs"
+    },
+    "facing=west": {
+      "model": "circuitcraft:block/vccs"
+    }
+  }
+}

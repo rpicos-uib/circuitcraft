@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:iron_nugget",
+    "minecraft:iron_nugget",
+    "minecraft:quartz",
+    "minecraft:redstone"
+  ],
+  "result": {
+    "id": "circuitcraft:npn",
+    "count": 2
+  }
+}

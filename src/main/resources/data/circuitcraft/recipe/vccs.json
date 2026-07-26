@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": "minecraft:copper_ingot",
+    "I": "minecraft:iron_ingot",
+    "M": "minecraft:comparator"
+  },
+  "pattern": [
+    "CIC",
+    "IMI",
+    "CIC"
+  ],
+  "result": {
+    "id": "circuitcraft:vccs",
+    "count": 1
+  }
+}

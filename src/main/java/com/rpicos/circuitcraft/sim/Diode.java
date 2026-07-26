@@ -5,10 +5,7 @@ package com.rpicos.circuitcraft.sim;
  *  the reactive elements' trapezoidal companion models already use, rather than iterating a
  *  full Newton-Raphson solve within a single tick. */
 public class Diode implements Element, AcElement {
-	private static final double THERMAL_VOLTAGE = 0.02585; // kT/q at ~300 K
-	// Clamps the linearization point, not the actual solved voltage, so a large forward swing
-	// between ticks can't send exp() to infinity.
-	private static final double MAX_LINEARIZATION_VOLTS = 0.85;
+	private static final double THERMAL_VOLTAGE = DiodeMath.THERMAL_VOLTAGE;
 
 	public final int a, b;
 	public double saturationCurrentAmps;
@@ -45,22 +42,16 @@ public class Diode implements Element, AcElement {
 	}
 
 	/** Small-signal conductance {@code dI/dV} at the diode's last known DC operating point -
-	 *  shared by the transient companion stamp and the AC small-signal stamp below. */
+	 *  used by the AC small-signal stamp below. */
 	private double smallSignalConductance() {
-		double vt = idealityFactor * THERMAL_VOLTAGE;
-		double v0 = Math.min(vPrev, MAX_LINEARIZATION_VOLTS);
-		return (saturationCurrentAmps / vt) * Math.exp(v0 / vt);
+		return DiodeMath.linearize(vPrev, saturationCurrentAmps, idealityFactor).geq();
 	}
 
 	@Override
 	public void stamp(Circuit circuit, double[][] mat, double[] z, double dt) {
-		double vt = idealityFactor * THERMAL_VOLTAGE;
-		double v0 = Math.min(vPrev, MAX_LINEARIZATION_VOLTS);
-		double iAtV0 = saturationCurrentAmps * (Math.exp(v0 / vt) - 1);
-		double geq = smallSignalConductance();
-		double ieq = iAtV0 - geq * v0;
-		circuit.stampConductance(mat, a, b, geq);
-		circuit.stampCurrentSource(z, a, b, ieq);
+		DiodeMath.Companion companion = DiodeMath.linearize(vPrev, saturationCurrentAmps, idealityFactor);
+		circuit.stampConductance(mat, a, b, companion.geq());
+		circuit.stampCurrentSource(z, a, b, companion.ieq());
 	}
 
 	@Override

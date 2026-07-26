@@ -1,0 +1,12 @@
+{
+  "gives": {
+    "id": "circuitcraft:vccs"
+  },
+  "max_uses": 15.0,
+  "reputation_discount": 0.05,
+  "wants": {
+    "count": 8,
+    "id": "minecraft:emerald"
+  },
+  "xp": 15.0
+}

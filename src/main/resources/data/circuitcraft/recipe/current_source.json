@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": "minecraft:gold_ingot",
+    "C": "minecraft:copper_ingot",
+    "R": "minecraft:redstone_block"
+  },
+  "pattern": [
+    "GCG",
+    "CRC",
+    "GCG"
+  ],
+  "result": {
+    "id": "circuitcraft:current_source",
+    "count": 1
+  }
+}

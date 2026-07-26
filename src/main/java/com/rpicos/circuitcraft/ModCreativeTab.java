@@ -20,6 +20,7 @@ public final class ModCreativeTab {
 					.title(Component.translatable("itemGroup.circuitcraft.components"))
 					.icon(() -> new ItemStack(ModItems.RESISTOR))
 					.displayItems((parameters, output) -> {
+						// Basic components (see README's "Basic Components" section).
 						output.accept(ModItems.RESISTOR);
 						output.accept(ModItems.CAPACITOR);
 						output.accept(ModItems.INDUCTOR);
@@ -31,7 +32,6 @@ public final class ModCreativeTab {
 						output.accept(ModItems.VOLTAGE_MODULE);
 						output.accept(ModItems.FREQUENCY_MODULE);
 						output.accept(ModItems.GROUND);
-						output.accept(ModItems.DIODE);
 						output.accept(ModItems.OP_AMP);
 						output.accept(ModItems.AC_SOURCE);
 						output.accept(ModItems.R2V_CONVERTER);
@@ -40,6 +40,20 @@ public final class ModCreativeTab {
 						output.accept(ModItems.PROBE);
 						output.accept(ModItems.XY_PROBE);
 						output.accept(ModItems.AC_PROBE);
+						// Advanced components (see README's "Advanced Components" section) -
+						// sold by the Electronics Engineer villager, not the Electrician.
+						output.accept(ModItems.DIODE);
+						output.accept(ModItems.NPN);
+						output.accept(ModItems.PNP);
+						output.accept(ModItems.NMOS);
+						output.accept(ModItems.PMOS);
+						output.accept(ModItems.CURRENT_SOURCE);
+						output.accept(ModItems.VOLTMETER);
+						output.accept(ModItems.VCVS);
+						output.accept(ModItems.VCCS);
+						output.accept(ModItems.CCCS);
+						output.accept(ModItems.CCVS);
+						output.accept(ModItems.WORKBENCH);
 					})
 					.build()
 	);

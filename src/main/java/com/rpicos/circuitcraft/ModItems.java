@@ -30,7 +30,18 @@ public final class ModItems {
 	public static final Item AC_SOURCE = registerBlockItem("ac_source", ModBlocks.AC_SOURCE);
 	public static final Item R2V_CONVERTER = registerBlockItem("r2v_converter", ModBlocks.R2V_CONVERTER);
 	public static final Item V2R_CONVERTER = registerBlockItem("v2r_converter", ModBlocks.V2R_CONVERTER);
+	public static final Item CURRENT_SOURCE = registerBlockItem("current_source", ModBlocks.CURRENT_SOURCE);
+	public static final Item VOLTMETER = registerBlockItem("voltmeter", ModBlocks.VOLTMETER);
+	public static final Item NPN = registerBlockItem("npn", ModBlocks.NPN);
+	public static final Item PNP = registerBlockItem("pnp", ModBlocks.PNP);
+	public static final Item NMOS = registerBlockItem("nmos", ModBlocks.NMOS);
+	public static final Item PMOS = registerBlockItem("pmos", ModBlocks.PMOS);
+	public static final Item VCVS = registerBlockItem("vcvs", ModBlocks.VCVS);
+	public static final Item VCCS = registerBlockItem("vccs", ModBlocks.VCCS);
+	public static final Item CCCS = registerBlockItem("cccs", ModBlocks.CCCS);
+	public static final Item CCVS = registerBlockItem("ccvs", ModBlocks.CCVS);
 	public static final Item BREADBOARD = registerBlockItem("breadboard", ModBlocks.BREADBOARD);
+	public static final Item WORKBENCH = registerBlockItem("workbench", ModBlocks.WORKBENCH);
 
 	public static final Item PROBE = registerItem("probe", ProbeItem::new);
 	public static final Item XY_PROBE = registerItem("xy_probe", XyProbeItem::new);

@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "circuitcraft:block/cccs",
+    "down": "circuitcraft:block/ground_terminal",
+    "up": "circuitcraft:block/grounded_output",
+    "north": "circuitcraft:block/control_in",
+    "east": "circuitcraft:block/cccs",
+    "west": "circuitcraft:block/cccs",
+    "south": "circuitcraft:block/control_out"
+  }
+}
