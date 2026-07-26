@@ -1,9 +1,11 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "ingredients": [
-    "minecraft:copper_ingot",
-    "minecraft:copper_ingot",
-    "minecraft:iron_nugget"
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": "minecraft:iron_nugget",
+    "X": "#circuitcraft:inductor_core"
+  },
+  "pattern": [
+    "IXI"
   ],
   "result": {
     "id": "circuitcraft:inductor",

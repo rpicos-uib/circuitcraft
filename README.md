@@ -109,9 +109,9 @@ of ingredients; shaped ones show the actual 3×3 grid layout.
 
 | Recipe | Notes |
 |---|---|
-| <img src="docs/recipes/resistor.png"> | **Resistor ×2** — clay ball as the resistive body, iron nuggets as leads. |
-| <img src="docs/recipes/capacitor.png"> | **Capacitor ×2** — paper as the historical capacitor dielectric. |
-| <img src="docs/recipes/inductor.png"> | **Inductor ×2** — copper for the coil. |
+| <img src="docs/recipes/resistor.png"> | **Resistor ×2** — iron nugget, clay ball **or coal** as the resistive body, iron nugget: leads on both sides of the body, shaped. |
+| <img src="docs/recipes/capacitor.png"> | **Capacitor ×2** — iron nugget, paper as the historical capacitor dielectric, iron nugget: leads on both sides, shaped. |
+| <img src="docs/recipes/inductor.png"> | **Inductor ×2** — iron nugget, copper **or iron** ingot for the coil, iron nugget: leads on both sides, shaped. |
 | <img src="docs/recipes/memristor.png"> | **Memristor ×1** — amethyst shard for the switching medium. |
 | <img src="docs/recipes/power_supply.png"> | **Power Supply ×1** — 3×3 iron/copper shell around a redstone block core. |
 | <img src="docs/recipes/function_generator.png"> | **Function Generator ×1** — 3×3 iron/copper shell, quartz + redstone torch core. |

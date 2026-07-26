@@ -1,9 +1,11 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "ingredients": [
-    "minecraft:iron_nugget",
-    "minecraft:iron_nugget",
-    "minecraft:paper"
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": "minecraft:iron_nugget",
+    "P": "minecraft:paper"
+  },
+  "pattern": [
+    "IPI"
   ],
   "result": {
     "id": "circuitcraft:capacitor",

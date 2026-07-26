@@ -1,9 +1,11 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "ingredients": [
-    "minecraft:clay_ball",
-    "minecraft:iron_nugget",
-    "minecraft:iron_nugget"
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": "minecraft:iron_nugget",
+    "X": "#circuitcraft:resistor_body"
+  },
+  "pattern": [
+    "IXI"
   ],
   "result": {
     "id": "circuitcraft:resistor",

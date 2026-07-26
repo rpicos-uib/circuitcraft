@@ -4,9 +4,13 @@
 
 Table~\ref{tab:recipes} lists the crafting recipe for every item provided by the mod. All
 eighteen use only vanilla Minecraft ingredients, with no dependency on any other mod. Every
-recipe listed is shapeless (order-independent) except the power supply, function generator,
-breadboard, probe, X-Y probe, and AC probe, which require their ingredients arranged in the
-specific $3\times3$ (or, for the three probes, $1\times3$) pattern noted in the table.
+recipe listed is shapeless (order-independent) except the resistor, capacitor, inductor,
+power supply, function generator, breadboard, probe, X-Y probe, and AC probe, which require
+their ingredients arranged in the specific pattern noted in the table -- a horizontal
+$1\times3$ ``lead--body--lead'' row for the resistor/capacitor/inductor, a vertical
+$1\times3$ column for the three probes, and a full $3\times3$ grid for the rest. The
+resistor and inductor each accept either of two interchangeable materials for their body
+ingredient, noted as ``X or Y'' in the table.
 
 \begin{table*}[!t]
 \centering
@@ -16,9 +20,9 @@ specific $3\times3$ (or, for the three probes, $1\times3$) pattern noted in the 
 \toprule
 \textbf{Icon} & \textbf{Item} & \textbf{Recipe} \\
 \midrule
-\includegraphics[width=0.06\textwidth]{figures/icons/resistor.png} & Resistor $\times2$ & Clay ball + 2 iron nuggets (shapeless) \\
-\includegraphics[width=0.06\textwidth]{figures/icons/capacitor.png} & Capacitor $\times2$ & 2 iron nuggets + paper (shapeless) \\
-\includegraphics[width=0.06\textwidth]{figures/icons/inductor.png} & Inductor $\times2$ & 2 copper ingots + iron nugget (shapeless) \\
+\includegraphics[width=0.06\textwidth]{figures/icons/resistor.png} & Resistor $\times2$ & Iron nugget / clay ball or coal / iron nugget (shaped) \\
+\includegraphics[width=0.06\textwidth]{figures/icons/capacitor.png} & Capacitor $\times2$ & Iron nugget / paper / iron nugget (shaped) \\
+\includegraphics[width=0.06\textwidth]{figures/icons/inductor.png} & Inductor $\times2$ & Iron nugget / copper or iron ingot / iron nugget (shaped) \\
 \includegraphics[width=0.06\textwidth]{figures/icons/memristor.png} & Memristor $\times1$ & Redstone + amethyst shard + iron nugget (shapeless) \\
 \includegraphics[width=0.06\textwidth]{figures/icons/diode.png} & Diode $\times2$ & Iron nugget + redstone + quartz (shapeless) \\
 \includegraphics[width=0.06\textwidth]{figures/icons/op_amp.png} & Ideal Op-Amp $\times1$ & 2 gold nuggets + redstone + quartz (shapeless) \\
