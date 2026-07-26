@@ -1,13 +1,13 @@
 {
   "gives": {
-    "count": 2,
-    "id": "circuitcraft:resistor"
+    "count": 1,
+    "id": "minecraft:emerald"
   },
   "max_uses": 15.0,
   "reputation_discount": 0.05,
   "wants": {
-    "count": 2,
-    "id": "minecraft:emerald"
+    "count": 15,
+    "id": "minecraft:iron_nugget"
   },
   "xp": 2.0
 }

@@ -1,5 +1,7 @@
 {
   "values": [
-    "circuitcraft:electrician/3/ac_source_emerald"
+    "circuitcraft:electrician/3/ac_source_emerald",
+    "circuitcraft:electrician/3/gold_nugget_buy",
+    "circuitcraft:electrician/3/glowstone_dust_buy"
   ]
 }

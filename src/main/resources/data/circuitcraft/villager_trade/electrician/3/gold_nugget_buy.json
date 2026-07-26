@@ -1,12 +1,13 @@
 {
   "gives": {
-    "id": "circuitcraft:ac_probe"
+    "count": 1,
+    "id": "minecraft:emerald"
   },
   "max_uses": 15.0,
   "reputation_discount": 0.05,
   "wants": {
-    "count": 7,
-    "id": "minecraft:emerald"
+    "count": 15,
+    "id": "minecraft:gold_nugget"
   },
   "xp": 10.0
 }

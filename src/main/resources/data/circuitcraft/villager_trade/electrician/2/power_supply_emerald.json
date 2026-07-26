@@ -2,7 +2,7 @@
   "gives": {
     "id": "circuitcraft:power_supply"
   },
-  "max_uses": 8.0,
+  "max_uses": 15.0,
   "reputation_discount": 0.05,
   "wants": {
     "count": 4,

@@ -137,26 +137,39 @@ All items are also available in their own **CircuitCraft** creative-inventory ta
 ## The Electrician villager
 
 Place a **Breadboard** (crafted as shown above) and let an unemployed villager claim it as a job
-site; it becomes an **Electrician** and sells the mod's own components for emeralds instead of
-vanilla trades. It has its own look, not the default missing-texture placeholder: a slate/steel
-tool apron with warning-yellow badge accents, distinct from any vanilla profession's outfit.
-Like every vanilla profession, it levels up (Novice → Master) as it successfully trades,
-unlocking later tiers:
+site; it becomes an **Electrician** and both **sells** the mod's own components and **buys back**
+the raw materials needed to craft them, all for emeralds, instead of vanilla trades. It has its
+own look, not the default missing-texture placeholder: a slate/steel tool apron with
+warning-yellow badge accents, distinct from any vanilla profession's outfit. Like every vanilla
+profession, it levels up (Novice → Master) as it successfully trades, unlocking later tiers. Each
+level offers **at most two components to sell and at most two raw materials to buy** (never more,
+always both), so no single villager is ever a wall of trades:
 
-| Level | Sells |
-|---|---|
-| 1 — Novice | Wire, Ground, Resistor, Capacitor, Inductor |
-| 2 — Apprentice | Power Supply, Function Generator, Voltage Module, Frequency Module |
-| 3 — Journeyman | AC Source |
-| 4 — Expert | Probe, X-Y Oscilloscope Probe, AC Oscilloscope Probe |
-| 5 — Master | Memristor |
+| Level | Sells | Buys |
+|---|---|---|
+| 1 — Novice | Resistor, Capacitor | Iron Nugget, Clay Ball |
+| 2 — Apprentice | Power Supply, Function Generator | Iron Ingot, Copper Ingot |
+| 3 — Journeyman | AC Source | Gold Nugget, Glowstone Dust |
+| 4 — Expert | Probe, AC Oscilloscope Probe | Redstone, Stick |
+| 5 — Master | Memristor | Amethyst Shard, Redstone |
 
-Each level only ever offers a handful of its listed trades at once (chosen at random, same as
-vanilla professions), not the whole row simultaneously. Trades are entirely data-driven
-(`data/circuitcraft/{villager_trade,tags/villager_trade,trade_set}/electrician/`) rather than
-hardcoded in Java — this Minecraft version's `VillagerProfession` only points at `TradeSet`
-resource keys per level, so rebalancing prices or adding trades is a JSON edit, no rebuild
-required.
+Buy trades collect **15** of the raw material per trade; sell trades keep each component's
+original per-trade quantity (1-2 at a time, unchanged from before). Every trade - buy and sell
+alike - can now be used **15** times before that villager needs to restock via more trading
+(`max_uses: 15`, a flat number replacing the previous per-tier values of 4-12). Buy prices are
+cheaper than sell prices for the same tier, same as a real shop margin: raw materials are worth
+less than the finished component they go into.
+
+Not every craftable item is sellable this way anymore - Wire, Ground, Inductor, Voltage Module,
+Frequency Module, and the X-Y Oscilloscope Probe were trimmed out to keep to the two-per-level
+cap (all six are still simple, cheap crafting-table recipes, unaffected). Trades are entirely
+data-driven (`data/circuitcraft/{villager_trade,tags/villager_trade,trade_set}/electrician/`)
+rather than hardcoded in Java - this Minecraft version's `VillagerProfession` only points at
+`TradeSet` resource keys per level, so rebalancing prices or adding trades is a JSON edit, no
+rebuild required. Each level's `trade_set` `amount` is set equal to its trade pool's size, so
+every listed trade is always offered together rather than a random subset (unlike vanilla
+professions, which usually roll a handful from a larger pool) - the only way to guarantee the
+"both sell items and both buy items are always present" promise above.
 
 ### Electrician's Workshop
 
