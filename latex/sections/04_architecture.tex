@@ -206,8 +206,9 @@ A learner cannot wire a circuit with components they do not yet possess, and the
 blocks and items above are otherwise obtained the same way as any other vanilla item --
 crafted by hand from a recipe, or found. CircuitCraft adds one further, eighteenth block, the
 Breadboard, whose sole purpose is to let a villager claim it as a job site and become an
-\emph{Electrician}, a new villager profession that sells the mod's other seventeen items for
-emeralds instead of any vanilla trade. Figure~\ref{fig:workshop} shows a complete Electrician's
+\emph{Electrician}, a new villager profession that both sells a subset of the mod's own
+components and buys back the raw crafting materials those components are made from, all for
+emeralds, instead of any vanilla trade. Figure~\ref{fig:workshop} shows a complete Electrician's
 Workshop, itself generated on demand by a bundled world-generation function
 (\texttt{/function circuitcraft:electrician\_shop}) that clears its own footprint, pours its
 own foundation, and places a Breadboard inside regardless of the underlying terrain, so an
@@ -222,13 +223,20 @@ one by hand.
 \end{figure}
 
 Like every vanilla villager profession, the Electrician levels up (Novice through Master)
-as it successfully trades, unlocking further tiers of stock rather than offering all
-seventeen items from the outset. The five tiers were chosen to mirror the order a learner
-would naturally be introduced to the material: Novice sells the passive elements (wire,
-ground, resistor, capacitor, inductor); Apprentice, the DC/time-varying sources and their
-adjustment modules; Journeyman, the AC Source; Expert, the three oscilloscope probes; and
-Master, the memristor alone, reserved for last as the component whose behavior depends on the
-integral of its own history rather than an instantaneous relation. Trades are themselves
+as it successfully trades, unlocking further tiers of stock rather than offering everything
+from the outset. Each tier deliberately offers no more than two components to sell and no
+more than two raw materials to buy -- always both, never a partial or randomized subset --
+so a single villager is never a wall of trades. The five tiers were chosen to mirror the
+order a learner would naturally be introduced to the material, and each tier's buy offers are
+simply the crafting ingredients of that tier's sell offers: Novice sells the resistor and
+capacitor (buying iron nuggets and clay balls); Apprentice, the power supply and function
+generator (buying iron and copper ingots); Journeyman, the AC Source alone (buying gold
+nuggets and glowstone dust); Expert, the probe and AC probe (buying redstone and sticks); and
+Master, the memristor alone (buying amethyst shards and redstone), reserved for last as the
+component whose behavior depends on the integral of its own history rather than an
+instantaneous relation. The two-item cap means not every craftable item is villager-tradeable
+-- the wire, ground, inductor, and the two source-adjustment modules, for instance, remain
+available only through their own (simple) crafting recipes. Trades are themselves
 data-driven configuration rather than code, so an instructor may re-tier or re-price them
 (for instance, to gate the memristor behind a specific in-class milestone) without modifying
 the mod itself.
