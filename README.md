@@ -165,7 +165,8 @@ deliberate exception (see below):
 | 4 — Expert | Probe, AC Oscilloscope Probe | Redstone, Stick |
 | 5 — Master | any 2 of Memristor / R2V Converter / V2R Converter | Amethyst Shard, Redstone (usually both) |
 
-Buy trades collect **15** of the raw material per trade; sell trades keep each component's
+Buy trades collect **8** of the raw material per trade (**4** for Amethyst Shard, the rarest
+one - a batch you can actually gather without grinding); sell trades keep each component's
 original per-trade quantity (1-2 at a time, unchanged from before). Every trade - buy and sell
 alike - can now be used **15** times before that villager needs to restock via more trading
 (`max_uses: 15`, a flat number replacing the previous per-tier values of 4-12). Buy prices are

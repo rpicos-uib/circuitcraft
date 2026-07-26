@@ -6,7 +6,7 @@
   "max_uses": 15.0,
   "reputation_discount": 0.05,
   "wants": {
-    "count": 15,
+    "count": 8,
     "id": "minecraft:stick"
   },
   "xp": 10.0
