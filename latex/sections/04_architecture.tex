@@ -147,9 +147,12 @@ Minecraft's own discrete 0--15 signal-strength domain, and vice versa. Both are 
 on top of a Ground block -- simultaneously a placement requirement and the guarantee that their
 electrical reference is always the network's true 0~V node, not an arbitrary floating one. The
 R2V Converter reads two independent 0--15 redstone strengths from its north and south faces
-(A and B respectively) and stamps a fixed DC voltage source of $V = A \times 15 + B$ onto its
-remaining wired lead, exposing a 0--240~V range at effectively $1/15\,\mathrm{V}$ resolution
-from two ordinary redstone signals. The V2R Converter performs the exact inverse: it reads
+(A and B respectively) and stamps a fixed DC voltage source of $V = A \times 16 + B$ onto its
+remaining wired lead, exposing a 0--255~V range from two ordinary redstone signals -- the base
+is 16, the \emph{count} of values each digit can take, not 15, the largest single value, exactly
+as base-10 place value uses a multiplier of 10 rather than 9; using 15 would make the encoding
+lossy; e.g.\ $A{=}0,B{=}15$ and $A{=}1,B{=}0$ would both yield $V{=}15$, an ambiguity the V2R
+Converter's decoder could only ever resolve one way. The V2R Converter performs the exact inverse: it reads
 whatever voltage is wired into it (as an ideal voltmeter -- it stamps nothing into the circuit
 and so never loads down what it measures) and decodes it back into two 0--15 redstone outputs
 on the same two faces. Chained together, the pair lets a player route a circuit's live state

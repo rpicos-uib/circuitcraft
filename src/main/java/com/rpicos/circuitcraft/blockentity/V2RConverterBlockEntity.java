@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 /** The inverse of {@link R2VConverterBlockEntity}: reads the voltage across its up lead (node A)
  *  and down lead (node B, the real 0V reference), decodes it back into A/B redstone strengths
- *  (0-15 each) via {@code V = A*15 + B}, and exposes them to
+ *  (0-15 each) via {@code V = A*16 + B}, and exposes them to
  *  {@link com.rpicos.circuitcraft.block.V2RConverterBlock#getSignal} to actually emit as redstone
  *  power. Stamps no element into the circuit at all - an ideal voltmeter, infinite input
  *  impedance, never loads down whatever it's reading. */
@@ -56,9 +56,9 @@ public class V2RConverterBlockEntity extends ComponentBlockEntity {
 	 *  change-gating - a live, continuously-varying voltage would otherwise force a redstone
 	 *  update broadcast every single tick even when the rounded 0-15 output hasn't moved. */
 	public void refreshRedstoneOutput() {
-		int vInt = (int) Math.round(Math.clamp(probeVoltage(), 0, 240));
-		int a = Math.min(15, vInt / 15);
-		int b = Math.clamp(vInt - a * 15, 0, 15);
+		int vInt = (int) Math.round(Math.clamp(probeVoltage(), 0, 255));
+		int a = Math.min(15, vInt / 16);
+		int b = Math.clamp(vInt - a * 16, 0, 15);
 		if (a != outputA || b != outputB) {
 			outputA = a;
 			outputB = b;

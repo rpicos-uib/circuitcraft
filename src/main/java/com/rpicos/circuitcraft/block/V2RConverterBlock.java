@@ -13,7 +13,7 @@ import org.jspecify.annotations.Nullable;
 /** Voltage-to-Redstone converter. Reads the voltage on its up lead (referenced against the
  *  Ground block it must be placed directly on, its down lead, enforced by
  *  {@link GroundedComponentBlock}) and decodes it back into two 0-15 redstone outputs - North =
- *  A, South = B - the exact inverse of {@link R2VConverterBlock}'s V = A*15 + B encoding. Draws
+ *  A, South = B - the exact inverse of {@link R2VConverterBlock}'s V = A*16 + B encoding. Draws
  *  no current itself (an ideal voltmeter), so it never loads down whatever it's reading. */
 public class V2RConverterBlock extends GroundedComponentBlock {
 	public static final MapCodec<V2RConverterBlock> CODEC = simpleCodec(V2RConverterBlock::new);

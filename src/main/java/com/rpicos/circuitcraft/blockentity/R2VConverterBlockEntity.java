@@ -9,7 +9,7 @@ import com.rpicos.circuitcraft.sim.Waveform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
-/** Stamps V = redstoneA*15 + redstoneB as a plain DC voltage source between its up lead (node A)
+/** Stamps V = redstoneA*16 + redstoneB as a plain DC voltage source between its up lead (node A)
  *  and its down lead (node B, always the real 0V reference - see
  *  {@link com.rpicos.circuitcraft.block.GroundedComponentBlock}). {@code redstoneA}/{@code
  *  redstoneB} are pushed in by {@link com.rpicos.circuitcraft.block.R2VConverterBlock#neighborChanged}
@@ -41,8 +41,14 @@ public class R2VConverterBlockEntity extends ComponentBlockEntity implements AcS
 		}
 	}
 
+	/** The multiplier is 16, not 15 - redstone strength maxes out at 15, but there are 16
+	 *  possible values per digit (0-15 inclusive), and a positional encoding's base is the
+	 *  count of possible digit values, not the largest one (exactly like base-10 place value
+	 *  uses 10, not 9, the largest decimal digit). Using 15 here would make the encoding lossy:
+	 *  A=0,B=15 and A=1,B=0 would both produce V=15, an ambiguity {@link
+	 *  V2RConverterBlockEntity}'s decoder could never resolve correctly for both inputs. */
 	private double voltageVolts() {
-		return redstoneA * 15.0 + redstoneB;
+		return redstoneA * 16.0 + redstoneB;
 	}
 
 	@Override

@@ -13,7 +13,7 @@ import net.minecraft.world.level.redstone.Orientation;
 import org.jspecify.annotations.Nullable;
 
 /** Redstone-to-Voltage converter. Reads two 0-15 redstone signal strengths - North = A, South =
- *  B - and outputs V = A*15 + B (0-240V) on its up lead, referenced against the Ground block it
+ *  B - and outputs V = A*16 + B (0-255V) on its up lead, referenced against the Ground block it
  *  must be placed directly on (its down lead, enforced by {@link GroundedComponentBlock}). */
 public class R2VConverterBlock extends GroundedComponentBlock {
 	public static final MapCodec<R2VConverterBlock> CODEC = simpleCodec(R2VConverterBlock::new);
