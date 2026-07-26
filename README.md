@@ -105,7 +105,9 @@ circuit incrementally and it'll simulate (uselessly, but safely) at every interm
 ## Crafting recipes
 
 All vanilla ingredients, no dependency on any other mod. Shapeless recipes are shown as a loose set
-of ingredients; shaped ones show the actual 3×3 grid layout.
+of ingredients; shaped ones show the actual 3×3 grid layout. Where a recipe accepts either of two
+materials in the same slot, both variants are shown stacked as two complete recipes leading to the
+same result, rather than merged into one image.
 
 | Recipe | Notes |
 |---|---|
