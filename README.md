@@ -167,7 +167,7 @@ same result, rather than merged into one image.
 | <img src="docs/recipes/memristor.png"> | **Memristor ×1** — amethyst shard for the switching medium. |
 | <img src="docs/recipes/power_supply.png"> | **Power Supply ×1** — 3×3 iron/copper shell around a redstone block core. |
 | <img src="docs/recipes/function_generator.png"> | **Function Generator ×1** — 3×3 iron/copper shell, quartz + redstone torch core. |
-| <img src="docs/recipes/wire.png"> | **Wire ×6** — one copper ingot, cheap/bulk. |
+| <img src="docs/recipes/wire.png"> | **Wire ×9** — three copper ingots in a row, shaped, cheap/bulk. |
 | <img src="docs/recipes/ground.png"> | **Ground ×4** — iron nugget + copper ingot. |
 | <img src="docs/recipes/ammeter.png"> | **Ammeter ×2** — iron nugget, copper ingot, redstone. |
 | <img src="docs/recipes/voltage_module.png"> | **Voltage Module ×1** — gold nugget, redstone, iron nugget. |

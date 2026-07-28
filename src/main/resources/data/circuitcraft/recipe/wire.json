@@ -1,10 +1,13 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "ingredients": [
-    "minecraft:copper_ingot"
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "XXX"
   ],
+  "key": {
+    "X": "minecraft:copper_ingot"
+  },
   "result": {
     "id": "circuitcraft:wire",
-    "count": 6
+    "count": 9
   }
 }
