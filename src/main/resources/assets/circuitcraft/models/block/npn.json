@@ -2,9 +2,9 @@
   "parent": "minecraft:block/cube",
   "textures": {
     "particle": "circuitcraft:block/npn",
-    "north": "circuitcraft:block/collector",
-    "south": "circuitcraft:block/emitter",
-    "up": "circuitcraft:block/base",
+    "north": "circuitcraft:block/terminal",
+    "south": "circuitcraft:block/terminal",
+    "up": "circuitcraft:block/npn_top",
     "down": "circuitcraft:block/npn",
     "east": "circuitcraft:block/npn",
     "west": "circuitcraft:block/npn"

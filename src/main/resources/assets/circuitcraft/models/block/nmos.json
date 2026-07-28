@@ -2,9 +2,9 @@
   "parent": "minecraft:block/cube",
   "textures": {
     "particle": "circuitcraft:block/nmos",
-    "north": "circuitcraft:block/drain",
-    "south": "circuitcraft:block/source",
-    "up": "circuitcraft:block/gate",
+    "north": "circuitcraft:block/terminal",
+    "south": "circuitcraft:block/terminal",
+    "up": "circuitcraft:block/nmos_top",
     "down": "circuitcraft:block/nmos",
     "east": "circuitcraft:block/nmos",
     "west": "circuitcraft:block/nmos"
