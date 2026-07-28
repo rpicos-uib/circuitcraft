@@ -317,6 +317,33 @@ stock. The function's source is
 `data/circuitcraft/function/engineer_workshop.mcfunction` — plain `/fill`/`/setblock` commands,
 same as the Electrician's.
 
+## Worked-example circuits
+
+Six ready-made circuits, one datapack function each, the same `/fill`/`/setblock`-based
+approach as the two workshops above — no manual wiring required to get started. Stand where
+you want the bench's southwest corner and run one:
+
+```
+/function circuitcraft:voltage_divider        # Experiment 1: basic voltage divider
+/function circuitcraft:rc_lowpass             # Experiment 2: RC low-pass Bode plot
+/function circuitcraft:rlc_resonance          # Experiment 3: RLC resonance Bode plot
+/function circuitcraft:half_wave_rectifier    # Experiment 4: half-wave rectifier
+/function circuitcraft:memristor_hysteresis   # Experiment 5: memristor pinched hysteresis loop
+/function circuitcraft:opamp_bode             # Experiment 6: op-amp open-loop Bode plot
+```
+
+Each clears its own space, pours its own foundation, wires up the circuit at every
+component's *default* preset (no component in this mod persists a right-click-selected preset
+across a save/reload, so a freshly-placed one always starts at its default regardless of what
+an experiment calls for), places an unflipped lever on top of the source, and gives you the
+right oscilloscope probe for the job. The function's own header comment states the exact
+right-clicks needed to reach each experiment's intended component values and the expected
+result — these are the same six worked experiments described in full (derivations, predicted
+numbers, and the physics behind each) in the mod's companion paper,
+`latex_mod/sections/07_results_experiments.tex`, reproduced here as buildable structures rather
+than left as a diagram. Their sources live in `data/circuitcraft/function/`, plain text like
+every other function in the mod.
+
 ## Architecture, for anyone extending this
 
 ```
